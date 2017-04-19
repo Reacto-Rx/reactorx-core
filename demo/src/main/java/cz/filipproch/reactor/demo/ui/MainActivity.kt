@@ -19,6 +19,9 @@ class MainActivity : ReactorActivity<MainTranslator>() {
     override val translatorFactory: TranslatorFactory<MainTranslator>
         get() = SimpleTranslatorFactory(MainTranslator::class.java)
 
+    override fun initUi() {
+    }
+
     override fun onConnectModelChannel(modelStream: Observable<out ReactorUiModel>) {
         receiveUpdatesOnUi(modelStream.ofType(MainUiModel::class.java)) {
             vProgressBar.visibility = if (it.isLoading) View.VISIBLE else View.GONE

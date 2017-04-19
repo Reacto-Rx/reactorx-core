@@ -1,9 +1,12 @@
 package cz.filipproch.reactor.ui
 
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v4.app.LoaderManager
 import android.support.v4.content.Loader
-import android.support.v7.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import cz.filipproch.reactor.base.translator.ReactorTranslator
 import cz.filipproch.reactor.base.translator.TranslatorLoader
 import cz.filipproch.reactor.base.view.ReactorUiEvent
@@ -19,8 +22,8 @@ import io.reactivex.subjects.PublishSubject
  *
  * @author Filip Prochazka (@filipproch)
  */
-abstract class ReactorActivity<T : ReactorTranslator> :
-        AppCompatActivity(),
+abstract class ReactorFragment<T : ReactorTranslator> :
+        Fragment(),
         ReactorView<T>,
         LoaderManager.LoaderCallbacks<T> {
 
@@ -30,15 +33,10 @@ abstract class ReactorActivity<T : ReactorTranslator> :
 
     private val activityEventsSubject = PublishSubject.create<ReactorUiEvent>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        reactorViewHelper = ReactorViewHelper(this)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
 
-        setContentView(getLayoutResId())
-        initUi()
-
-        reactorViewHelper.onViewCreated()
-        supportLoaderManager.initLoader(TRANSLATOR_LOADER_ID, null, this)
+        loaderManager.initLoader(TRANSLATOR_LOADER_ID, null, this)
 
         if (savedInstanceState == null) {
             activityEventsSubject.onNext(ViewCreatedEvent)
@@ -47,13 +45,19 @@ abstract class ReactorActivity<T : ReactorTranslator> :
         }
     }
 
-    override fun onEmittersInit() {
-        registerEmitter(activityEventsSubject)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(getLayoutResId(), container, false)
+        bindViews(view)
+        return view
     }
 
-    abstract fun initUi()
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        reactorViewHelper = ReactorViewHelper(this)
 
-    abstract fun getLayoutResId(): Int
+        reactorViewHelper.onViewCreated()
+        initUi()
+    }
 
     override fun onStart() {
         super.onStart()
@@ -71,12 +75,16 @@ abstract class ReactorActivity<T : ReactorTranslator> :
         reactorViewHelper.onViewDestroyed()
     }
 
+    override fun onEmittersInit() {
+        registerEmitter(activityEventsSubject)
+    }
+
     override fun onLoadFinished(loader: Loader<T>?, data: T) {
         reactorViewHelper.onTranslatorAttached(data)
     }
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<T> {
-        return TranslatorLoader(this, translatorFactory)
+        return TranslatorLoader(context, translatorFactory)
     }
 
     override fun onLoaderReset(loader: Loader<T>?) {
@@ -91,9 +99,16 @@ abstract class ReactorActivity<T : ReactorTranslator> :
         reactorViewHelper.receiveUpdatesOnUi(observable, receiverAction)
     }
 
-    inline fun <T> receiveUpdatesOnUi(receiver: Observable<T>, crossinline action: (T) -> Unit) {
+    inline fun <T : ReactorUiModel> receiveUpdatesOnUi(receiver: Observable<T>, crossinline action: (T) -> Unit) {
         receiveUpdatesOnUi(receiver, Consumer<T> {
             action.invoke(it)
         })
     }
+
+    abstract fun initUi()
+
+    abstract fun getLayoutResId(): Int
+
+    open fun bindViews(view: View) {}
+
 }

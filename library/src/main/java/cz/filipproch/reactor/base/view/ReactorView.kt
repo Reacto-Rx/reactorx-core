@@ -2,8 +2,8 @@ package cz.filipproch.reactor.base.view
 
 import cz.filipproch.reactor.base.translator.ReactorTranslator
 import cz.filipproch.reactor.base.translator.TranslatorFactory
-import cz.filipproch.reactor.ui.model.ReceiverAction
 import io.reactivex.Observable
+import io.reactivex.functions.Consumer
 
 /**
  * TODO
@@ -20,6 +20,6 @@ interface ReactorView<out T: ReactorTranslator> {
 
     fun registerEmitter(emitter: Observable<out ReactorUiEvent>)
 
-    fun <T : ReactorUiModel> receiveUpdatesOnUi(observable: Observable<T>, receiverAction: ReceiverAction<T>)
+    fun <T> receiveUpdatesOnUi(observable: Observable<T>, receiverAction: Consumer<T>)
 
 }

@@ -2,13 +2,12 @@ package cz.filipproch.reactor.ui
 
 import cz.filipproch.reactor.base.translator.ReactorTranslator
 import cz.filipproch.reactor.base.view.ReactorUiEvent
-import cz.filipproch.reactor.base.view.ReactorUiModel
 import cz.filipproch.reactor.base.view.ReactorView
-import cz.filipproch.reactor.ui.model.ReceiverAction
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.reactivex.functions.Consumer
 import io.reactivex.subjects.ReplaySubject
 
 /**
@@ -40,8 +39,10 @@ class ReactorViewHelper<T : ReactorTranslator>(val reactorView: ReactorView<T>) 
     fun onTranslatorAttached(translator: T) {
         this.translator = translator
 
-        val uiModelStream = translator.bindView(eventSubject).share()
+        val uiModelStream = translator.bindView(eventSubject)
+                .publish()
         reactorView.onConnectModelChannel(uiModelStream)
+        disposable.add(uiModelStream.connect())
     }
 
     fun onTranslatorDetached() {
@@ -59,13 +60,11 @@ class ReactorViewHelper<T : ReactorTranslator>(val reactorView: ReactorView<T>) 
         eventEmitters.add(emitter)
     }
 
-    fun <T : ReactorUiModel> receiveUpdatesOnUi(observable: Observable<T>, receiverAction: ReceiverAction<T>) {
+    fun <T> receiveUpdatesOnUi(observable: Observable<T>, receiverAction: Consumer<T>) {
         disposable.add(
                 observable
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe {
-                            receiverAction.invoke(it)
-                        }
+                        .subscribe(receiverAction)
         )
     }
 
