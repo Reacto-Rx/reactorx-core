@@ -47,7 +47,7 @@ class ReactorViewHelper<T : ReactorTranslator>(val reactorView: ReactorView<T>) 
         val uiActionStream = translator.observeActions()
                 .publish()
         reactorView.onConnectActionChannel(uiActionStream)
-        disposable.add(uiModelStream.connect())
+        disposable.add(uiActionStream.connect())
     }
 
     fun onTranslatorDetached() {
