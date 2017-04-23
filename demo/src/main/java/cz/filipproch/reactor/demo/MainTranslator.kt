@@ -28,7 +28,7 @@ class MainTranslator : BaseReactorTranslator() {
                     .startWith(MainUiModel.idle())
         }
 
-        translate {
+        translateToModel {
             it.doOnNext { Log.v("TEst", "$it") }
                     .ofType(ViewCreatedEvent::class.java)
                     .compose(fetchPostDetail)

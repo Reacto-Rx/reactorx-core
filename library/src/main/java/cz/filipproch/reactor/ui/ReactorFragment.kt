@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import cz.filipproch.reactor.base.translator.ReactorTranslator
 import cz.filipproch.reactor.base.translator.TranslatorLoader
+import cz.filipproch.reactor.base.view.ReactorUiAction
 import cz.filipproch.reactor.base.view.ReactorUiEvent
 import cz.filipproch.reactor.base.view.ReactorUiModel
 import cz.filipproch.reactor.base.view.ReactorView
@@ -79,6 +80,12 @@ abstract class ReactorFragment<T : ReactorTranslator> :
         registerEmitter(activityEventsSubject)
     }
 
+    override fun onConnectModelChannel(modelStream: Observable<out ReactorUiModel>) {
+    }
+
+    override fun onConnectActionChannel(actionStream: Observable<out ReactorUiAction>) {
+    }
+
     override fun onLoadFinished(loader: Loader<T>?, data: T) {
         reactorViewHelper.onTranslatorAttached(data)
     }
@@ -105,7 +112,7 @@ abstract class ReactorFragment<T : ReactorTranslator> :
         })
     }
 
-    abstract fun initUi()
+    open fun initUi() {}
 
     abstract fun getLayoutResId(): Int
 

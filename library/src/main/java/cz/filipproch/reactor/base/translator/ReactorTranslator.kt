@@ -1,5 +1,6 @@
 package cz.filipproch.reactor.base.translator
 
+import cz.filipproch.reactor.base.view.ReactorUiAction
 import cz.filipproch.reactor.base.view.ReactorUiEvent
 import cz.filipproch.reactor.base.view.ReactorUiModel
 import io.reactivex.Observable
@@ -16,6 +17,8 @@ interface ReactorTranslator {
     fun onDestroyed()
 
     fun bindView(events: Observable<out ReactorUiEvent>): Observable<out ReactorUiModel>
+
+    fun observeActions(): Observable<out ReactorUiAction>
 
     fun unbindView()
 

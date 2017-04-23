@@ -6,6 +6,7 @@ import android.support.v4.content.Loader
 import android.support.v7.app.AppCompatActivity
 import cz.filipproch.reactor.base.translator.ReactorTranslator
 import cz.filipproch.reactor.base.translator.TranslatorLoader
+import cz.filipproch.reactor.base.view.ReactorUiAction
 import cz.filipproch.reactor.base.view.ReactorUiEvent
 import cz.filipproch.reactor.base.view.ReactorUiModel
 import cz.filipproch.reactor.base.view.ReactorView
@@ -51,7 +52,13 @@ abstract class ReactorActivity<T : ReactorTranslator> :
         registerEmitter(activityEventsSubject)
     }
 
-    abstract fun initUi()
+    override fun onConnectModelChannel(modelStream: Observable<out ReactorUiModel>) {
+    }
+
+    override fun onConnectActionChannel(actionStream: Observable<out ReactorUiAction>) {
+    }
+
+    open fun initUi() {}
 
     abstract fun getLayoutResId(): Int
 

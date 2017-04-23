@@ -38,6 +38,8 @@ class MainActivity : ReactorActivity<MainTranslator>() {
         }
     }
 
+
+
     override fun onEmittersInit() {
         super.onEmittersInit()
         registerEmitter(vAction.clicks().map { MasterButtonClicked })
