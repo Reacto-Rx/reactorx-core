@@ -10,7 +10,7 @@ import cz.filipproch.reactor.base.view.ReactorUiModel
 import cz.filipproch.reactor.demo.MainTranslator
 import cz.filipproch.reactor.demo.MainUiModel
 import cz.filipproch.reactor.demo.R
-import cz.filipproch.reactor.extras.ui.activity.BaseReactorActivity
+import cz.filipproch.reactor.extras.ui.views.BaseReactorActivity
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.activity_main.*
 

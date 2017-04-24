@@ -1,13 +1,15 @@
-package cz.filipproch.reactor.extras.ui.activity
+package cz.filipproch.reactor.extras.ui.views
 
 import android.support.v7.app.ActionBar
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import cz.filipproch.reactor.base.translator.ReactorTranslator
 import cz.filipproch.reactor.base.view.ReactorUiModel
-import cz.filipproch.reactor.extras.ui.events.OptionsItemSelectedEvent
-import cz.filipproch.reactor.extras.ui.model.ToolbarUiModel
+import cz.filipproch.reactor.extras.ui.views.model.ToolbarUiModel
+import cz.filipproch.reactor.extras.ui.views.events.OptionsItemSelectedEvent
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 
@@ -16,7 +18,7 @@ import io.reactivex.subjects.PublishSubject
  *
  * @author Filip Prochazka (@filipproch)
  */
-abstract class ToolbarReactorActivity<T : ReactorTranslator> : BaseReactorActivity<T>() {
+abstract class ToolbarReactorFragment<T : ReactorTranslator> : BaseReactorFragment<T>() {
 
     private val optionsItemSubject = PublishSubject.create<OptionsItemSelectedEvent>()
 
@@ -32,7 +34,7 @@ abstract class ToolbarReactorActivity<T : ReactorTranslator> : BaseReactorActivi
     override fun onConnectModelChannel(modelStream: Observable<out ReactorUiModel>) {
         receiveUpdatesOnUi(modelStream.ofType(ToolbarUiModel::class.java)) {
             (title, homeAsUpEnabled, homeIndicator) ->
-            supportActionBar?.let {
+            (activity as AppCompatActivity).supportActionBar?.let {
                 if (title != null) {
                     it.title = title
                 }
@@ -48,12 +50,12 @@ abstract class ToolbarReactorActivity<T : ReactorTranslator> : BaseReactorActivi
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         if (optionsMenuResId != NO_OPTIONS_MENU) {
-            menuInflater.inflate(optionsMenuResId, menu)
-            return true
+            inflater.inflate(optionsMenuResId, menu)
+            return
         }
-        return super.onCreateOptionsMenu(menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -62,9 +64,10 @@ abstract class ToolbarReactorActivity<T : ReactorTranslator> : BaseReactorActivi
     }
 
     private fun bindToolbar() {
-        setSupportActionBar(toolbar)
-        if (supportActionBar != null) {
-            setupActionBar(supportActionBar!!) // we now it's not null
+        val activity = activity as AppCompatActivity
+        activity.setSupportActionBar(toolbar)
+        if (activity.supportActionBar != null) {
+            setupActionBar(activity.supportActionBar!!) // we now it's not null
         }
     }
 

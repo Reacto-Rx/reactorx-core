@@ -1,4 +1,4 @@
-package cz.filipproch.reactor.extras.ui.events
+package cz.filipproch.reactor.extras.ui.views.events
 
 import android.view.MenuItem
 import cz.filipproch.reactor.base.view.ReactorUiEvent

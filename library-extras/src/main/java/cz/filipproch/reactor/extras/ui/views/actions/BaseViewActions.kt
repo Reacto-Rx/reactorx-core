@@ -1,4 +1,4 @@
-package cz.filipproch.reactor.extras.ui.actions
+package cz.filipproch.reactor.extras.ui.views.actions
 
 import android.app.Activity
 import cz.filipproch.reactor.base.view.ReactorUiAction

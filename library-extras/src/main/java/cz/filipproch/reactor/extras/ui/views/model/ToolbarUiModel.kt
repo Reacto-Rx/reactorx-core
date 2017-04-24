@@ -1,4 +1,4 @@
-package cz.filipproch.reactor.extras.ui.model
+package cz.filipproch.reactor.extras.ui.views.model
 
 import android.graphics.drawable.Drawable
 import cz.filipproch.reactor.base.view.ReactorUiModel
