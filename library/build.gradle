@@ -2,9 +2,8 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
+apply from: '../util/libVersion.gradle'
 
-group = 'cz.filipproch.lib'
-version = libVersion
 project.archivesBaseName = 'reactor-android'
 
 android {

@@ -19,8 +19,14 @@ before_install:
 script: ./gradlew assemble
 
 deploy:
-  provider: script
-  script: ./gradlew bintrayUpload
-  skip_cleanup: true
-  on:
-    tags: true
+  - provider: script
+    script: ./gradlew bintrayUpload
+    skip_cleanup: true
+    on:
+      tags: true
+
+  - provider: script
+    script: ./gradlew bintrayUpload -PsnapshotBuild=true
+    skip_cleanup: true
+    on:
+      branch: dev

@@ -1,0 +1,7 @@
+group = 'cz.filipproch.lib'
+
+if (project.hasProperty('snapshotBuild')) {
+    version = "${libVersion}-SNAPSHOT"
+} else {
+    version = libVersion
+}
