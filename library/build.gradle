@@ -1,8 +1,5 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'com.github.dcendents.android-maven'
-apply plugin: 'com.jfrog.bintray'
-apply from: '../util/libVersion.gradle'
 
 project.archivesBaseName = 'reactor-android'
 
@@ -47,37 +44,4 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 
-install {
-    repositories.mavenInstaller {
-        // This generates POM.xml with proper parameters
-        pom {
-            project {
-                packaging 'aar'
-            }
-        }
-    }
-}
-
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier = 'sources'
-}
-
-artifacts {
-    archives sourcesJar
-}
-
-bintray {
-    if (System.getenv("CI")) {
-        user = System.getenv("BINTRAY_USER")
-        key = System.getenv("BINTRAY_API_KEY")
-    }
-
-    configurations = ['archives']
-
-    pkg {
-        repo = "maven"
-        name = "reactor-android"
-        publish = true
-    }
-}
+apply from: '../util/mavenConfig.gradle'
