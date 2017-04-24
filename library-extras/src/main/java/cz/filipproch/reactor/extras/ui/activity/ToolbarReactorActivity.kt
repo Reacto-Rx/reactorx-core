@@ -8,7 +8,6 @@ import cz.filipproch.reactor.base.translator.ReactorTranslator
 import cz.filipproch.reactor.base.view.ReactorUiModel
 import cz.filipproch.reactor.extras.ui.events.OptionsItemSelectedEvent
 import cz.filipproch.reactor.extras.ui.model.ToolbarUiModel
-import cz.filipproch.reactor.ui.ReactorActivity
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 
@@ -17,7 +16,7 @@ import io.reactivex.subjects.PublishSubject
  *
  * @author Filip Prochazka (@filipproch)
  */
-abstract class ToolbarReactorActivity<T : ReactorTranslator> : ReactorActivity<T>() {
+abstract class ToolbarReactorActivity<T : ReactorTranslator> : BaseReactorActivity<T>() {
 
     private val optionsItemSubject = PublishSubject.create<OptionsItemSelectedEvent>()
 
@@ -31,7 +30,7 @@ abstract class ToolbarReactorActivity<T : ReactorTranslator> : ReactorActivity<T
     }
 
     override fun onConnectModelChannel(modelStream: Observable<out ReactorUiModel>) {
-        receiveUpdatesOnUi(modelStream.ofType(ToolbarUiModel::class.java), {
+        receiveUpdatesOnUi(modelStream.ofType(ToolbarUiModel::class.java)) {
             (title, homeAsUpEnabled, homeIndicator) ->
             supportActionBar?.let {
                 if (title != null) {
@@ -46,7 +45,7 @@ abstract class ToolbarReactorActivity<T : ReactorTranslator> : ReactorActivity<T
                     it.setHomeAsUpIndicator(homeIndicator)
                 }
             }
-        })
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

@@ -98,7 +98,7 @@ abstract class ReactorActivity<T : ReactorTranslator> :
         reactorViewHelper.receiveUpdatesOnUi(observable, receiverAction)
     }
 
-    inline fun <T> receiveUpdatesOnUi(receiver: Observable<T>, crossinline action: (T) -> Unit) {
+    fun <T> receiveUpdatesOnUi(receiver: Observable<T>, action: (T) -> Unit) {
         receiveUpdatesOnUi(receiver, Consumer<T> {
             action.invoke(it)
         })

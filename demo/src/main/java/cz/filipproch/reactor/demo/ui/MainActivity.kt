@@ -10,19 +10,17 @@ import cz.filipproch.reactor.base.view.ReactorUiModel
 import cz.filipproch.reactor.demo.MainTranslator
 import cz.filipproch.reactor.demo.MainUiModel
 import cz.filipproch.reactor.demo.R
-import cz.filipproch.reactor.ui.ReactorActivity
+import cz.filipproch.reactor.extras.ui.activity.BaseReactorActivity
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : ReactorActivity<MainTranslator>() {
+class MainActivity : BaseReactorActivity<MainTranslator>() {
 
     override val translatorFactory: TranslatorFactory<MainTranslator>
         get() = SimpleTranslatorFactory(MainTranslator::class.java)
 
-    override fun initUi() {
-    }
-
     override fun onConnectModelChannel(modelStream: Observable<out ReactorUiModel>) {
+        super.onConnectModelChannel(modelStream)
         receiveUpdatesOnUi(modelStream.ofType(MainUiModel::class.java)) {
             vProgressBar.visibility = if (it.isLoading) View.VISIBLE else View.GONE
 
@@ -37,8 +35,6 @@ class MainActivity : ReactorActivity<MainTranslator>() {
             }
         }
     }
-
-
 
     override fun onEmittersInit() {
         super.onEmittersInit()
