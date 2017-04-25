@@ -58,6 +58,10 @@ abstract class ReactorActivity<T : ReactorTranslator> :
     override fun onConnectActionChannel(actionStream: Observable<out ReactorUiAction>) {
     }
 
+    override fun dispatch(event: ReactorUiEvent) {
+        activityEventsSubject.onNext(event)
+    }
+
     open fun initUi() {}
 
     abstract fun getLayoutResId(): Int

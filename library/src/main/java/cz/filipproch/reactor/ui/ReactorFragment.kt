@@ -86,6 +86,10 @@ abstract class ReactorFragment<T : ReactorTranslator> :
     override fun onConnectActionChannel(actionStream: Observable<out ReactorUiAction>) {
     }
 
+    override fun dispatch(event: ReactorUiEvent) {
+        activityEventsSubject.onNext(event)
+    }
+
     override fun onLoadFinished(loader: Loader<T>?, data: T) {
         reactorViewHelper.onTranslatorAttached(data)
     }

@@ -22,6 +22,8 @@ interface ReactorView<out T: ReactorTranslator> {
 
     fun registerEmitter(emitter: Observable<out ReactorUiEvent>)
 
+    fun dispatch(event: ReactorUiEvent)
+
     fun <T> receiveUpdatesOnUi(observable: Observable<T>, receiverAction: Consumer<T>)
 
 }
