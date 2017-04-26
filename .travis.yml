@@ -24,9 +24,3 @@ deploy:
     skip_cleanup: true
     on:
       tags: true
-
-  - provider: script
-    script: ./gradlew bintrayUpload -PsnapshotBuild=true
-    skip_cleanup: true
-    on:
-      branch: dev
