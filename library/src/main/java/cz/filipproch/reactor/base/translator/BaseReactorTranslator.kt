@@ -8,7 +8,6 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.ReplaySubject
 
 /**
  * TODO
@@ -17,7 +16,7 @@ import io.reactivex.subjects.ReplaySubject
  */
 abstract class BaseReactorTranslator : ReactorTranslator {
 
-    private val inputSubject = ReplaySubject.create<ReactorUiEvent>()
+    private val inputSubject = PublishSubject.create<ReactorUiEvent>()
     private val outputModelSubject = TypeBehaviorSubject.create<ReactorUiModel>()
     private val outputActionSubject = PublishSubject.create<ReactorUiAction>()
 

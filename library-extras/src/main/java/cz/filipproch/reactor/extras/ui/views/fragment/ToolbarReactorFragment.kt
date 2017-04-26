@@ -8,8 +8,8 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import cz.filipproch.reactor.base.translator.ReactorTranslator
 import cz.filipproch.reactor.base.view.ReactorUiModel
-import cz.filipproch.reactor.extras.ui.views.model.ToolbarUiModel
 import cz.filipproch.reactor.extras.ui.views.events.OptionsItemSelectedEvent
+import cz.filipproch.reactor.extras.ui.views.model.ToolbarUiModel
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 
@@ -59,7 +59,7 @@ abstract class ToolbarReactorFragment<T : ReactorTranslator> : ExtendedReactorFr
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        optionsItemSubject.onNext(OptionsItemSelectedEvent(item))
+        optionsItemSubject.onNext(OptionsItemSelectedEvent(menuItem = item))
         return super.onOptionsItemSelected(item)
     }
 

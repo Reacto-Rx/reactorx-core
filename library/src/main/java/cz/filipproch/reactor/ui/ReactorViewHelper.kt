@@ -8,7 +8,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
-import io.reactivex.subjects.ReplaySubject
+import io.reactivex.subjects.PublishSubject
 
 /**
  * TODO
@@ -20,7 +20,8 @@ class ReactorViewHelper<T : ReactorTranslator>(val reactorView: ReactorView<T>) 
     private val eventEmitters = mutableListOf<Observable<out ReactorUiEvent>>()
     private var emittersInitialized: Boolean = false
 
-    private val eventSubject = ReplaySubject.create<ReactorUiEvent>()
+    private val eventBuffer = mutableListOf<ReactorUiEvent>()
+    private val eventSubject = PublishSubject.create<ReactorUiEvent>()
 
     private val disposable = CompositeDisposable()
 
@@ -33,7 +34,13 @@ class ReactorViewHelper<T : ReactorTranslator>(val reactorView: ReactorView<T>) 
 
         disposeOnViewDestroyed(
                 Observable.merge(eventEmitters)
-                        .subscribe { eventSubject.onNext(it) })
+                        .subscribe {
+                            if (this.translator != null) {
+                                eventSubject.onNext(it)
+                            } else {
+                                eventBuffer.add(it)
+                            }
+                        })
     }
 
     fun onTranslatorAttached(translator: T) {
@@ -48,6 +55,11 @@ class ReactorViewHelper<T : ReactorTranslator>(val reactorView: ReactorView<T>) 
                 .publish()
         reactorView.onConnectActionChannel(uiActionStream)
         disposable.add(uiActionStream.connect())
+
+        if (eventBuffer.isNotEmpty()) {
+            eventBuffer.forEach { eventSubject.onNext(it) }
+            eventBuffer.clear()
+        }
     }
 
     fun onTranslatorDetached() {

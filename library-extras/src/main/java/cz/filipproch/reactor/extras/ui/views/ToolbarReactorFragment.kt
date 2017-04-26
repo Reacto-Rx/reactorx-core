@@ -8,9 +8,9 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import cz.filipproch.reactor.base.translator.ReactorTranslator
 import cz.filipproch.reactor.base.view.ReactorUiModel
+import cz.filipproch.reactor.extras.ui.views.events.OptionsItemSelectedEvent
 import cz.filipproch.reactor.extras.ui.views.fragment.ExtendedReactorFragment
 import cz.filipproch.reactor.extras.ui.views.model.ToolbarUiModel
-import cz.filipproch.reactor.extras.ui.views.events.OptionsItemSelectedEvent
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 
@@ -21,7 +21,7 @@ import io.reactivex.subjects.PublishSubject
  */
 @Deprecated("This class was renamed and moved to another package",
         ReplaceWith(
-                "ToolbarReactorFragment<T>",
+                "ToolbarReactorFragment",
                 "cz.filipproch.reactor.extras.ui.views.fragment.ToolbarReactorFragment"
         ),
         DeprecationLevel.WARNING)
