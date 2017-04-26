@@ -8,4 +8,10 @@ import cz.filipproch.reactor.ui.ReactorFragment
  *
  * @author Filip Prochazka (@filipproch)
  */
+@Deprecated("This class was renamed and moved to another package",
+        ReplaceWith(
+                "ExtendedReactorFragment<T>",
+                "cz.filipproch.reactor.extras.ui.views.fragment.ExtendedReactorFragment"
+        ),
+        DeprecationLevel.WARNING)
 abstract class BaseReactorFragment<T: ReactorTranslator> : ReactorFragment<T>()

@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuItem
 import cz.filipproch.reactor.base.translator.ReactorTranslator
 import cz.filipproch.reactor.base.view.ReactorUiModel
+import cz.filipproch.reactor.extras.ui.views.activity.ExtendedReactorActivity
 import cz.filipproch.reactor.extras.ui.views.events.OptionsItemSelectedEvent
 import cz.filipproch.reactor.extras.ui.views.model.ToolbarUiModel
 import io.reactivex.Observable
@@ -16,7 +17,13 @@ import io.reactivex.subjects.PublishSubject
  *
  * @author Filip Prochazka (@filipproch)
  */
-abstract class ToolbarReactorActivity<T : ReactorTranslator> : BaseReactorActivity<T>() {
+@Deprecated("This class was moved to another package",
+        ReplaceWith(
+                "ToolbarReactorActivity<T>",
+                "cz.filipproch.reactor.extras.ui.views.activity.ToolbarReactorActivity"
+        ),
+        DeprecationLevel.WARNING)
+abstract class ToolbarReactorActivity<T : ReactorTranslator> : ExtendedReactorActivity<T>() {
 
     private val optionsItemSubject = PublishSubject.create<OptionsItemSelectedEvent>()
 

@@ -1,6 +1,7 @@
-package cz.filipproch.reactor.extras.ui.views
+package cz.filipproch.reactor.extras.ui.views.activity
 
 import android.content.Intent
+import android.os.Bundle
 import android.view.View
 import cz.filipproch.reactor.base.translator.ReactorTranslator
 import cz.filipproch.reactor.base.view.ReactorUiAction
@@ -9,7 +10,9 @@ import cz.filipproch.reactor.extras.ui.views.actions.FinishActivityAction
 import cz.filipproch.reactor.extras.ui.views.actions.FinishActivityWithResultAction
 import cz.filipproch.reactor.extras.ui.views.actions.StartActivityAction
 import cz.filipproch.reactor.extras.ui.views.actions.StartActivityForResultAction
+import cz.filipproch.reactor.extras.ui.views.dialog.ExtendedReactorDialogFragment
 import cz.filipproch.reactor.extras.ui.views.events.ActivityResultEvent
+import cz.filipproch.reactor.extras.ui.views.events.DialogResultEvent
 import cz.filipproch.reactor.extras.ui.views.model.ContentFragmentModel
 import cz.filipproch.reactor.ui.ReactorActivity
 import io.reactivex.Observable
@@ -20,13 +23,9 @@ import io.reactivex.subjects.PublishSubject
  *
  * @author Filip Prochazka (@filipproch)
  */
-@Deprecated("This class was renamed and moved to another package",
-        ReplaceWith(
-                "ExtendedReactorActivity<T>",
-                "cz.filipproch.reactor.extras.ui.views.activity.ExtendedReactorActivity"
-        ),
-        DeprecationLevel.WARNING)
-abstract class BaseReactorActivity<T : ReactorTranslator> : ReactorActivity<T>() {
+abstract class ExtendedReactorActivity<T : ReactorTranslator> :
+        ReactorActivity<T>(),
+        ExtendedReactorDialogFragment.DialogResultListener {
 
     private val CONTENT_FRAGMENT_TAG = "content_fragment"
 
@@ -80,6 +79,10 @@ abstract class BaseReactorActivity<T : ReactorTranslator> : ReactorActivity<T>()
 
     open fun getContentView(): View? {
         return null
+    }
+
+    override fun onDialogResult(requestCode: Int, resultCode: Int, extras: Bundle?) {
+        dispatch(DialogResultEvent(requestCode, resultCode, extras))
     }
 
 }

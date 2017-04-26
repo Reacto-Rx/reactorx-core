@@ -1,4 +1,4 @@
-package cz.filipproch.reactor.extras.ui.views
+package cz.filipproch.reactor.extras.ui.views.fragment
 
 import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
@@ -8,7 +8,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import cz.filipproch.reactor.base.translator.ReactorTranslator
 import cz.filipproch.reactor.base.view.ReactorUiModel
-import cz.filipproch.reactor.extras.ui.views.fragment.ExtendedReactorFragment
 import cz.filipproch.reactor.extras.ui.views.model.ToolbarUiModel
 import cz.filipproch.reactor.extras.ui.views.events.OptionsItemSelectedEvent
 import io.reactivex.Observable
@@ -19,12 +18,6 @@ import io.reactivex.subjects.PublishSubject
  *
  * @author Filip Prochazka (@filipproch)
  */
-@Deprecated("This class was renamed and moved to another package",
-        ReplaceWith(
-                "ToolbarReactorFragment<T>",
-                "cz.filipproch.reactor.extras.ui.views.fragment.ToolbarReactorFragment"
-        ),
-        DeprecationLevel.WARNING)
 abstract class ToolbarReactorFragment<T : ReactorTranslator> : ExtendedReactorFragment<T>() {
 
     private val optionsItemSubject = PublishSubject.create<OptionsItemSelectedEvent>()
