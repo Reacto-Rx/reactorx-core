@@ -144,6 +144,14 @@ abstract class ReactorDialogFragment<T : ReactorTranslator> :
         reactorViewHelper.receiveUpdatesOnUi(this.map { mapper.mapModelToUi(it) }, consumer)
     }
 
+    fun <M : ReactorUiModel, T> Observable<M>.mapToUi(consumer: Consumer<T>, mapper: (M) -> T) {
+        this.mapToUi(consumer, object : ConsumerMapper<M, T> {
+            override fun mapModelToUi(model: M): T {
+                return mapper.invoke(model)
+            }
+        })
+    }
+
     open fun initUi() {}
 
     abstract fun onCreateDialogView(inflater: LayoutInflater): View

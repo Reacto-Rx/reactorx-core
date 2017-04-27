@@ -5,6 +5,6 @@ package cz.filipproch.reactor.base.view
  *
  * @author Filip Prochazka (@filipproch)
  */
-interface ConsumerMapper<in M: ReactorUiModel, T> {
+interface ConsumerMapper<in M: ReactorUiModel, out T> {
     fun mapModelToUi(model: M): T
 }
