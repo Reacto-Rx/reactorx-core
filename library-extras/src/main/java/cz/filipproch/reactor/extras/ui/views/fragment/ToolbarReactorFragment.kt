@@ -24,6 +24,9 @@ abstract class ToolbarReactorFragment<T : ReactorTranslator> : ExtendedReactorFr
 
     override fun initUi() {
         bindToolbar()
+        if (optionsMenuResId != NO_OPTIONS_MENU) {
+            setHasOptionsMenu(true)
+        }
     }
 
     override fun onEmittersInit() {
@@ -59,7 +62,7 @@ abstract class ToolbarReactorFragment<T : ReactorTranslator> : ExtendedReactorFr
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        optionsItemSubject.onNext(OptionsItemSelectedEvent(menuItem = item))
+        optionsItemSubject.onNext(OptionsItemSelectedEvent(item))
         return super.onOptionsItemSelected(item)
     }
 
