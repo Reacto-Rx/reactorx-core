@@ -39,32 +39,32 @@ abstract class BaseReactorActivity<T : ReactorTranslator> : ReactorActivity<T>()
 
     override fun onConnectActionChannel(actionStream: Observable<out ReactorUiAction>) {
         super.onConnectActionChannel(actionStream)
-        receiveUpdatesOnUi(actionStream.ofType(FinishActivityAction::class.java)) {
+        actionStream.ofType(FinishActivityAction::class.java).consumeOnUi {
             finish()
         }
 
-        receiveUpdatesOnUi(actionStream.ofType(FinishActivityWithResultAction::class.java)) {
+        actionStream.ofType(FinishActivityWithResultAction::class.java).consumeOnUi {
             setResult(it.resultCode)
             finish()
         }
 
-        receiveUpdatesOnUi(actionStream.ofType(StartActivityAction::class.java)) {
+        actionStream.ofType(StartActivityAction::class.java).consumeOnUi {
             startActivity(Intent(this, it.activity))
         }
 
-        receiveUpdatesOnUi(actionStream.ofType(StartActivityForResultAction::class.java)) {
+        actionStream.ofType(StartActivityForResultAction::class.java).consumeOnUi {
             startActivityForResult(Intent(this, it.activity), it.requestCode)
         }
     }
 
     override fun onConnectModelChannel(modelStream: Observable<out ReactorUiModel>) {
         super.onConnectModelChannel(modelStream)
-        receiveUpdatesOnUi(modelStream.ofType(ContentFragmentModel::class.java)) {
+        modelStream.ofType(ContentFragmentModel::class.java).consumeOnUi {
             val contentView = getContentView()
             if (contentView != null) {
                 val existing = supportFragmentManager.findFragmentByTag(CONTENT_FRAGMENT_TAG)
                 if (existing != null && existing.javaClass == it.fragment?.javaClass) {
-                    return@receiveUpdatesOnUi
+                    return@consumeOnUi
                 }
                 supportFragmentManager.beginTransaction()
                         .replace(contentView.id, it.fragment, CONTENT_FRAGMENT_TAG)
