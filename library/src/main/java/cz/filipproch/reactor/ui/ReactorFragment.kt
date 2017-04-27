@@ -9,10 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import cz.filipproch.reactor.base.translator.ReactorTranslator
 import cz.filipproch.reactor.base.translator.TranslatorLoader
-import cz.filipproch.reactor.base.view.ReactorUiAction
-import cz.filipproch.reactor.base.view.ReactorUiEvent
-import cz.filipproch.reactor.base.view.ReactorUiModel
-import cz.filipproch.reactor.base.view.ReactorView
+import cz.filipproch.reactor.base.view.*
 import cz.filipproch.reactor.ui.events.*
 import io.reactivex.Observable
 import io.reactivex.functions.Consumer
@@ -110,10 +107,27 @@ abstract class ReactorFragment<T : ReactorTranslator> :
         reactorViewHelper.receiveUpdatesOnUi(observable, receiverAction)
     }
 
-    inline fun <T : ReactorUiModel> receiveUpdatesOnUi(receiver: Observable<T>, crossinline action: (T) -> Unit) {
+    @Deprecated("Replaced with extension function consumeOnUi", ReplaceWith(
+            "receiver.consumeOnUi(action)"
+    ))
+    fun <T : ReactorUiModel> receiveUpdatesOnUi(receiver: Observable<T>, action: (T) -> Unit) {
         receiveUpdatesOnUi(receiver, Consumer<T> {
             action.invoke(it)
         })
+    }
+
+    override fun <T> Observable<T>.consumeOnUi(receiverAction: Consumer<T>) {
+        reactorViewHelper.receiveUpdatesOnUi(this, receiverAction)
+    }
+
+    fun <T> Observable<T>.consumeOnUi(action: (T) -> Unit) {
+        consumeOnUi(Consumer<T> {
+            action.invoke(it)
+        })
+    }
+
+    override fun <M : ReactorUiModel, T> Observable<M>.mapToUi(consumer: Consumer<T>, mapper: ConsumerMapper<M, T>) {
+        reactorViewHelper.receiveUpdatesOnUi(this.map { mapper.mapModelToUi(it) }, consumer)
     }
 
     open fun initUi() {}

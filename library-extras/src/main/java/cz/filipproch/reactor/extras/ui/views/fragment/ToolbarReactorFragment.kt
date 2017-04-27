@@ -35,7 +35,7 @@ abstract class ToolbarReactorFragment<T : ReactorTranslator> : ExtendedReactorFr
     }
 
     override fun onConnectModelChannel(modelStream: Observable<out ReactorUiModel>) {
-        receiveUpdatesOnUi(modelStream.ofType(ToolbarUiModel::class.java)) {
+        modelStream.ofType(ToolbarUiModel::class.java).consumeOnUi {
             (title, homeAsUpEnabled, homeIndicator) ->
             (activity as AppCompatActivity).supportActionBar?.let {
                 if (title != null) {

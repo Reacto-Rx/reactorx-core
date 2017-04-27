@@ -10,7 +10,7 @@ import io.reactivex.functions.Consumer
  *
  * @author Filip Prochazka (@filipproch)
  */
-interface ReactorView<out T: ReactorTranslator> {
+interface ReactorView<out T : ReactorTranslator> {
 
     val translatorFactory: TranslatorFactory<T>
 
@@ -24,6 +24,13 @@ interface ReactorView<out T: ReactorTranslator> {
 
     fun dispatch(event: ReactorUiEvent)
 
+    @Deprecated("Replaced with extension function consumeOnUi", ReplaceWith(
+            "observable.consumeOnUi(receiverAction)"
+    ))
     fun <T> receiveUpdatesOnUi(observable: Observable<T>, receiverAction: Consumer<T>)
+
+    fun <T> Observable<T>.consumeOnUi(receiverAction: Consumer<T>)
+
+    fun <M : ReactorUiModel, T> Observable<M>.mapToUi(consumer: Consumer<T>, mapper: ConsumerMapper<M, T>)
 
 }
