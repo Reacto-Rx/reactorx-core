@@ -32,7 +32,7 @@ allprojects {
 
 **dev** - the latest commit on `dev` branch
 
-```
+```groovy
 dependencies {
     // Reactor Core
     compile 'com.github.filipproch.reactor-android:reactor-android:dev-SNAPSHOT'
