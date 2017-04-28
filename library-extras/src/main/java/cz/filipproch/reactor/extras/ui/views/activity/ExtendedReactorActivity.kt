@@ -68,7 +68,7 @@ abstract class ExtendedReactorActivity<T : ReactorTranslator> :
         }
     }
 
-    private fun replaceContentWithFragment(fragment: Fragment?, checkFragmentClass: Boolean = true) {
+    protected fun replaceContentWithFragment(fragment: Fragment?, checkFragmentClass: Boolean = true) {
         val contentView = this.contentView
         if (contentView != null && fragment != null) {
             val existing = supportFragmentManager.findFragmentByTag(CONTENT_FRAGMENT_TAG)
