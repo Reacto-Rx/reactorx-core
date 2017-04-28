@@ -20,6 +20,26 @@ compile 'cz.filipproch.lib:reactor-android:<VERSION>'
 compile 'cz.filipproch.lib:reactor-android-extras:<VERSION>'
 ```
 
+### Snapshot builds
+
+You can use Jitpack.io to obtain latest SNAPSHOT builds
+
+```groovy
+allprojects {
+	repositories {
+		maven { url 'https://jitpack.io' }
+	}
+}
+```
+
+**dev** - the latest commit on `dev` branch
+
+```
+dependencies {
+	compile 'com.github.filipproch:reactor-android:dev-SNAPSHOT'
+}
+```
+
 ## How to use / Docs
 
 TBD
