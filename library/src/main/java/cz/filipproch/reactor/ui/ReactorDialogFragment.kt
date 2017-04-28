@@ -17,6 +17,8 @@ import io.reactivex.functions.Consumer
 import io.reactivex.subjects.PublishSubject
 
 /**
+ * !!! WARNING: this class is experimental and should not be used !!!
+ *
  * TODO: add description
  *
  * @author Filip Prochazka (@filipproch)

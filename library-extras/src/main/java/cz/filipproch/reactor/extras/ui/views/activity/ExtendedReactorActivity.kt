@@ -2,10 +2,12 @@ package cz.filipproch.reactor.extras.ui.views.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.view.View
 import cz.filipproch.reactor.base.translator.ReactorTranslator
 import cz.filipproch.reactor.base.view.ReactorUiAction
 import cz.filipproch.reactor.base.view.ReactorUiModel
+import cz.filipproch.reactor.extras.ui.iface.AndroidLayoutView
 import cz.filipproch.reactor.extras.ui.views.actions.FinishActivityAction
 import cz.filipproch.reactor.extras.ui.views.actions.FinishActivityWithResultAction
 import cz.filipproch.reactor.extras.ui.views.actions.StartActivityAction
@@ -25,15 +27,18 @@ import io.reactivex.subjects.PublishSubject
  */
 abstract class ExtendedReactorActivity<T : ReactorTranslator> :
         ReactorActivity<T>(),
-        ExtendedReactorDialogFragment.DialogResultListener {
+        ExtendedReactorDialogFragment.DialogResultListener,
+        AndroidLayoutView {
 
     private val CONTENT_FRAGMENT_TAG = "content_fragment"
 
-    val activityResultSubject: PublishSubject<ActivityResultEvent> = PublishSubject.create<ActivityResultEvent>()
+    /**
+     * [View] that will be replaced with [Fragment] when [replaceContentWithFragment] is called
+     */
+    open val contentView: View? = null
 
-    override fun onEmittersInit() {
-        super.onEmittersInit()
-        registerEmitter(activityResultSubject)
+    override fun onCreateLayout() {
+        setContentView(layoutResourceId)
     }
 
     override fun onConnectActionChannel(actionStream: Observable<out ReactorUiAction>) {
@@ -59,26 +64,26 @@ abstract class ExtendedReactorActivity<T : ReactorTranslator> :
     override fun onConnectModelChannel(modelStream: Observable<out ReactorUiModel>) {
         super.onConnectModelChannel(modelStream)
         modelStream.ofType(ContentFragmentModel::class.java).consumeOnUi {
-            val contentView = getContentView()
-            if (contentView != null) {
-                val existing = supportFragmentManager.findFragmentByTag(CONTENT_FRAGMENT_TAG)
-                if (existing != null && existing.javaClass == it.fragment?.javaClass) {
-                    return@consumeOnUi
-                }
-                supportFragmentManager.beginTransaction()
-                        .replace(contentView.id, it.fragment, CONTENT_FRAGMENT_TAG)
-                        .commit()
+            replaceContentWithFragment(it.fragment)
+        }
+    }
+
+    private fun replaceContentWithFragment(fragment: Fragment?, checkFragmentClass: Boolean = true) {
+        val contentView = this.contentView
+        if (contentView != null && fragment != null) {
+            val existing = supportFragmentManager.findFragmentByTag(CONTENT_FRAGMENT_TAG)
+            if (checkFragmentClass && existing != null && existing.javaClass == fragment.javaClass) {
+                return
             }
+            supportFragmentManager.beginTransaction()
+                    .replace(contentView.id, fragment, CONTENT_FRAGMENT_TAG)
+                    .commit()
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        activityResultSubject.onNext(ActivityResultEvent(requestCode, resultCode, data))
-    }
-
-    open fun getContentView(): View? {
-        return null
+        dispatch(ActivityResultEvent(requestCode, resultCode, data))
     }
 
     override fun onDialogResult(requestCode: Int, resultCode: Int, extras: Bundle?) {

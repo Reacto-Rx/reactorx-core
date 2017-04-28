@@ -32,8 +32,19 @@ abstract class ReactorActivity<T : ReactorTranslator> :
         super.onCreate(savedInstanceState)
         reactorViewHelper = ReactorViewHelper(this)
 
-        setContentView(getLayoutResId())
+        if (getLayoutResId() != -1) {
+            setContentView(getLayoutResId())
+        } else {
+            onCreateLayout()
+        }
+
         initUi()
+
+        if (savedInstanceState != null) {
+            onUiRestored(savedInstanceState)
+        } else {
+            onUiCreated()
+        }
 
         reactorViewHelper.onViewCreated()
         supportLoaderManager.initLoader(TRANSLATOR_LOADER_ID, null, this)
@@ -57,38 +68,6 @@ abstract class ReactorActivity<T : ReactorTranslator> :
 
     override fun dispatch(event: ReactorUiEvent) {
         activityEventsSubject.onNext(event)
-    }
-
-    open fun initUi() {}
-
-    abstract fun getLayoutResId(): Int
-
-    override fun onStart() {
-        super.onStart()
-        activityEventsSubject.onNext(ViewAttachedEvent)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        activityEventsSubject.onNext(ViewDetachedEvent)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        activityEventsSubject.onNext(ViewDestroyedEvent)
-        reactorViewHelper.onViewDestroyed()
-    }
-
-    override fun onLoadFinished(loader: Loader<T>?, data: T) {
-        reactorViewHelper.onTranslatorAttached(data)
-    }
-
-    override fun onCreateLoader(id: Int, args: Bundle?): Loader<T> {
-        return TranslatorLoader(this, translatorFactory)
-    }
-
-    override fun onLoaderReset(loader: Loader<T>?) {
-        reactorViewHelper.onTranslatorDetached()
     }
 
     override fun registerEmitter(emitter: Observable<out ReactorUiEvent>) {
@@ -129,5 +108,65 @@ abstract class ReactorActivity<T : ReactorTranslator> :
             }
         })
     }
+
+    override fun onStart() {
+        super.onStart()
+        activityEventsSubject.onNext(ViewAttachedEvent)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        activityEventsSubject.onNext(ViewDetachedEvent)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        activityEventsSubject.onNext(ViewDestroyedEvent)
+        reactorViewHelper.onViewDestroyed()
+    }
+
+    override fun onLoadFinished(loader: Loader<T>?, data: T) {
+        reactorViewHelper.onTranslatorAttached(data)
+    }
+
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<T> {
+        return TranslatorLoader(this, translatorFactory)
+    }
+
+    override fun onLoaderReset(loader: Loader<T>?) {
+        reactorViewHelper.onTranslatorDetached()
+    }
+
+    /*
+        ReactorActivity specific
+     */
+
+    @Deprecated("Due to ambiguous name replaced", ReplaceWith(
+            "onUiCreated"
+    ))
+    open fun initUi() {
+    }
+
+    /**
+     * Called from [onCreate] is savedInstanceState is null
+     */
+    open fun onUiCreated() {
+    }
+
+    /**
+     * Called from [onCreate] is savedInstanceState is not null
+     */
+    open fun onUiRestored(savedInstanceState: Bundle) {
+    }
+
+    @Deprecated("This method is not part of the Reactor architecture and was moved to the 'extras' module")
+    open fun getLayoutResId(): Int {
+        return -1
+    }
+
+    /**
+     * Called to create the layout for the view
+     */
+    abstract fun onCreateLayout()
 
 }
