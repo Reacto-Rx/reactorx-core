@@ -9,15 +9,13 @@ Reactive Android architecture library
 
 Latest Version : ![Latest Version](https://api.bintray.com/packages/filipproch/maven/reactor-android/images/download.svg)
 
-**Core**
-
 ```groovy
-compile 'cz.filipproch.lib:reactor-android:<VERSION>'
-```
-
-**Extras**
-```groovy
-compile 'cz.filipproch.lib:reactor-android-extras:<VERSION>'
+dependencies {
+    // Reactor Core
+    compile 'cz.filipproch.lib:reactor-android:<VERSION>'
+    // Reactor Extras
+    compile 'cz.filipproch.lib:reactor-android-extras:<VERSION>'
+}
 ```
 
 ### Snapshot builds
@@ -26,9 +24,9 @@ You can use Jitpack.io to obtain latest SNAPSHOT builds
 
 ```groovy
 allprojects {
-	repositories {
-		maven { url 'https://jitpack.io' }
-	}
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
 }
 ```
 
@@ -36,7 +34,10 @@ allprojects {
 
 ```
 dependencies {
-	compile 'com.github.filipproch:reactor-android:dev-SNAPSHOT'
+    // Reactor Core
+    compile 'com.github.filipproch.reactor-android:reactor-android:dev-SNAPSHOT'
+    // Reactor Extras
+    compile 'com.github.filipproch.reactor-android:reactor-android-extras:dev-SNAPSHOT'
 }
 ```
 
