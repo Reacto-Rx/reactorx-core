@@ -16,9 +16,8 @@ import cz.filipproch.reactor.extras.ui.views.dialog.ExtendedReactorDialogFragmen
 import cz.filipproch.reactor.extras.ui.views.events.ActivityResultEvent
 import cz.filipproch.reactor.extras.ui.views.events.DialogResultEvent
 import cz.filipproch.reactor.extras.ui.views.model.ContentFragmentModel
-import cz.filipproch.reactor.ui.ReactorActivity
+import cz.filipproch.reactor.ui.CompatReactorActivity
 import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
 
 /**
  * TODO: add description
@@ -26,7 +25,7 @@ import io.reactivex.subjects.PublishSubject
  * @author Filip Prochazka (@filipproch)
  */
 abstract class ExtendedReactorActivity<T : ReactorTranslator> :
-        ReactorActivity<T>(),
+        CompatReactorActivity<T>(),
         ExtendedReactorDialogFragment.DialogResultListener,
         AndroidLayoutView {
 

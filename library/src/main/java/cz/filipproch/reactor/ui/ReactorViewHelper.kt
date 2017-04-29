@@ -11,7 +11,7 @@ import io.reactivex.functions.Consumer
 import io.reactivex.subjects.PublishSubject
 
 /**
- * TODO
+ * Helper class for [ReactorView] implementations
  *
  * @author Filip Prochazka (@filipproch)
  */

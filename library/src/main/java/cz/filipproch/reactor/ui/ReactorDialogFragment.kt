@@ -19,7 +19,7 @@ import io.reactivex.subjects.PublishSubject
 /**
  * !!! WARNING: this class is experimental and should not be used !!!
  *
- * TODO: add description
+ * [DialogFragment] implementation of [ReactorView]
  *
  * @author Filip Prochazka (@filipproch)
  */

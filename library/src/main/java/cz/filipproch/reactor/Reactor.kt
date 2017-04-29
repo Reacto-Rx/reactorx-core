@@ -1,7 +1,7 @@
 package cz.filipproch.reactor
 
 /**
- * TODO
+ * Global Reactor object
  *
  * @author Filip Prochazka (@filipproch)
  */

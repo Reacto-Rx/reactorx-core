@@ -13,11 +13,11 @@ import io.reactivex.functions.Consumer
 import io.reactivex.subjects.PublishSubject
 
 /**
- * TODO
+ * [AppCompatActivity] implementation of [ReactorView]
  *
  * @author Filip Prochazka (@filipproch)
  */
-abstract class ReactorActivity<T : ReactorTranslator> :
+abstract class CompatReactorActivity<T : ReactorTranslator> :
         AppCompatActivity(),
         ReactorView<T>,
         LoaderManager.LoaderCallbacks<T> {
@@ -32,11 +32,7 @@ abstract class ReactorActivity<T : ReactorTranslator> :
         super.onCreate(savedInstanceState)
         reactorViewHelper = ReactorViewHelper(this)
 
-        if (getLayoutResId() != -1) {
-            setContentView(getLayoutResId())
-        } else {
-            onCreateLayout()
-        }
+        onCreateLayout()
 
         initUi()
 
@@ -46,13 +42,15 @@ abstract class ReactorActivity<T : ReactorTranslator> :
             onUiCreated()
         }
 
+        onPostUiCreated()
+
         reactorViewHelper.onViewCreated()
         supportLoaderManager.initLoader(TRANSLATOR_LOADER_ID, null, this)
 
         if (savedInstanceState == null) {
-            activityEventsSubject.onNext(ViewCreatedEvent)
+            dispatch(ViewCreatedEvent)
         } else {
-            activityEventsSubject.onNext(ViewRestoredEvent(savedInstanceState))
+            dispatch(ViewRestoredEvent(savedInstanceState))
         }
     }
 
@@ -111,17 +109,29 @@ abstract class ReactorActivity<T : ReactorTranslator> :
 
     override fun onStart() {
         super.onStart()
-        activityEventsSubject.onNext(ViewAttachedEvent)
+        dispatch(ViewAttachedEvent)
+        dispatch(ViewStartedEvent)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        dispatch(ViewResumedEvent)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        dispatch(ViewPausedEvent)
     }
 
     override fun onStop() {
         super.onStop()
-        activityEventsSubject.onNext(ViewDetachedEvent)
+        dispatch(ViewDetachedEvent)
+        dispatch(ViewStoppedEvent)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        activityEventsSubject.onNext(ViewDestroyedEvent)
+        dispatch(ViewDestroyedEvent)
         reactorViewHelper.onViewDestroyed()
     }
 
@@ -138,9 +148,12 @@ abstract class ReactorActivity<T : ReactorTranslator> :
     }
 
     /*
-        ReactorActivity specific
+        CompatReactorActivity specific
      */
 
+    /**
+     * Called from [onCreate]
+     */
     @Deprecated("Due to ambiguous name replaced", ReplaceWith(
             "onUiCreated"
     ))
@@ -159,7 +172,17 @@ abstract class ReactorActivity<T : ReactorTranslator> :
     open fun onUiRestored(savedInstanceState: Bundle) {
     }
 
-    @Deprecated("This method is not part of the Reactor architecture and was moved to the 'extras' module")
+    /**
+     * Called from [onCreate] after either [onUiCreated] or [onUiRestored] has been called
+     *
+     * This method is useful to set [android.view.View] listeners or other stuff that doesn't survive activity recreation
+     */
+    open fun onPostUiCreated() {
+    }
+
+    @Deprecated("This method is not part of the Reactor architecture and was moved to the 'extras' module",
+            ReplaceWith(""),
+            DeprecationLevel.ERROR)
     open fun getLayoutResId(): Int {
         return -1
     }

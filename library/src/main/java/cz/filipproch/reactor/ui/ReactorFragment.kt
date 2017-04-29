@@ -14,7 +14,7 @@ import io.reactivex.functions.Consumer
 import io.reactivex.subjects.PublishSubject
 
 /**
- * TODO
+ * [Fragment] implementation of [ReactorView]
  *
  * @author Filip Prochazka (@filipproch)
  */
@@ -35,9 +35,9 @@ abstract class ReactorFragment<T : ReactorTranslator> :
         loaderManager.initLoader(TRANSLATOR_LOADER_ID, null, this)
 
         if (savedInstanceState == null) {
-            activityEventsSubject.onNext(ViewCreatedEvent)
+            dispatch(ViewCreatedEvent)
         } else {
-            activityEventsSubject.onNext(ViewRestoredEvent(savedInstanceState))
+            dispatch(ViewRestoredEvent(savedInstanceState))
         }
     }
 
@@ -54,21 +54,35 @@ abstract class ReactorFragment<T : ReactorTranslator> :
         } else {
             onUiCreated()
         }
+
+        onPostUiCreated()
     }
 
     override fun onStart() {
         super.onStart()
-        activityEventsSubject.onNext(ViewAttachedEvent)
+        dispatch(ViewAttachedEvent)
+        dispatch(ViewStartedEvent)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        dispatch(ViewResumedEvent)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        dispatch(ViewPausedEvent)
     }
 
     override fun onStop() {
         super.onStop()
-        activityEventsSubject.onNext(ViewDetachedEvent)
+        dispatch(ViewDetachedEvent)
+        dispatch(ViewStoppedEvent)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        activityEventsSubject.onNext(ViewDestroyedEvent)
+        dispatch(ViewDestroyedEvent)
         reactorViewHelper.onViewDestroyed()
     }
 
@@ -141,6 +155,9 @@ abstract class ReactorFragment<T : ReactorTranslator> :
         ReactorFragment specific
      */
 
+    /**
+     * Called from [onCreate]
+     */
     @Deprecated("Due to ambiguous name replaced", ReplaceWith(
             "onUiCreated"
     ))
@@ -157,6 +174,14 @@ abstract class ReactorFragment<T : ReactorTranslator> :
      * Called from [onCreate] is savedInstanceState is not null
      */
     open fun onUiRestored(savedInstanceState: Bundle) {
+    }
+
+    /**
+     * Called from [onCreate] after either [onUiCreated] or [onUiRestored] has been called
+     *
+     * This method is useful to set [android.view.View] listeners or other stuff that doesn't survive activity recreation
+     */
+    open fun onPostUiCreated() {
     }
 
     @Deprecated("This method is not part of the Reactor architecture and was moved to the 'extras' module")
