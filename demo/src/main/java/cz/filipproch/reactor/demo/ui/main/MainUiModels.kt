@@ -1,4 +1,4 @@
-package cz.filipproch.reactor.demo
+package cz.filipproch.reactor.demo.ui.main
 
 import cz.filipproch.reactor.base.view.ReactorUiModel
 
@@ -19,17 +19,9 @@ data class MainUiModel(
     }
 
     companion object {
-        fun idle(): MainUiModel {
-            return MainUiModel(null, null, false, null)
-        }
-
-        fun loading(): MainUiModel {
-            return MainUiModel(null, null, true, null)
-        }
-
-        fun error(): MainUiModel {
-            return MainUiModel(null, null, false, false)
-        }
+        val IDLE = MainUiModel(null, null, false, null)
+        val LOADING = MainUiModel(null, null, true, null)
+        val ERROR = MainUiModel(null, null, false, false)
 
         fun success(postTitle: String, postContent: String): MainUiModel {
             return MainUiModel(postTitle, postContent, false, true)

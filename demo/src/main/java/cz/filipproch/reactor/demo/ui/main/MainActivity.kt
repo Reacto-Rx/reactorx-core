@@ -1,4 +1,4 @@
-package cz.filipproch.reactor.demo.ui
+package cz.filipproch.reactor.demo.ui.main
 
 import android.view.View
 import android.widget.Toast
@@ -7,14 +7,15 @@ import cz.filipproch.reactor.base.translator.SimpleTranslatorFactory
 import cz.filipproch.reactor.base.translator.TranslatorFactory
 import cz.filipproch.reactor.base.view.ReactorUiEvent
 import cz.filipproch.reactor.base.view.ReactorUiModel
-import cz.filipproch.reactor.demo.MainTranslator
-import cz.filipproch.reactor.demo.MainUiModel
 import cz.filipproch.reactor.demo.R
-import cz.filipproch.reactor.extras.ui.views.BaseReactorActivity
+import cz.filipproch.reactor.extras.ui.views.activity.ExtendedReactorActivity
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : BaseReactorActivity<MainTranslator>() {
+class MainActivity : ExtendedReactorActivity<MainTranslator>() {
+
+    override val layoutResourceId: Int
+        get() = R.layout.activity_main
 
     override val translatorFactory: TranslatorFactory<MainTranslator>
         get() = SimpleTranslatorFactory(MainTranslator::class.java)
@@ -41,12 +42,6 @@ class MainActivity : BaseReactorActivity<MainTranslator>() {
         registerEmitter(vAction.clicks().map { MasterButtonClicked })
     }
 
-    override fun getLayoutResId(): Int {
-        return R.layout.activity_main
-    }
-
-}/*
-
-class EventRegistrationImpossibleException : RuntimeException()*/
+}
 
 object MasterButtonClicked : ReactorUiEvent
