@@ -159,7 +159,7 @@ abstract class ReactorFragment<T : ReactorTranslator> :
      * Called from [onCreate]
      */
     @Deprecated("Due to ambiguous name replaced", ReplaceWith(
-            "onUiCreated"
+            "onPostUiCreated"
     ))
     open fun initUi() {
     }
