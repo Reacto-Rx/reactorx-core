@@ -5,24 +5,45 @@
 
 Reactive Android architecture library
 
+## How to use / Docs
+
+TBD
+
 ## Add library to your project
 
 Latest Version : ![Latest Version](https://api.bintray.com/packages/filipproch/maven/reactor-android/images/download.svg)
 
-**Core**
-
 ```groovy
-compile 'cz.filipproch.lib:reactor-android:<VERSION>'
+dependencies {
+    // Reactor Core
+    compile 'cz.filipproch.lib:reactor-android:<VERSION>'
+    // Reactor Extras
+    compile 'cz.filipproch.lib:reactor-android-extras:<VERSION>'
+}
 ```
 
-**Extras**
+### Snapshot builds
+
+You can use Jitpack.io to obtain latest SNAPSHOT builds
+
 ```groovy
-compile 'cz.filipproch.lib:reactor-android-extras:<VERSION>'
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
+}
 ```
 
-## How to use / Docs
+**dev** - the latest commit on `dev` branch
 
-TBD
+```groovy
+dependencies {
+    // Reactor Core
+    compile 'com.github.filipproch.reactor-android:reactor-android:dev-SNAPSHOT'
+    // Reactor Extras
+    compile 'com.github.filipproch.reactor-android:reactor-android-extras:dev-SNAPSHOT'
+}
+```
 
 ## Contribute
 
