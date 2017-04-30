@@ -36,7 +36,6 @@ abstract class BaseReactorTranslator : ReactorTranslator {
 
     override fun onDestroyed() {
         instanceDisposable.dispose()
-        inputSubject.onComplete()
     }
 
     fun translateToModel(reaction: (events: Observable<out ReactorUiEvent>) -> Observable<out ReactorUiModel>) {
@@ -48,7 +47,9 @@ abstract class BaseReactorTranslator : ReactorTranslator {
     }
 
     fun translate(translation: EventModelTranslation) {
-        translation.translate(inputSubject).subscribe(outputModelSubject)
+        instanceDisposable.add(
+                translation.translate(inputSubject)
+                        .subscribe(outputModelSubject::onNext))
     }
 
     fun translateToAction(reaction: (events: Observable<out ReactorUiEvent>) -> Observable<out ReactorUiAction>) {
@@ -60,7 +61,9 @@ abstract class BaseReactorTranslator : ReactorTranslator {
     }
 
     fun translate(translation: EventActionTranslation) {
-        translation.translate(inputSubject).subscribe(outputActionSubject)
+        instanceDisposable.add(
+                translation.translate(inputSubject)
+                        .subscribe(outputActionSubject::onNext))
     }
 
     fun reactTo(reaction: (events: Observable<out ReactorUiEvent>) -> Disposable) {
