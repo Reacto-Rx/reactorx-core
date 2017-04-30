@@ -32,11 +32,11 @@ abstract class BaseReactorTranslator : ReactorTranslator {
     }
 
     override fun unbindView() {
-
     }
 
     override fun onDestroyed() {
         instanceDisposable.dispose()
+        inputSubject.onComplete()
     }
 
     fun translateToModel(reaction: (events: Observable<out ReactorUiEvent>) -> Observable<out ReactorUiModel>) {
