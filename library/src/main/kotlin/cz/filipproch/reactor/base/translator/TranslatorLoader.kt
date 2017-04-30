@@ -29,6 +29,7 @@ class TranslatorLoader<T : ReactorTranslator>(context: Context, private val fact
 
     override fun onReset() {
         if (translatorInstance != null) {
+            translatorInstance?.onDestroyed()
             translatorInstance = null
         }
     }
