@@ -92,8 +92,6 @@ abstract class ReactorFragment<T : ReactorTranslator> :
 
     override fun onDestroy() {
         super.onDestroy()
-        childFragmentManager.executePendingTransactions()
-
         dispatch(ViewDestroyedEvent)
         reactorViewHelper.onViewDestroyed()
     }

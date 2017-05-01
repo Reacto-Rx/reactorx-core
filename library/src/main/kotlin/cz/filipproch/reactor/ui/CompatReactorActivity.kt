@@ -142,8 +142,6 @@ abstract class CompatReactorActivity<T : ReactorTranslator> :
 
     override fun onDestroy() {
         super.onDestroy()
-        supportFragmentManager.executePendingTransactions()
-
         dispatch(ViewDestroyedEvent)
         reactorViewHelper.onViewDestroyed()
     }

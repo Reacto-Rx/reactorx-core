@@ -28,6 +28,7 @@ class ReactorTranslatorFragment<T : ReactorTranslator> : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         translator = factory.create()
+        translator?.onCreated()
     }
 
     override fun onDestroy() {
