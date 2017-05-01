@@ -2,11 +2,8 @@ package cz.filipproch.reactor.ui
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.app.LoaderManager
-import android.support.v4.content.Loader
 import android.view.View
 import cz.filipproch.reactor.base.translator.ReactorTranslator
-import cz.filipproch.reactor.base.translator.TranslatorLoader
 import cz.filipproch.reactor.base.view.*
 import cz.filipproch.reactor.ui.events.*
 import io.reactivex.Observable
@@ -20,8 +17,7 @@ import io.reactivex.subjects.PublishSubject
  */
 abstract class ReactorFragment<T : ReactorTranslator> :
         Fragment(),
-        ReactorView<T>,
-        LoaderManager.LoaderCallbacks<T> {
+        ReactorView<T> {
 
     private val TRANSLATOR_LOADER_ID = 1
 
@@ -31,8 +27,6 @@ abstract class ReactorFragment<T : ReactorTranslator> :
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-        loaderManager.initLoader(TRANSLATOR_LOADER_ID, null, this)
 
         if (savedInstanceState == null) {
             dispatch(ViewCreatedEvent)
@@ -58,8 +52,22 @@ abstract class ReactorFragment<T : ReactorTranslator> :
         onPostUiCreated()
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun onStart() {
         super.onStart()
+
+        var translatorFragment = childFragmentManager.findFragmentByTag(ReactorTranslatorFragment.TAG)
+                as ReactorTranslatorFragment<T>?
+        if (translatorFragment == null) {
+            translatorFragment = ReactorTranslatorFragment()
+            translatorFragment.setTranslatorFactory(translatorFactory)
+            childFragmentManager.beginTransaction()
+                    .add(translatorFragment, ReactorTranslatorFragment.TAG)
+                    .commit()
+        }
+
+        reactorViewHelper.onTranslatorAttached(translatorFragment.translator!!)
+
         dispatch(ViewAttachedEvent)
         dispatch(ViewStartedEvent)
     }
@@ -82,6 +90,8 @@ abstract class ReactorFragment<T : ReactorTranslator> :
 
     override fun onDestroy() {
         super.onDestroy()
+        childFragmentManager.executePendingTransactions()
+
         dispatch(ViewDestroyedEvent)
         reactorViewHelper.onViewDestroyed()
     }
@@ -137,18 +147,6 @@ abstract class ReactorFragment<T : ReactorTranslator> :
                 return mapper.invoke(model)
             }
         })
-    }
-
-    override fun onLoadFinished(loader: Loader<T>?, data: T) {
-        reactorViewHelper.onTranslatorAttached(data)
-    }
-
-    override fun onCreateLoader(id: Int, args: Bundle?): Loader<T> {
-        return TranslatorLoader(context, translatorFactory)
-    }
-
-    override fun onLoaderReset(loader: Loader<T>?) {
-        reactorViewHelper.onTranslatorDetached()
     }
 
     /*

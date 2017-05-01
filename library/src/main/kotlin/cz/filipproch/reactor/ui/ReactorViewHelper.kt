@@ -62,11 +62,8 @@ class ReactorViewHelper<T : ReactorTranslator>(val reactorView: ReactorView<T>) 
         }
     }
 
-    fun onTranslatorDetached() {
-        translator?.unbindView()
-    }
-
     fun onViewDestroyed() {
+        translator?.unbindView()
         disposable.dispose()
     }
 

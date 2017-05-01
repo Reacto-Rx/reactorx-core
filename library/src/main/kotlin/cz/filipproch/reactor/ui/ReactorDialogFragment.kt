@@ -4,12 +4,10 @@ import android.app.Dialog
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.LoaderManager
-import android.support.v4.content.Loader
 import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import cz.filipproch.reactor.base.translator.ReactorTranslator
-import cz.filipproch.reactor.base.translator.TranslatorLoader
 import cz.filipproch.reactor.base.view.*
 import cz.filipproch.reactor.ui.events.*
 import io.reactivex.Observable
@@ -23,6 +21,7 @@ import io.reactivex.subjects.PublishSubject
  *
  * @author Filip Prochazka (@filipproch)
  */
+@Deprecated("Doesn't work at all!!!", ReplaceWith(""), DeprecationLevel.HIDDEN)
 abstract class ReactorDialogFragment<T : ReactorTranslator> :
         DialogFragment(),
         ReactorView<T>,
@@ -36,8 +35,6 @@ abstract class ReactorDialogFragment<T : ReactorTranslator> :
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-        loaderManager.initLoader(TRANSLATOR_LOADER_ID, null, this)
 
         if (savedInstanceState == null) {
             activityEventsSubject.onNext(ViewCreatedEvent)
@@ -67,7 +64,7 @@ abstract class ReactorDialogFragment<T : ReactorTranslator> :
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        reactorViewHelper = ReactorViewHelper(this)
+        //reactorViewHelper = ReactorViewHelper(this)
 
         reactorViewHelper.onViewCreated()
         initUi()
@@ -101,18 +98,6 @@ abstract class ReactorDialogFragment<T : ReactorTranslator> :
 
     override fun dispatch(event: ReactorUiEvent) {
         activityEventsSubject.onNext(event)
-    }
-
-    override fun onLoadFinished(loader: Loader<T>?, data: T) {
-        reactorViewHelper.onTranslatorAttached(data)
-    }
-
-    override fun onCreateLoader(id: Int, args: Bundle?): Loader<T> {
-        return TranslatorLoader(context, translatorFactory)
-    }
-
-    override fun onLoaderReset(loader: Loader<T>?) {
-        reactorViewHelper.onTranslatorDetached()
     }
 
     override fun registerEmitter(emitter: Observable<out ReactorUiEvent>) {
