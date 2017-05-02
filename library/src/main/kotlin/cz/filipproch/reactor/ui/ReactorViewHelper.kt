@@ -27,7 +27,7 @@ class ReactorViewHelper<T : ReactorTranslator>(val reactorView: ReactorView<T>) 
 
     private var translator: T? = null
 
-    fun onViewCreated() {
+    fun onViewCreated(translator: T) {
         reactorView.onEmittersInit()
 
         emittersInitialized = true
@@ -41,9 +41,8 @@ class ReactorViewHelper<T : ReactorTranslator>(val reactorView: ReactorView<T>) 
                                 eventBuffer.add(it)
                             }
                         })
-    }
 
-    fun onTranslatorAttached(translator: T) {
+
         this.translator = translator
 
         val uiModelStream = translator.bindView(eventSubject)

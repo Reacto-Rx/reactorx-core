@@ -66,7 +66,7 @@ abstract class ReactorDialogFragment<T : ReactorTranslator> :
         super.onViewCreated(view, savedInstanceState)
         //reactorViewHelper = ReactorViewHelper(this)
 
-        reactorViewHelper.onViewCreated()
+        // reactorViewHelper.onViewCreated()
         initUi()
     }
 
@@ -83,7 +83,7 @@ abstract class ReactorDialogFragment<T : ReactorTranslator> :
     override fun onDestroy() {
         super.onDestroy()
         activityEventsSubject.onNext(ViewDestroyedEvent)
-        reactorViewHelper.onViewDestroyed()
+        // reactorViewHelper.onViewDestroyed()
     }
 
     override fun onEmittersInit() {

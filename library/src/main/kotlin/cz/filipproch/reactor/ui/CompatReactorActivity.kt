@@ -31,7 +31,7 @@ abstract class CompatReactorActivity<T : ReactorTranslator> :
 
         onCreateLayout()
 
-        reactorViewHelper.onViewCreated()
+        reactorViewHelper.onViewCreated(getTranslatorFromFragment())
 
         initUi()
 
@@ -48,6 +48,22 @@ abstract class CompatReactorActivity<T : ReactorTranslator> :
         } else {
             dispatch(ViewRestoredEvent(savedInstanceState))
         }
+    }
+
+    @SuppressLint("CommitTransaction")
+    @Suppress("UNCHECKED_CAST")
+    private fun getTranslatorFromFragment(): T {
+        var translatorFragment = supportFragmentManager.findFragmentByTag(ReactorTranslatorFragment.TAG)
+                as ReactorTranslatorFragment<T>?
+        if (translatorFragment == null) {
+            translatorFragment = ReactorTranslatorFragment()
+            translatorFragment.setTranslatorFactory(translatorFactory)
+            supportFragmentManager.beginTransaction()
+                    .add(translatorFragment, ReactorTranslatorFragment.TAG)
+                    .commitNow()
+        }
+
+        return requireNotNull(translatorFragment.translator)
     }
 
     override fun onEmittersInit() {
@@ -103,23 +119,8 @@ abstract class CompatReactorActivity<T : ReactorTranslator> :
         })
     }
 
-    @SuppressLint("CommitTransaction")
-    @Suppress("UNCHECKED_CAST")
     override fun onStart() {
         super.onStart()
-
-        var translatorFragment = supportFragmentManager.findFragmentByTag(ReactorTranslatorFragment.TAG)
-                as ReactorTranslatorFragment<T>?
-        if (translatorFragment == null) {
-            translatorFragment = ReactorTranslatorFragment()
-            translatorFragment.setTranslatorFactory(translatorFactory)
-            supportFragmentManager.beginTransaction()
-                    .add(translatorFragment, ReactorTranslatorFragment.TAG)
-                    .commitNow()
-        }
-
-        reactorViewHelper.onTranslatorAttached(translatorFragment.translator!!)
-
         dispatch(ViewAttachedEvent)
         dispatch(ViewStartedEvent)
     }
@@ -143,6 +144,7 @@ abstract class CompatReactorActivity<T : ReactorTranslator> :
     override fun onDestroy() {
         super.onDestroy()
         dispatch(ViewDestroyedEvent)
+
         reactorViewHelper.onViewDestroyed()
     }
 
