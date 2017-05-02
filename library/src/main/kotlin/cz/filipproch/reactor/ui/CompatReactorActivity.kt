@@ -31,6 +31,8 @@ abstract class CompatReactorActivity<T : ReactorTranslator> :
 
         onCreateLayout()
 
+        reactorViewHelper.onViewCreated()
+
         initUi()
 
         if (savedInstanceState != null) {
@@ -40,8 +42,6 @@ abstract class CompatReactorActivity<T : ReactorTranslator> :
         }
 
         onPostUiCreated()
-
-        reactorViewHelper.onViewCreated()
 
         if (savedInstanceState == null) {
             dispatch(ViewCreatedEvent)
