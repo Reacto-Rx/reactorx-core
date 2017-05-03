@@ -104,7 +104,7 @@ class RxSharedPreferences {
 
             sharedPrefs.registerOnSharedPreferenceChangeListener(listener)
             it.setCancellable {
-
+                sharedPrefs.unregisterOnSharedPreferenceChangeListener(listener)
             }
         }
     }
@@ -118,6 +118,7 @@ class RxSharedPreferences {
             } else {
                 editor.apply()
             }
+            it.onComplete()
         }
     }
 
