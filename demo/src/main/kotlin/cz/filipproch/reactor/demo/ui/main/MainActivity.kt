@@ -22,7 +22,7 @@ class MainActivity : ExtendedReactorActivity<MainTranslator>() {
 
     override fun onConnectModelChannel(modelStream: Observable<out ReactorUiModel>) {
         super.onConnectModelChannel(modelStream)
-        receiveUpdatesOnUi(modelStream.ofType(MainUiModel::class.java)) {
+        modelStream.ofType(MainUiModel::class.java).consumeOnUi {
             vProgressBar.visibility = if (it.isLoading) View.VISIBLE else View.GONE
 
             when {

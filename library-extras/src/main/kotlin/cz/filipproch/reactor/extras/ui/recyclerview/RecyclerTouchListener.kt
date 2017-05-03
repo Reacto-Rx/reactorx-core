@@ -7,9 +7,10 @@ import android.view.MotionEvent
 
 /**
  * TODO: add description
-
+ *
  * @author Filip Prochazka (filip.prochazka@ubnt.com)
  */
+@Deprecated("Depracated in favor of ReactorRecyclerListAdapter")
 class RecyclerTouchListener(context: Context, recycler: RecyclerView, private val listener: RecyclerItemClickListener) : RecyclerView.OnItemTouchListener {
 
     private val gestureDetector: GestureDetector
@@ -33,7 +34,8 @@ class RecyclerTouchListener(context: Context, recycler: RecyclerView, private va
     override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
         val child = rv.findChildViewUnder(e.x, e.y)
         if (child != null && gestureDetector.onTouchEvent(e)) {
-            listener.onClick(child, rv.getChildAdapterPosition(child))
+            val holder = rv.getChildViewHolder(child)
+            listener.onClick(child, holder.adapterPosition)
         }
         return false
     }

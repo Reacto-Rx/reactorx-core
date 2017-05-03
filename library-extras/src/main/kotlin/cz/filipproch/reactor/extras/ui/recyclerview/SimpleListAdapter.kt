@@ -11,6 +11,12 @@ import io.reactivex.functions.Consumer
  *
  * @author Filip Prochazka (@filipproch)
  */
+@Deprecated("Depracated in favor of ReactorRecyclerListAdapter",
+    ReplaceWith(
+            "SimpleRecyclerListAdapter",
+            "cz.filipproch.reactor.extras.ui.recyclerview.adapter.SimpleRecyclerListAdapter"
+    )
+)
 class SimpleListAdapter<T>(val itemLayoutRes: Int, val viewBinder: DataViewBinder<T>) : RecyclerView.Adapter<SimpleListAdapter.SimpleViewHolder>() {
 
     private val data = mutableListOf<T>()

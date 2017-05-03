@@ -7,6 +7,7 @@ import cz.filipproch.reactor.base.view.ReactorUiEvent
  *
  * @author Filip Prochazka (@filipproch)
  */
+@Deprecated("Depracated in favor of AdapterItemClickedEvent")
 data class RecyclerItemClickedEvent(val position: Int, val long: Boolean): ReactorUiEvent {
     companion object {
         fun clicked(position: Int): RecyclerItemClickedEvent {

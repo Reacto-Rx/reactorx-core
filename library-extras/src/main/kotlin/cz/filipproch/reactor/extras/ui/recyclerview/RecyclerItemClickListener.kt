@@ -7,6 +7,7 @@ import android.view.View
 
  * @author Filip Prochazka (filip.prochazka@ubnt.com)
  */
+@Deprecated("Depracated in favor of AdapterItemClickedEvent")
 interface RecyclerItemClickListener {
 
     fun onClick(view: View, position: Int)
