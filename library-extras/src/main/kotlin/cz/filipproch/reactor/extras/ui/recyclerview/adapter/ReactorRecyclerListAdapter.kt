@@ -11,10 +11,12 @@ abstract class ReactorRecyclerListAdapter<T, VH : RecyclerView.ViewHolder> : Rea
 
     protected val list: MutableList<T> = mutableListOf()
 
-    fun updateData(newList: MutableList<T>) {
+    fun updateData(newList: MutableList<T>?) {
         synchronized(list) {
             list.clear()
-            list.addAll(newList)
+            if (newList != null) {
+                list.addAll(newList)
+            }
             notifyDataSetChanged()
         }
     }
