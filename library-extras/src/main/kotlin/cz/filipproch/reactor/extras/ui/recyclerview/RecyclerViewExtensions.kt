@@ -5,6 +5,7 @@ import android.view.View
 import cz.filipproch.reactor.extras.ui.recyclerview.event.RecyclerItemClickedEvent
 import io.reactivex.Observable
 
+@Deprecated("Deprecated in favor of SimpleRecyclerListAdapter")
 fun RecyclerView.itemClicks(): Observable<RecyclerItemClickedEvent> {
     return Observable.create {
         val listener = object : RecyclerItemClickListener {
