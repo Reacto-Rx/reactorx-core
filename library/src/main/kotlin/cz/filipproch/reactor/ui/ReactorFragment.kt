@@ -43,7 +43,7 @@ abstract class ReactorFragment<T : ReactorTranslator> :
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        reactorViewHelper.onViewCreated(
+        reactorViewHelper?.onViewCreated(
                 ReactorTranslatorHelper.getTranslatorFromFragment(childFragmentManager, translatorFactory)
         )
 
