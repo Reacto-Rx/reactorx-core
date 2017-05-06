@@ -130,7 +130,7 @@ abstract class CompatReactorActivity<T : ReactorTranslator> :
         super.onDestroy()
         dispatch(ViewDestroyedEvent)
 
-        reactorViewHelper.onViewDestroyed()
+        reactorViewHelper.destroy()
     }
 
     /*

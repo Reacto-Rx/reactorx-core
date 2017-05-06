@@ -1,6 +1,5 @@
 package cz.filipproch.reactor.ui
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.View
@@ -58,6 +57,11 @@ abstract class ReactorFragment<T : ReactorTranslator> :
         onPostUiCreated()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        reactorViewHelper?.onViewDestroyed()
+    }
+
     override fun onStart() {
         super.onStart()
         dispatch(ViewAttachedEvent)
@@ -83,7 +87,7 @@ abstract class ReactorFragment<T : ReactorTranslator> :
     override fun onDestroy() {
         super.onDestroy()
         dispatch(ViewDestroyedEvent)
-        reactorViewHelper?.onViewDestroyed()
+        reactorViewHelper?.destroy()
     }
 
     override fun onEmittersInit() {
