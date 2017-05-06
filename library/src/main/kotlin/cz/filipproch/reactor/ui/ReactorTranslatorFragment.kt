@@ -1,5 +1,6 @@
 package cz.filipproch.reactor.ui
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import cz.filipproch.reactor.base.translator.ReactorTranslator
@@ -12,7 +13,8 @@ import cz.filipproch.reactor.base.translator.TranslatorFactory
  */
 class ReactorTranslatorFragment<T : ReactorTranslator> : Fragment() {
 
-    private lateinit var factory: TranslatorFactory<T>
+    private var factory: TranslatorFactory<T>? = null
+    internal var invalid: Boolean = false
 
     var translator: T? = null
         private set
@@ -27,10 +29,14 @@ class ReactorTranslatorFragment<T : ReactorTranslator> : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        translator = factory.create()
+        if (factory == null) {
+            invalid = true
+        }
+        translator = factory?.create()
         translator?.onCreated()
     }
 
+    @SuppressLint("CommitTransaction")
     override fun onDestroy() {
         super.onDestroy()
         translator?.onDestroyed()

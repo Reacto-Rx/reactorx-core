@@ -1,6 +1,5 @@
 package cz.filipproch.reactor.ui
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import cz.filipproch.reactor.base.translator.ReactorTranslator
@@ -31,7 +30,9 @@ abstract class CompatReactorActivity<T : ReactorTranslator> :
 
         onCreateLayout()
 
-        reactorViewHelper.onViewCreated(getTranslatorFromFragment())
+        reactorViewHelper.onViewCreated(
+                ReactorTranslatorHelper.getTranslatorFromFragment(supportFragmentManager, translatorFactory)
+        )
 
         initUi()
 
@@ -48,22 +49,6 @@ abstract class CompatReactorActivity<T : ReactorTranslator> :
         } else {
             dispatch(ViewRestoredEvent(savedInstanceState))
         }
-    }
-
-    @SuppressLint("CommitTransaction")
-    @Suppress("UNCHECKED_CAST")
-    private fun getTranslatorFromFragment(): T {
-        var translatorFragment = supportFragmentManager.findFragmentByTag(ReactorTranslatorFragment.TAG)
-                as ReactorTranslatorFragment<T>?
-        if (translatorFragment == null) {
-            translatorFragment = ReactorTranslatorFragment()
-            translatorFragment.setTranslatorFactory(translatorFactory)
-            supportFragmentManager.beginTransaction()
-                    .add(translatorFragment, ReactorTranslatorFragment.TAG)
-                    .commitNow()
-        }
-
-        return requireNotNull(translatorFragment.translator)
     }
 
     override fun onEmittersInit() {

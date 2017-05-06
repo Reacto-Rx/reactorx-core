@@ -43,7 +43,9 @@ abstract class ReactorFragment<T : ReactorTranslator> :
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        reactorViewHelper?.onViewCreated(getTranslatorFromFragment())
+        reactorViewHelper.onViewCreated(
+                ReactorTranslatorHelper.getTranslatorFromFragment(childFragmentManager, translatorFactory)
+        )
 
         initUi()
 
@@ -54,22 +56,6 @@ abstract class ReactorFragment<T : ReactorTranslator> :
         }
 
         onPostUiCreated()
-    }
-
-    @SuppressLint("CommitTransaction")
-    @Suppress("UNCHECKED_CAST")
-    private fun getTranslatorFromFragment(): T {
-        var translatorFragment = childFragmentManager.findFragmentByTag(ReactorTranslatorFragment.TAG)
-                as ReactorTranslatorFragment<T>?
-        if (translatorFragment == null) {
-            translatorFragment = ReactorTranslatorFragment()
-            translatorFragment.setTranslatorFactory(translatorFactory)
-            childFragmentManager.beginTransaction()
-                    .add(translatorFragment, ReactorTranslatorFragment.TAG)
-                    .commitNow()
-        }
-
-        return requireNotNull(translatorFragment.translator)
     }
 
     override fun onStart() {
