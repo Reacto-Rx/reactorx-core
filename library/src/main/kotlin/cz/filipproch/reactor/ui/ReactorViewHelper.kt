@@ -23,6 +23,7 @@ class ReactorViewHelper<T : ReactorTranslator>(val reactorView: ReactorView<T>) 
     private val eventBuffer = mutableListOf<ReactorUiEvent>()
     private val eventSubject = PublishSubject.create<ReactorUiEvent>()
 
+    private val viewDestroyedDisposable = CompositeDisposable()
     private val disposable = CompositeDisposable()
 
     private var translator: T? = null
@@ -62,6 +63,14 @@ class ReactorViewHelper<T : ReactorTranslator>(val reactorView: ReactorView<T>) 
     }
 
     fun onViewDestroyed() {
+        viewDestroyedDisposable.dispose()
+        viewDestroyedDisposable.clear()
+
+        emittersInitialized = false
+        eventEmitters.clear()
+    }
+
+    fun destroy() {
         translator?.unbindView()
         disposable.dispose()
     }
@@ -82,7 +91,7 @@ class ReactorViewHelper<T : ReactorTranslator>(val reactorView: ReactorView<T>) 
     }
 
     private fun disposeOnViewDestroyed(disposable: Disposable) {
-        this.disposable.add(disposable)
+        this.viewDestroyedDisposable.add(disposable)
     }
 
 }

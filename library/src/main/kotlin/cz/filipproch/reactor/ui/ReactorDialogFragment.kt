@@ -83,7 +83,7 @@ abstract class ReactorDialogFragment<T : ReactorTranslator> :
     override fun onDestroy() {
         super.onDestroy()
         activityEventsSubject.onNext(ViewDestroyedEvent)
-        // reactorViewHelper.onViewDestroyed()
+        // reactorViewHelper.destroy()
     }
 
     override fun onEmittersInit() {
