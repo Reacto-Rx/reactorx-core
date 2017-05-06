@@ -7,9 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import cz.filipproch.reactor.base.translator.ReactorTranslator
 import cz.filipproch.reactor.extras.ui.iface.AndroidLayoutView
-import cz.filipproch.reactor.extras.ui.views.dialog.ExtendedReactorDialogFragment
 import cz.filipproch.reactor.extras.ui.views.events.ActivityResultEvent
-import cz.filipproch.reactor.extras.ui.views.events.DialogResultEvent
 import cz.filipproch.reactor.ui.ReactorFragment
 
 /**
@@ -19,7 +17,6 @@ import cz.filipproch.reactor.ui.ReactorFragment
  */
 abstract class ExtendedReactorFragment<T : ReactorTranslator> :
         ReactorFragment<T>(),
-        ExtendedReactorDialogFragment.DialogResultListener,
         AndroidLayoutView {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -33,8 +30,8 @@ abstract class ExtendedReactorFragment<T : ReactorTranslator> :
         dispatch(ActivityResultEvent(requestCode, resultCode, data))
     }
 
-    override fun onDialogResult(requestCode: Int, resultCode: Int, extras: Bundle?) {
+    /*override fun onDialogResult(requestCode: Int, resultCode: Int, extras: Bundle?) {
         dispatch(DialogResultEvent(requestCode, resultCode, extras))
-    }
+    }*/
 
 }
