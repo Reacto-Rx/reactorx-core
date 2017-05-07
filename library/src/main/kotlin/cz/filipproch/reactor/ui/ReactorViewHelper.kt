@@ -49,12 +49,14 @@ class ReactorViewHelper<T : ReactorTranslator>(val reactorView: ReactorView<T>) 
         val uiModelStream = translator.bindView(eventSubject)
                 .publish()
         reactorView.onConnectModelChannel(uiModelStream)
-        disposable.add(uiModelStream.connect())
+        reactorView.onConnectModelStream(uiModelStream)
+        viewDestroyedDisposable.add(uiModelStream.connect())
 
         val uiActionStream = translator.observeActions()
                 .publish()
         reactorView.onConnectActionChannel(uiActionStream)
-        disposable.add(uiActionStream.connect())
+        reactorView.onConnectActionStream(uiActionStream)
+        viewDestroyedDisposable.add(uiActionStream.connect())
 
         if (eventBuffer.isNotEmpty()) {
             eventBuffer.forEach { eventSubject.onNext(it) }
