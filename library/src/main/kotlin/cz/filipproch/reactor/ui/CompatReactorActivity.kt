@@ -14,13 +14,13 @@ import io.reactivex.subjects.PublishSubject
  *
  * @author Filip Prochazka (@filipproch)
  */
-abstract class CompatReactorActivity<T : ReactorTranslator> :
+abstract class CompatReactorActivity<out T : ReactorTranslator> :
         AppCompatActivity(),
         ReactorView<T> {
 
     private val TRANSLATOR_LOADER_ID = 1
 
-    private lateinit var reactorViewHelper: ReactorViewHelper<T>
+    private var reactorViewHelper: ReactorViewHelper<T>? = null
 
     private val activityEventsSubject = PublishSubject.create<ReactorUiEvent>()
 
@@ -29,10 +29,6 @@ abstract class CompatReactorActivity<T : ReactorTranslator> :
         reactorViewHelper = ReactorViewHelper(this)
 
         onCreateLayout()
-
-        reactorViewHelper.onViewCreated(
-                ReactorTranslatorHelper.getTranslatorFromFragment(supportFragmentManager, translatorFactory)
-        )
 
         initUi()
 
@@ -68,11 +64,11 @@ abstract class CompatReactorActivity<T : ReactorTranslator> :
     }
 
     override fun registerEmitter(emitter: Observable<out ReactorUiEvent>) {
-        reactorViewHelper.registerEmitter(emitter)
+        reactorViewHelper?.registerEmitter(emitter)
     }
 
     override fun <T> receiveUpdatesOnUi(observable: Observable<T>, receiverAction: Consumer<T>) {
-        reactorViewHelper.receiveUpdatesOnUi(observable, receiverAction)
+        reactorViewHelper?.receiveUpdatesOnUi(observable, receiverAction)
     }
 
     @Deprecated("Replaced with extension function consumeOnUi", ReplaceWith(
@@ -85,7 +81,7 @@ abstract class CompatReactorActivity<T : ReactorTranslator> :
     }
 
     override fun <T> Observable<T>.consumeOnUi(receiverAction: Consumer<T>) {
-        reactorViewHelper.receiveUpdatesOnUi(this, receiverAction)
+        reactorViewHelper?.receiveUpdatesOnUi(this, receiverAction)
     }
 
     fun <T> Observable<T>.consumeOnUi(action: (T) -> Unit) {
@@ -95,7 +91,7 @@ abstract class CompatReactorActivity<T : ReactorTranslator> :
     }
 
     override fun <M : ReactorUiModel, T> Observable<M>.mapToUi(consumer: Consumer<T>, mapper: ConsumerMapper<M, T>) {
-        reactorViewHelper.receiveUpdatesOnUi(this.map { mapper.mapModelToUi(it) }, consumer)
+        reactorViewHelper?.receiveUpdatesOnUi(this.map { mapper.mapModelToUi(it) }, consumer)
     }
 
     fun <M : ReactorUiModel, T> Observable<M>.mapToUi(consumer: Consumer<T>, mapper: (M) -> T) {
@@ -108,6 +104,10 @@ abstract class CompatReactorActivity<T : ReactorTranslator> :
 
     override fun onStart() {
         super.onStart()
+        reactorViewHelper?.bindTranslatorWithView(
+                ReactorTranslatorHelper.getTranslatorFromFragment(supportFragmentManager, translatorFactory)
+        )
+
         dispatch(ViewAttachedEvent)
         dispatch(ViewStartedEvent)
     }
@@ -126,14 +126,15 @@ abstract class CompatReactorActivity<T : ReactorTranslator> :
         super.onStop()
         dispatch(ViewDetachedEvent)
         dispatch(ViewStoppedEvent)
+
+        reactorViewHelper?.unbindObserverFromView()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         dispatch(ViewDestroyedEvent)
 
-        reactorViewHelper.onViewDestroyed()
-        reactorViewHelper.destroy()
+        reactorViewHelper?.destroy()
     }
 
     /*

@@ -15,7 +15,7 @@ import io.reactivex.subjects.PublishSubject
  *
  * @author Filip Prochazka (@filipproch)
  */
-abstract class ReactorFragment<T : ReactorTranslator> :
+abstract class ReactorFragment<out T : ReactorTranslator> :
         Fragment(),
         ReactorView<T> {
 
@@ -38,10 +38,6 @@ abstract class ReactorFragment<T : ReactorTranslator> :
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        reactorViewHelper?.onViewCreated(
-                ReactorTranslatorHelper.getTranslatorFromFragment(childFragmentManager, translatorFactory)
-        )
-
         initUi()
 
         if (savedInstanceState != null) {
@@ -53,13 +49,12 @@ abstract class ReactorFragment<T : ReactorTranslator> :
         onPostUiCreated()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        reactorViewHelper?.onViewDestroyed()
-    }
-
     override fun onStart() {
         super.onStart()
+        reactorViewHelper?.bindTranslatorWithView(
+                ReactorTranslatorHelper.getTranslatorFromFragment(childFragmentManager, translatorFactory)
+        )
+
         dispatch(ViewAttachedEvent)
         dispatch(ViewStartedEvent)
     }
@@ -78,6 +73,8 @@ abstract class ReactorFragment<T : ReactorTranslator> :
         super.onStop()
         dispatch(ViewDetachedEvent)
         dispatch(ViewStoppedEvent)
+
+        reactorViewHelper?.unbindObserverFromView()
     }
 
     override fun onDestroy() {
@@ -93,7 +90,13 @@ abstract class ReactorFragment<T : ReactorTranslator> :
     override fun onConnectModelChannel(modelStream: Observable<out ReactorUiModel>) {
     }
 
+    override fun onConnectModelStream(modelStream: Observable<out ReactorUiModel>) {
+    }
+
     override fun onConnectActionChannel(actionStream: Observable<out ReactorUiAction>) {
+    }
+
+    override fun onConnectActionStream(actionStream: Observable<out ReactorUiAction>) {
     }
 
     override fun dispatch(event: ReactorUiEvent) {

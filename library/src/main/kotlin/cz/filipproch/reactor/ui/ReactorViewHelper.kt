@@ -6,7 +6,6 @@ import cz.filipproch.reactor.base.view.ReactorView
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
 import io.reactivex.subjects.PublishSubject
 
@@ -23,17 +22,17 @@ class ReactorViewHelper<T : ReactorTranslator>(val reactorView: ReactorView<T>) 
     private val eventBuffer = mutableListOf<ReactorUiEvent>()
     private val eventSubject = PublishSubject.create<ReactorUiEvent>()
 
-    private val viewDestroyedDisposable = CompositeDisposable()
-    private val disposable = CompositeDisposable()
+    private val viewBoundDisposable = CompositeDisposable()
+    private val instanceDisposable = CompositeDisposable()
 
     private var translator: T? = null
 
-    fun onViewCreated(translator: T) {
+    fun bindTranslatorWithView(translator: T) {
         reactorView.onEmittersInit()
 
         emittersInitialized = true
 
-        disposeOnViewDestroyed(
+        viewBoundDisposable.add(
                 Observable.merge(eventEmitters)
                         .subscribe {
                             if (this.translator != null) {
@@ -42,6 +41,7 @@ class ReactorViewHelper<T : ReactorTranslator>(val reactorView: ReactorView<T>) 
                                 eventBuffer.add(it)
                             }
                         })
+        eventEmitters.clear()
 
 
         this.translator = translator
@@ -50,13 +50,13 @@ class ReactorViewHelper<T : ReactorTranslator>(val reactorView: ReactorView<T>) 
                 .publish()
         reactorView.onConnectModelChannel(uiModelStream)
         reactorView.onConnectModelStream(uiModelStream)
-        viewDestroyedDisposable.add(uiModelStream.connect())
+        viewBoundDisposable.add(uiModelStream.connect())
 
         val uiActionStream = translator.observeActions()
                 .publish()
         reactorView.onConnectActionChannel(uiActionStream)
         reactorView.onConnectActionStream(uiActionStream)
-        viewDestroyedDisposable.add(uiActionStream.connect())
+        viewBoundDisposable.add(uiActionStream.connect())
 
         if (eventBuffer.isNotEmpty()) {
             eventBuffer.forEach { eventSubject.onNext(it) }
@@ -64,17 +64,18 @@ class ReactorViewHelper<T : ReactorTranslator>(val reactorView: ReactorView<T>) 
         }
     }
 
-    fun onViewDestroyed() {
-        viewDestroyedDisposable.dispose()
-        viewDestroyedDisposable.clear()
+    fun unbindObserverFromView() {
+        viewBoundDisposable.dispose()
+        viewBoundDisposable.clear()
 
         emittersInitialized = false
         eventEmitters.clear()
+
+        translator?.unbindView()
     }
 
     fun destroy() {
-        translator?.unbindView()
-        disposable.dispose()
+        instanceDisposable.dispose()
     }
 
     fun registerEmitter(emitter: Observable<out ReactorUiEvent>) {
@@ -85,15 +86,11 @@ class ReactorViewHelper<T : ReactorTranslator>(val reactorView: ReactorView<T>) 
     }
 
     fun <T> receiveUpdatesOnUi(observable: Observable<T>, receiverAction: Consumer<T>) {
-        disposable.add(
+        viewBoundDisposable.add(
                 observable
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(receiverAction)
         )
-    }
-
-    private fun disposeOnViewDestroyed(disposable: Disposable) {
-        this.viewDestroyedDisposable.add(disposable)
     }
 
 }
