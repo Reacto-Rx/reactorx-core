@@ -28,11 +28,7 @@ abstract class ReactorFragment<T : ReactorTranslator> :
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        if (savedInstanceState == null) {
-            dispatch(ViewCreatedEvent)
-        } else {
-            dispatch(ViewRestoredEvent(savedInstanceState))
-        }
+        dispatch(ViewCreatedEvent(savedInstanceState))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -44,11 +44,7 @@ abstract class CompatReactorActivity<T : ReactorTranslator> :
 
         onPostUiCreated()
 
-        if (savedInstanceState == null) {
-            dispatch(ViewCreatedEvent)
-        } else {
-            dispatch(ViewRestoredEvent(savedInstanceState))
-        }
+        dispatch(ViewCreatedEvent(savedInstanceState))
     }
 
     override fun onEmittersInit() {
@@ -58,7 +54,13 @@ abstract class CompatReactorActivity<T : ReactorTranslator> :
     override fun onConnectModelChannel(modelStream: Observable<out ReactorUiModel>) {
     }
 
+    override fun onConnectModelStream(modelStream: Observable<out ReactorUiModel>) {
+    }
+
     override fun onConnectActionChannel(actionStream: Observable<out ReactorUiAction>) {
+    }
+
+    override fun onConnectActionStream(actionStream: Observable<out ReactorUiAction>) {
     }
 
     override fun dispatch(event: ReactorUiEvent) {

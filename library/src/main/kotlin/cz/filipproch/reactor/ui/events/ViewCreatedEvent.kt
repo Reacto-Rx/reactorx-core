@@ -1,5 +1,6 @@
 package cz.filipproch.reactor.ui.events
 
+import android.os.Bundle
 import cz.filipproch.reactor.base.view.ReactorUiEvent
 
 /**
@@ -7,4 +8,4 @@ import cz.filipproch.reactor.base.view.ReactorUiEvent
  *
  * @author Filip Prochazka (@filipproch)
  */
-object ViewCreatedEvent : ReactorUiEvent
+class ViewCreatedEvent(val savedInstanceState: Bundle?) : ReactorUiEvent

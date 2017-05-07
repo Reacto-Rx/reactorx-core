@@ -8,4 +8,7 @@ import cz.filipproch.reactor.base.view.ReactorUiEvent
  *
  * @author Filip Prochazka (@filipproch)
  */
+@Deprecated("Removed due to ambiguous name", ReplaceWith(
+        "ViewCreatedEvent"
+))
 data class ViewRestoredEvent(val bundle: Bundle) : ReactorUiEvent
