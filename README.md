@@ -4,6 +4,7 @@
 
 [![Build Status](https://travis-ci.org/filipproch/reactor-android.svg?branch=master)](https://travis-ci.org/filipproch/reactor-android)
 ![Latest Version](https://api.bintray.com/packages/filipproch/maven/reactor-android/images/download.svg)
+[![codecov](https://codecov.io/gh/filipproch/reactor-android/branch/master/graph/badge.svg)](https://codecov.io/gh/filipproch/reactor-android)
 
 Library for writing Android apps in a reactive way.
 
