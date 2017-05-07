@@ -36,11 +36,7 @@ abstract class ReactorDialogFragment<T : ReactorTranslator> :
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        if (savedInstanceState == null) {
-            activityEventsSubject.onNext(ViewCreatedEvent)
-        } else {
-            activityEventsSubject.onNext(ViewRestoredEvent(savedInstanceState))
-        }
+        activityEventsSubject.onNext(ViewCreatedEvent(savedInstanceState))
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
