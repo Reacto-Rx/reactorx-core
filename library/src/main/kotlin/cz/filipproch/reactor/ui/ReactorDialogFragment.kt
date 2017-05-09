@@ -1,85 +1,85 @@
 package cz.filipproch.reactor.ui
 
-import android.app.Dialog
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.LoaderManager
-import android.support.v7.app.AlertDialog
-import android.view.LayoutInflater
 import android.view.View
 import cz.filipproch.reactor.base.translator.ReactorTranslator
-import cz.filipproch.reactor.base.view.*
+import cz.filipproch.reactor.base.view.ReactorUiAction
+import cz.filipproch.reactor.base.view.ReactorUiEvent
+import cz.filipproch.reactor.base.view.ReactorUiModel
+import cz.filipproch.reactor.base.view.ReactorView
 import cz.filipproch.reactor.ui.events.*
 import io.reactivex.Observable
 import io.reactivex.functions.Consumer
 import io.reactivex.subjects.PublishSubject
 
 /**
- * !!! WARNING: this class is experimental and should not be used !!!
- *
  * [DialogFragment] implementation of [ReactorView]
  *
  * @author Filip Prochazka (@filipproch)
  */
-@Deprecated("Doesn't work at all!!!", ReplaceWith(""), DeprecationLevel.HIDDEN)
 abstract class ReactorDialogFragment<T : ReactorTranslator> :
         DialogFragment(),
         ReactorView<T>,
         LoaderManager.LoaderCallbacks<T> {
 
-    private val TRANSLATOR_LOADER_ID = 1
-
-    private lateinit var reactorViewHelper: ReactorViewHelper<T>
+    private var reactorViewHelper: ReactorViewHelper<T>? = null
 
     private val activityEventsSubject = PublishSubject.create<ReactorUiEvent>()
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        activityEventsSubject.onNext(ViewCreatedEvent(savedInstanceState))
+        dispatch(ViewCreatedEvent(savedInstanceState))
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val view = onCreateDialogView(LayoutInflater.from(context))
-        bindViews(view)
-
-        val builder = AlertDialog.Builder(context)
-                .setView(view)
-
-        interceptDialogBuilder(builder)
-
-        val dialog = builder.create()
-        dialog.setOnShowListener { dispatch(DialogShownEvent) }
-        dialog.setOnCancelListener { dispatch(DialogCanceledEvent) }
-        dialog.setOnDismissListener { dispatch(DialogDismissEvent) }
-        return dialog
-    }
-
-    open fun interceptDialogBuilder(builder: AlertDialog.Builder) {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        reactorViewHelper = ReactorViewHelper(this)
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //reactorViewHelper = ReactorViewHelper(this)
+        if (savedInstanceState != null) {
+            onUiRestored(savedInstanceState)
+        } else {
+            onUiCreated()
+        }
 
-        // reactorViewHelper.onViewCreated()
-        initUi()
+        onPostUiCreated()
     }
 
     override fun onStart() {
         super.onStart()
-        activityEventsSubject.onNext(ViewAttachedEvent)
+        reactorViewHelper?.bindTranslatorWithView(
+                ReactorTranslatorHelper.getTranslatorFromFragment(childFragmentManager, translatorFactory)
+        )
+
+        dispatch(ViewStartedEvent)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        dispatch(ViewResumedEvent)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        dispatch(ViewPausedEvent)
     }
 
     override fun onStop() {
         super.onStop()
-        activityEventsSubject.onNext(ViewDetachedEvent)
+        dispatch(ViewStoppedEvent)
+
+        reactorViewHelper?.unbindObserverFromView()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        activityEventsSubject.onNext(ViewDestroyedEvent)
-        // reactorViewHelper.destroy()
+        dispatch(ViewDestroyedEvent)
+        reactorViewHelper?.destroy()
     }
 
     override fun onEmittersInit() {
@@ -89,7 +89,13 @@ abstract class ReactorDialogFragment<T : ReactorTranslator> :
     override fun onConnectModelChannel(modelStream: Observable<out ReactorUiModel>) {
     }
 
+    override fun onConnectModelStream(modelStream: Observable<out ReactorUiModel>) {
+    }
+
     override fun onConnectActionChannel(actionStream: Observable<out ReactorUiAction>) {
+    }
+
+    override fun onConnectActionStream(actionStream: Observable<out ReactorUiAction>) {
     }
 
     override fun dispatch(event: ReactorUiEvent) {
@@ -97,11 +103,11 @@ abstract class ReactorDialogFragment<T : ReactorTranslator> :
     }
 
     override fun registerEmitter(emitter: Observable<out ReactorUiEvent>) {
-        reactorViewHelper.registerEmitter(emitter)
+        reactorViewHelper?.registerEmitter(emitter)
     }
 
     override fun <T> receiveUpdatesOnUi(observable: Observable<T>, receiverAction: Consumer<T>) {
-        reactorViewHelper.receiveUpdatesOnUi(observable, receiverAction)
+        reactorViewHelper?.receiveUpdatesOnUi(observable, receiverAction)
     }
 
     @Deprecated("Replaced with extension function consumeOnUi", ReplaceWith(
@@ -114,7 +120,7 @@ abstract class ReactorDialogFragment<T : ReactorTranslator> :
     }
 
     override fun <T> Observable<T>.consumeOnUi(receiverAction: Consumer<T>) {
-        reactorViewHelper.receiveUpdatesOnUi(this, receiverAction)
+        reactorViewHelper?.receiveUpdatesOnUi(this, receiverAction)
     }
 
     fun <T> Observable<T>.consumeOnUi(action: (T) -> Unit) {
@@ -123,22 +129,24 @@ abstract class ReactorDialogFragment<T : ReactorTranslator> :
         })
     }
 
-    override fun <M : ReactorUiModel, T> Observable<M>.mapToUi(consumer: Consumer<T>, mapper: ConsumerMapper<M, T>) {
-        reactorViewHelper.receiveUpdatesOnUi(this.map { mapper.mapModelToUi(it) }, consumer)
+    /**
+     * Called from [onViewCreated] is savedInstanceState is null
+     */
+    open fun onUiCreated() {
     }
 
-    fun <M : ReactorUiModel, T> Observable<M>.mapToUi(consumer: Consumer<T>, mapper: (M) -> T) {
-        this.mapToUi(consumer, object : ConsumerMapper<M, T> {
-            override fun mapModelToUi(model: M): T {
-                return mapper.invoke(model)
-            }
-        })
+    /**
+     * Called from [onViewCreated] is savedInstanceState is not null
+     */
+    open fun onUiRestored(savedInstanceState: Bundle) {
     }
 
-    open fun initUi() {}
-
-    abstract fun onCreateDialogView(inflater: LayoutInflater): View
-
-    open fun bindViews(view: View) {}
+    /**
+     * Called from [onViewCreated] after either [onUiCreated] or [onUiRestored] has been called
+     *
+     * This method is useful to set [android.view.View] listeners or other stuff that doesn't survive activity recreation
+     */
+    open fun onPostUiCreated() {
+    }
 
 }

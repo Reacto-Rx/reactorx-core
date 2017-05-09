@@ -38,8 +38,6 @@ abstract class ReactorFragment<out T : ReactorTranslator> :
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initUi()
-
         if (savedInstanceState != null) {
             onUiRestored(savedInstanceState)
         } else {
@@ -55,7 +53,6 @@ abstract class ReactorFragment<out T : ReactorTranslator> :
                 ReactorTranslatorHelper.getTranslatorFromFragment(childFragmentManager, translatorFactory)
         )
 
-        dispatch(ViewAttachedEvent)
         dispatch(ViewStartedEvent)
     }
 
@@ -71,7 +68,6 @@ abstract class ReactorFragment<out T : ReactorTranslator> :
 
     override fun onStop() {
         super.onStop()
-        dispatch(ViewDetachedEvent)
         dispatch(ViewStoppedEvent)
 
         reactorViewHelper?.unbindObserverFromView()
@@ -130,45 +126,24 @@ abstract class ReactorFragment<out T : ReactorTranslator> :
         })
     }
 
-    override fun <M : ReactorUiModel, T> Observable<M>.mapToUi(consumer: Consumer<T>, mapper: ConsumerMapper<M, T>) {
-        reactorViewHelper?.receiveUpdatesOnUi(this.map { mapper.mapModelToUi(it) }, consumer)
-    }
-
-    fun <M : ReactorUiModel, T> Observable<M>.mapToUi(consumer: Consumer<T>, mapper: (M) -> T) {
-        this.mapToUi(consumer, object : ConsumerMapper<M, T> {
-            override fun mapModelToUi(model: M): T {
-                return mapper.invoke(model)
-            }
-        })
-    }
-
     /*
         ReactorFragment specific
      */
 
     /**
-     * Called from [onCreate]
-     */
-    @Deprecated("Due to ambiguous name replaced", ReplaceWith(
-            "onPostUiCreated"
-    ))
-    open fun initUi() {
-    }
-
-    /**
-     * Called from [onCreate] is savedInstanceState is null
+     * Called from [onViewCreated] is savedInstanceState is null
      */
     open fun onUiCreated() {
     }
 
     /**
-     * Called from [onCreate] is savedInstanceState is not null
+     * Called from [onViewCreated] is savedInstanceState is not null
      */
     open fun onUiRestored(savedInstanceState: Bundle) {
     }
 
     /**
-     * Called from [onCreate] after either [onUiCreated] or [onUiRestored] has been called
+     * Called from [onViewCreated] after either [onUiCreated] or [onUiRestored] has been called
      *
      * This method is useful to set [android.view.View] listeners or other stuff that doesn't survive activity recreation
      */

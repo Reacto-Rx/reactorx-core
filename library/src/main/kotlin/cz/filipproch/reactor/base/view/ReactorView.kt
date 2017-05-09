@@ -69,10 +69,4 @@ interface ReactorView<out T : ReactorTranslator> {
      */
     fun <T> Observable<T>.consumeOnUi(receiverAction: Consumer<T>)
 
-    /**
-     * Subscribes [consumer] to [Observable] on Android UI thread,
-     * using [mapper] function as [Observable.map]
-     */
-    fun <M : ReactorUiModel, T> Observable<M>.mapToUi(consumer: Consumer<T>, mapper: ConsumerMapper<M, T>)
-
 }

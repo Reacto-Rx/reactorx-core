@@ -29,9 +29,7 @@ abstract class CompatReactorActivity<out T : ReactorTranslator> :
         reactorViewHelper = ReactorViewHelper(this)
 
         onCreateLayout()
-
-        initUi()
-
+        
         if (savedInstanceState != null) {
             onUiRestored(savedInstanceState)
         } else {
@@ -90,25 +88,12 @@ abstract class CompatReactorActivity<out T : ReactorTranslator> :
         })
     }
 
-    override fun <M : ReactorUiModel, T> Observable<M>.mapToUi(consumer: Consumer<T>, mapper: ConsumerMapper<M, T>) {
-        reactorViewHelper?.receiveUpdatesOnUi(this.map { mapper.mapModelToUi(it) }, consumer)
-    }
-
-    fun <M : ReactorUiModel, T> Observable<M>.mapToUi(consumer: Consumer<T>, mapper: (M) -> T) {
-        this.mapToUi(consumer, object : ConsumerMapper<M, T> {
-            override fun mapModelToUi(model: M): T {
-                return mapper.invoke(model)
-            }
-        })
-    }
-
     override fun onStart() {
         super.onStart()
         reactorViewHelper?.bindTranslatorWithView(
                 ReactorTranslatorHelper.getTranslatorFromFragment(supportFragmentManager, translatorFactory)
         )
 
-        dispatch(ViewAttachedEvent)
         dispatch(ViewStartedEvent)
     }
 
@@ -124,7 +109,6 @@ abstract class CompatReactorActivity<out T : ReactorTranslator> :
 
     override fun onStop() {
         super.onStop()
-        dispatch(ViewDetachedEvent)
         dispatch(ViewStoppedEvent)
 
         reactorViewHelper?.unbindObserverFromView()
@@ -140,15 +124,6 @@ abstract class CompatReactorActivity<out T : ReactorTranslator> :
     /*
         CompatReactorActivity specific
      */
-
-    /**
-     * Called from [onCreate]
-     */
-    @Deprecated("Due to ambiguous name replaced", ReplaceWith(
-            "onPostUiCreated"
-    ))
-    open fun initUi() {
-    }
 
     /**
      * Called from [onCreate] is savedInstanceState is null
