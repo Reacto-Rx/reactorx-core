@@ -40,8 +40,9 @@ abstract class ExtendedReactorActivity<T : ReactorTranslator> :
         setContentView(layoutResourceId)
     }
 
-    override fun onConnectActionChannel(actionStream: Observable<out ReactorUiAction>) {
-        super.onConnectActionChannel(actionStream)
+    override fun onConnectActionStream(actionStream: Observable<out ReactorUiAction>) {
+        super.onConnectActionStream(actionStream)
+
         actionStream.ofType(FinishActivityAction::class.java).consumeOnUi {
             finish()
         }
@@ -60,8 +61,9 @@ abstract class ExtendedReactorActivity<T : ReactorTranslator> :
         }
     }
 
-    override fun onConnectModelChannel(modelStream: Observable<out ReactorUiModel>) {
-        super.onConnectModelChannel(modelStream)
+    override fun onConnectModelStream(modelStream: Observable<out ReactorUiModel>) {
+        super.onConnectModelStream(modelStream)
+
         modelStream.ofType(ContentFragmentModel::class.java).consumeOnUi {
             replaceContentWithFragment(it.fragment)
         }

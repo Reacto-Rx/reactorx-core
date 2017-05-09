@@ -15,7 +15,7 @@ import cz.filipproch.reactor.ui.ReactorFragment
  *
  * @author Filip Prochazka (@filipproch)
  */
-abstract class ExtendedReactorFragment<T : ReactorTranslator> :
+abstract class ExtendedReactorFragment<out T : ReactorTranslator> :
         ReactorFragment<T>(),
         AndroidLayoutView {
 
@@ -29,9 +29,5 @@ abstract class ExtendedReactorFragment<T : ReactorTranslator> :
         super.onActivityResult(requestCode, resultCode, data)
         dispatch(ActivityResultEvent(requestCode, resultCode, data))
     }
-
-    /*override fun onDialogResult(requestCode: Int, resultCode: Int, extras: Bundle?) {
-        dispatch(DialogResultEvent(requestCode, resultCode, extras))
-    }*/
 
 }

@@ -20,7 +20,8 @@ abstract class ToolbarReactorActivity<T : ReactorTranslator> : ExtendedReactorAc
 
     private val optionsItemSubject = PublishSubject.create<OptionsItemSelectedEvent>()
 
-    override fun initUi() {
+    override fun onPostUiCreated() {
+        super.onPostUiCreated()
         bindToolbar()
     }
 
@@ -29,7 +30,9 @@ abstract class ToolbarReactorActivity<T : ReactorTranslator> : ExtendedReactorAc
         registerEmitter(optionsItemSubject)
     }
 
-    override fun onConnectModelChannel(modelStream: Observable<out ReactorUiModel>) {
+    override fun onConnectModelStream(modelStream: Observable<out ReactorUiModel>) {
+        super.onConnectModelStream(modelStream)
+
         modelStream.ofType(ToolbarUiModel::class.java).consumeOnUi {
             (title, homeAsUpEnabled, homeIndicator) ->
             supportActionBar?.let {

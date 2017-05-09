@@ -18,11 +18,12 @@ import io.reactivex.subjects.PublishSubject
  *
  * @author Filip Prochazka (@filipproch)
  */
-abstract class ToolbarReactorFragment<T : ReactorTranslator> : ExtendedReactorFragment<T>() {
+abstract class ToolbarReactorFragment<out T : ReactorTranslator> : ExtendedReactorFragment<T>() {
 
     private val optionsItemSubject = PublishSubject.create<OptionsItemSelectedEvent>()
 
-    override fun initUi() {
+    override fun onPostUiCreated() {
+        super.onPostUiCreated()
         bindToolbar()
         if (optionsMenuResId != NO_OPTIONS_MENU) {
             setHasOptionsMenu(true)
@@ -34,7 +35,9 @@ abstract class ToolbarReactorFragment<T : ReactorTranslator> : ExtendedReactorFr
         registerEmitter(optionsItemSubject)
     }
 
-    override fun onConnectModelChannel(modelStream: Observable<out ReactorUiModel>) {
+    override fun onConnectModelStream(modelStream: Observable<out ReactorUiModel>) {
+        super.onConnectModelStream(modelStream)
+
         modelStream.ofType(ToolbarUiModel::class.java).consumeOnUi {
             (title, homeAsUpEnabled, homeIndicator) ->
             (activity as AppCompatActivity).supportActionBar?.let {
@@ -74,14 +77,28 @@ abstract class ToolbarReactorFragment<T : ReactorTranslator> : ExtendedReactorFr
         }
     }
 
+    /**
+     * TODO
+     */
     open fun setupActionBar(actionBar: ActionBar) {}
 
+    /**
+     * TODO
+     */
     open val optionsMenuResId: Int = NO_OPTIONS_MENU
 
+    /**
+     * TODO
+     */
     abstract val toolbar: Toolbar
 
     companion object {
+
+        /**
+         * TODO
+         */
         const val NO_OPTIONS_MENU = -1
+
     }
 
 }
