@@ -6,7 +6,11 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
 
 /**
- * TODO
+ * Helper class, implementation on top of [BehaviorSubject],
+ * requires all emitted items to implement [TypedObject] to obtain [Class].
+ *
+ * Emits last received instance of each unique [Class] type upon subscription
+ * and than continues emitting received objects.
  *
  * @author Filip Prochazka (@filipproch)
  */
@@ -38,6 +42,7 @@ class TypeBehaviorSubject<T: TypedObject> private constructor() : Observer<T> {
     }
 
     fun asObservable(): Observable<T> {
+        // todo: fix, do not emit all values every time !!!
         return subject.concatMapIterable {
             it.entries.map { it.value }
         }

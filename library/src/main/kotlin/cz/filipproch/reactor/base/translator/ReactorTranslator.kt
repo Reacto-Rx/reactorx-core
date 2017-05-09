@@ -16,9 +16,11 @@ interface ReactorTranslator {
 
     fun onDestroyed()
 
-    fun bindView(events: Observable<out ReactorUiEvent>): Observable<out ReactorUiModel>
+    fun bindView(events: Observable<out ReactorUiEvent>)
 
-    fun observeActions(): Observable<out ReactorUiAction>
+    fun observeUiModels(): Observable<out ReactorUiModel>
+
+    fun observeUiActions(): Observable<out ReactorUiAction>
 
     fun unbindView()
 

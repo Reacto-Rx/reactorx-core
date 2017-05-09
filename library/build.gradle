@@ -44,6 +44,7 @@ dependencies {
 
     // Test
     testCompile 'junit:junit:4.12'
+    testCompile 'org.assertj:assertj-core:3.7.0'
 
     androidTestCompile "com.android.support:support-annotations:$supportLibraryVersion"
     androidTestCompile 'com.android.support.test:runner:0.5'

@@ -46,22 +46,31 @@ class ReactorViewHelper<T : ReactorTranslator>(val reactorView: ReactorView<T>) 
 
         this.translator = translator
 
-        val uiModelStream = translator.bindView(eventSubject)
-                .publish()
-        reactorView.onConnectModelChannel(uiModelStream)
-        reactorView.onConnectModelStream(uiModelStream)
-        viewBoundDisposable.add(uiModelStream.connect())
+        translator.bindView(eventSubject)
 
-        val uiActionStream = translator.observeActions()
-                .publish()
-        reactorView.onConnectActionChannel(uiActionStream)
-        reactorView.onConnectActionStream(uiActionStream)
-        viewBoundDisposable.add(uiActionStream.connect())
+        connectUiModels(translator)
+        connectUiActions(translator)
 
         if (eventBuffer.isNotEmpty()) {
             eventBuffer.forEach { eventSubject.onNext(it) }
             eventBuffer.clear()
         }
+    }
+
+    private fun connectUiModels(translator: T) {
+        val uiModelStream = translator.observeUiModels()
+                .publish()
+        reactorView.onConnectModelChannel(uiModelStream)
+        reactorView.onConnectModelStream(uiModelStream)
+        viewBoundDisposable.add(uiModelStream.connect())
+    }
+
+    private fun connectUiActions(translator: T) {
+        val uiActionStream = translator.observeUiActions()
+                .publish()
+        reactorView.onConnectActionChannel(uiActionStream)
+        reactorView.onConnectActionStream(uiActionStream)
+        viewBoundDisposable.add(uiActionStream.connect())
     }
 
     fun unbindObserverFromView() {

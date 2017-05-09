@@ -22,12 +22,15 @@ abstract class BaseReactorTranslator : ReactorTranslator {
 
     private val instanceDisposable = CompositeDisposable()
 
-    override fun bindView(events: Observable<out ReactorUiEvent>): Observable<out ReactorUiModel> {
+    override fun bindView(events: Observable<out ReactorUiEvent>) {
         events.subscribe(inputSubject)
+    }
+
+    override fun observeUiModels(): Observable<out ReactorUiModel> {
         return outputModelSubject.asObservable()
     }
 
-    override fun observeActions(): Observable<out ReactorUiAction> {
+    override fun observeUiActions(): Observable<out ReactorUiAction> {
         return outputActionSubject
     }
 
