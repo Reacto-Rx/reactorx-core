@@ -16,9 +16,11 @@ import io.reactivex.Observable
  */
 class DumbTranslator : ReactorTranslator {
 
-    override fun onCreated() {}
+    override fun onInstanceCreated() {
+    }
 
-    override fun onDestroyed() {}
+    override fun onBeforeInstanceDestroyed() {
+    }
 
     override fun bindView(events: Observable<out ReactorUiEvent>) {
     }

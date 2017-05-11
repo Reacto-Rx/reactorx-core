@@ -2,6 +2,7 @@ package cz.filipproch.reactor.util.view
 
 import cz.filipproch.reactor.base.view.ReactorUiAction
 import cz.filipproch.reactor.base.view.ReactorUiModel
+import cz.filipproch.reactor.util.MethodCalled
 import org.assertj.core.api.Java6Assertions
 
 /**

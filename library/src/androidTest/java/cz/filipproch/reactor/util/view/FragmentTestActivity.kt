@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity
  *
  * @author Filip Prochazka (@filipproch)
  */
-class TestFragmentActivity : AppCompatActivity() {
+class FragmentTestActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -21,9 +21,15 @@ abstract class BaseReactorTranslator : ReactorTranslator {
     private val outputActionSubject = PublishSubject.create<ReactorUiAction>()
 
     private val instanceDisposable = CompositeDisposable()
+    private var viewDisposable: Disposable? = null
+
+    var isDestroyed: Boolean = false
+        private set
 
     override fun bindView(events: Observable<out ReactorUiEvent>) {
-        events.subscribe(inputSubject)
+        viewDisposable = events.subscribe {
+            inputSubject.onNext(it)
+        }
     }
 
     override fun observeUiModels(): Observable<out ReactorUiModel> {
@@ -35,10 +41,31 @@ abstract class BaseReactorTranslator : ReactorTranslator {
     }
 
     override fun unbindView() {
+        viewDisposable?.dispose()
+        viewDisposable = null
     }
 
-    override fun onDestroyed() {
+    override final fun onInstanceCreated() {
+        onCreated()
+    }
+
+    override final fun onBeforeInstanceDestroyed() {
+        onBeforeDestroyed()
+        onDestroyed()
+
         instanceDisposable.dispose()
+        isDestroyed = true
+    }
+
+    abstract fun onCreated()
+
+    @Deprecated("Replaced due to ambiguous name", ReplaceWith(
+            "onBeforeDestroyed"
+    ))
+    open fun onDestroyed() {
+    }
+
+    open fun onBeforeDestroyed() {
     }
 
     fun translateToModel(reaction: (events: Observable<out ReactorUiEvent>) -> Observable<out ReactorUiModel>) {

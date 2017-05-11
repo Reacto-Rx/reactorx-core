@@ -13,7 +13,7 @@ import io.reactivex.Observable
  *
  * @author Filip Prochazka (@filipproch)
  */
-class TestActivity : CompatReactorActivity<TestTranslator>() {
+class CompatActivityTestActivity : CompatReactorActivity<TestTranslator>() {
 
     val helper = ReactorViewTestHelper()
 
@@ -80,5 +80,3 @@ class TestActivity : CompatReactorActivity<TestTranslator>() {
     }
 
 }
-
-data class MethodCalled(val methodName: String, val timestamp: Long)

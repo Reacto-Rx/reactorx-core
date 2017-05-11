@@ -73,13 +73,13 @@ abstract class ReactorDialogFragment<T : ReactorTranslator> :
         super.onStop()
         dispatch(ViewStoppedEvent)
 
-        reactorViewHelper?.unbindObserverFromView()
+        reactorViewHelper?.onViewNotUsable()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         dispatch(ViewDestroyedEvent)
-        reactorViewHelper?.destroy()
+        reactorViewHelper?.onViewDestroyed()
     }
 
     override fun onEmittersInit() {

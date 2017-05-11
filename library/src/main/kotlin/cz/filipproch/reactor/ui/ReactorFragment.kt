@@ -4,7 +4,10 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.View
 import cz.filipproch.reactor.base.translator.ReactorTranslator
-import cz.filipproch.reactor.base.view.*
+import cz.filipproch.reactor.base.view.ReactorUiAction
+import cz.filipproch.reactor.base.view.ReactorUiEvent
+import cz.filipproch.reactor.base.view.ReactorUiModel
+import cz.filipproch.reactor.base.view.ReactorView
 import cz.filipproch.reactor.ui.events.*
 import io.reactivex.Observable
 import io.reactivex.functions.Consumer
@@ -70,13 +73,13 @@ abstract class ReactorFragment<out T : ReactorTranslator> :
         super.onStop()
         dispatch(ViewStoppedEvent)
 
-        reactorViewHelper?.unbindObserverFromView()
+        reactorViewHelper?.onViewNotUsable()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         dispatch(ViewDestroyedEvent)
-        reactorViewHelper?.destroy()
+        reactorViewHelper?.onViewDestroyed()
     }
 
     override fun onEmittersInit() {

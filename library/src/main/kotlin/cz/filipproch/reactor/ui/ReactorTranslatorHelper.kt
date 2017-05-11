@@ -12,12 +12,16 @@ import cz.filipproch.reactor.base.translator.TranslatorFactory
  */
 object ReactorTranslatorHelper {
 
-    @SuppressLint("CommitTransaction")
     @Suppress("UNCHECKED_CAST")
-    fun <T: ReactorTranslator> getTranslatorFromFragment(fragmentManager: FragmentManager, translatorFactory: TranslatorFactory<T>): T {
-        var translatorFragment = fragmentManager.findFragmentByTag(ReactorTranslatorFragment.TAG)
+    fun <T : ReactorTranslator> findTranslatorFragment(fragmentManager: FragmentManager): ReactorTranslatorFragment<T>? {
+        return fragmentManager.findFragmentByTag(ReactorTranslatorFragment.TAG)
                 as ReactorTranslatorFragment<T>?
-        if (translatorFragment == null || translatorFragment.invalid) {
+    }
+
+    @SuppressLint("CommitTransaction")
+    fun <T : ReactorTranslator> getTranslatorFromFragment(fragmentManager: FragmentManager, translatorFactory: TranslatorFactory<T>): T {
+        var translatorFragment = findTranslatorFragment<T>(fragmentManager)
+        if (translatorFragment == null || translatorFragment.isInvalid) {
             val oldFragment = translatorFragment
             translatorFragment = ReactorTranslatorFragment()
             translatorFragment.setTranslatorFactory(translatorFactory)
@@ -34,5 +38,5 @@ object ReactorTranslatorHelper {
 
         return requireNotNull(translatorFragment.translator)
     }
-    
+
 }

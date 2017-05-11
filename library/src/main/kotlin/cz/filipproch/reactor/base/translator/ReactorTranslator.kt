@@ -12,16 +12,34 @@ import io.reactivex.Observable
  */
 interface ReactorTranslator {
 
-    fun onCreated()
+    /**
+     * TODO
+     */
+    fun onInstanceCreated()
 
-    fun onDestroyed()
+    /**
+     * TODO
+     */
+    fun onBeforeInstanceDestroyed()
 
+    /**
+     * TODO
+     */
     fun bindView(events: Observable<out ReactorUiEvent>)
 
+    /**
+     * TODO
+     */
     fun observeUiModels(): Observable<out ReactorUiModel>
 
+    /**
+     * TODO
+     */
     fun observeUiActions(): Observable<out ReactorUiAction>
 
+    /**
+     * TODO
+     */
     fun unbindView()
 
 }

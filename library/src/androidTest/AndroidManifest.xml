@@ -2,7 +2,13 @@
     package="cz.filipproch.reactor">
 
     <application android:label="@string/app_name">
-        <activity android:name=".util.view.TestActivity"
+        <activity android:name=".util.view.CompatActivityTestActivity"
+            android:theme="@style/Theme.AppCompat"/>
+
+        <activity android:name=".util.view.FragmentTestActivity"
+            android:theme="@style/Theme.AppCompat"/>
+
+        <activity android:name=".util.view.TranslatorFragmentTestActivity"
             android:theme="@style/Theme.AppCompat"/>
     </application>
 

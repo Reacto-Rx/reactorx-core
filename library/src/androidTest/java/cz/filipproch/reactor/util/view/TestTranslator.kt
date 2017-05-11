@@ -10,12 +10,26 @@ import cz.filipproch.reactor.base.view.ReactorUiEvent
  */
 class TestTranslator : BaseReactorTranslator() {
 
+    var onCreatedCalled = false
+    var onDestroyedCalled = false
+    var uiEventStreamCompleted = false
+
     val receivedEvents = mutableListOf<ReactorUiEvent>()
 
     override fun onCreated() {
+        onCreatedCalled = true
+
         reactTo {
-            it.subscribe { receivedEvents.add(it) }
+            it.subscribe({
+                receivedEvents.add(it)
+            }, { /* ignore errors */ }, {
+                uiEventStreamCompleted = true
+            })
         }
     }
 
+    override fun onDestroyed() {
+        super.onDestroyed()
+        onDestroyedCalled = true
+    }
 }

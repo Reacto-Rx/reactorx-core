@@ -16,43 +16,41 @@ import io.reactivex.subjects.PublishSubject
  */
 class ReactorViewHelper<T : ReactorTranslator>(val reactorView: ReactorView<T>) {
 
-    private val eventEmitters = mutableListOf<Observable<out ReactorUiEvent>>()
-    private var emittersInitialized: Boolean = false
+    private var isEmittersRegistrationAllowed = false
 
     private val eventBuffer = mutableListOf<ReactorUiEvent>()
-    private val eventSubject = PublishSubject.create<ReactorUiEvent>()
+    private var eventSubject: PublishSubject<ReactorUiEvent>? = PublishSubject.create()
 
-    private val viewBoundDisposable = CompositeDisposable()
+    private var viewBoundDisposable: CompositeDisposable? = null
     private val instanceDisposable = CompositeDisposable()
+
+    private val emitterConsumer = Consumer<ReactorUiEvent> {
+        if (this.translator != null) {
+            eventSubject?.onNext(it)
+        } else {
+            eventBuffer.add(it)
+        }
+    }
 
     var translator: T? = null
 
-    fun bindTranslatorWithView(translator: T) {
+    fun onReadyToRegisterEmitters() {
+        isEmittersRegistrationAllowed = true
         reactorView.onEmittersInit()
+        isEmittersRegistrationAllowed = false
+    }
 
-        emittersInitialized = true
-
-        viewBoundDisposable.add(
-                Observable.merge(eventEmitters)
-                        .subscribe {
-                            if (this.translator != null) {
-                                eventSubject.onNext(it)
-                            } else {
-                                eventBuffer.add(it)
-                            }
-                        })
-        eventEmitters.clear()
-
-
+    fun bindTranslatorWithView(translator: T) {
+        viewBoundDisposable = CompositeDisposable()
         this.translator = translator
 
-        translator.bindView(eventSubject)
+        translator.bindView(checkNotNull(eventSubject))
 
         connectUiModels(translator)
         connectUiActions(translator)
 
         if (eventBuffer.isNotEmpty()) {
-            eventBuffer.forEach { eventSubject.onNext(it) }
+            eventBuffer.forEach { eventSubject?.onNext(it) }
             eventBuffer.clear()
         }
     }
@@ -62,7 +60,7 @@ class ReactorViewHelper<T : ReactorTranslator>(val reactorView: ReactorView<T>) 
                 .publish()
         reactorView.onConnectModelChannel(uiModelStream)
         reactorView.onConnectModelStream(uiModelStream)
-        viewBoundDisposable.add(uiModelStream.connect())
+        viewBoundDisposable?.add(uiModelStream.connect())
     }
 
     private fun connectUiActions(translator: T) {
@@ -70,36 +68,36 @@ class ReactorViewHelper<T : ReactorTranslator>(val reactorView: ReactorView<T>) 
                 .publish()
         reactorView.onConnectActionChannel(uiActionStream)
         reactorView.onConnectActionStream(uiActionStream)
-        viewBoundDisposable.add(uiActionStream.connect())
+        viewBoundDisposable?.add(uiActionStream.connect())
     }
 
-    fun unbindObserverFromView() {
-        viewBoundDisposable.dispose()
-        viewBoundDisposable.clear()
+    fun onViewNotUsable() {
+        viewBoundDisposable?.dispose()
+        viewBoundDisposable = null
+    }
 
-        emittersInitialized = false
-        eventEmitters.clear()
+    fun onViewDestroyed() {
+        instanceDisposable.dispose()
 
         translator?.unbindView()
-    }
-
-    fun destroy() {
-        instanceDisposable.dispose()
+        eventSubject = null
     }
 
     fun registerEmitter(emitter: Observable<out ReactorUiEvent>) {
-        if (emittersInitialized) {
-            throw RuntimeException()
+        if (isEmittersRegistrationAllowed.not()) {
+            throw IllegalLifecycleOperation("registerEmitter can be only called in onEmittersInit()")
         }
-        eventEmitters.add(emitter)
+        emitter.subscribe(emitterConsumer)
     }
 
     fun <T> receiveUpdatesOnUi(observable: Observable<T>, receiverAction: Consumer<T>) {
-        viewBoundDisposable.add(
+        viewBoundDisposable?.add(
                 observable
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(receiverAction)
         )
     }
+
+    class IllegalLifecycleOperation(message: String) : RuntimeException(message)
 
 }

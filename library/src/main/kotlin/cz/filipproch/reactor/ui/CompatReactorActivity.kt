@@ -41,6 +41,8 @@ abstract class CompatReactorActivity<T : ReactorTranslator> :
         onPostUiCreated()
         onUiReady()
 
+        reactorViewHelper?.onReadyToRegisterEmitters()
+
         dispatch(ViewCreatedEvent(savedInstanceState))
     }
 
@@ -114,14 +116,14 @@ abstract class CompatReactorActivity<T : ReactorTranslator> :
         super.onStop()
         dispatch(ViewStoppedEvent)
 
-        reactorViewHelper?.unbindObserverFromView()
+        reactorViewHelper?.onViewNotUsable()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         dispatch(ViewDestroyedEvent)
 
-        reactorViewHelper?.destroy()
+        reactorViewHelper?.onViewDestroyed()
     }
 
     /*
