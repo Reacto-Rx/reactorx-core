@@ -13,12 +13,12 @@ import io.reactivex.Observable
  *
  * @author Filip Prochazka (@filipproch)
  */
-class TestFragment : ReactorFragment<TestFragmentTranslator>() {
+class TestFragment : ReactorFragment<TestTranslator>() {
 
     val helper = ReactorViewTestHelper()
 
-    override val translatorFactory: TranslatorFactory<TestFragmentTranslator>
-        get() = SimpleTranslatorFactory(TestFragmentTranslator::class.java)
+    override val translatorFactory: TranslatorFactory<TestTranslator>
+        get() = SimpleTranslatorFactory(TestTranslator::class.java)
 
     override fun onUiCreated() {
         super.onUiCreated()

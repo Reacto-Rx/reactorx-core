@@ -21,7 +21,8 @@ abstract class CompatReactorActivity<T : ReactorTranslator> :
         AppCompatActivity(),
         ReactorView<T> {
 
-    internal var reactorViewHelper: ReactorViewHelper<T>? = null
+    var reactorViewHelper: ReactorViewHelper<T>? = null
+        private set
 
     private val activityEventsSubject = PublishSubject.create<ReactorUiEvent>()
 

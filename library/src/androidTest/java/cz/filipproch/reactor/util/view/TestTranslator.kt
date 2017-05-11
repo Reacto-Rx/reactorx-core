@@ -8,7 +8,7 @@ import cz.filipproch.reactor.base.view.ReactorUiEvent
  *
  * @author Filip Prochazka (@filipproch)
  */
-class TestActivityTranslator : BaseReactorTranslator() {
+class TestTranslator : BaseReactorTranslator() {
 
     val receivedEvents = mutableListOf<ReactorUiEvent>()
 

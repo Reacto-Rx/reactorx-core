@@ -13,14 +13,14 @@ import io.reactivex.Observable
  *
  * @author Filip Prochazka (@filipproch)
  */
-class TestActivity : CompatReactorActivity<TestActivityTranslator>() {
+class TestActivity : CompatReactorActivity<TestTranslator>() {
 
     val helper = ReactorViewTestHelper()
 
     /* Activity */
 
-    override val translatorFactory: TranslatorFactory<TestActivityTranslator>
-        get() = SimpleTranslatorFactory(TestActivityTranslator::class.java)
+    override val translatorFactory: TranslatorFactory<TestTranslator>
+        get() = SimpleTranslatorFactory(TestTranslator::class.java)
 
     override fun onUiCreated() {
         super.onUiCreated()
