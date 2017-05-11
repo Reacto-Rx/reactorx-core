@@ -16,6 +16,8 @@ fun finishActivitySync(activity: Activity) {
         targetActivity == activity
                 && stage == Stage.DESTROYED
     }, onMainThread = true)
+
+    getInstrumentation().waitForIdleSync()
 }
 
 fun recreateActivity(activity: Activity) {
@@ -26,6 +28,8 @@ fun recreateActivity(activity: Activity) {
                 && targetActivity.javaClass == activity.javaClass
                 && stage == Stage.RESUMED
     }, onMainThread = true)
+
+    getInstrumentation().waitForIdleSync()
 }
 
 fun changeActivityOrientation(activity: Activity) {
@@ -42,6 +46,8 @@ fun changeActivityOrientation(activity: Activity) {
                 && targetActivity.javaClass == activity.javaClass
                 && stage == Stage.RESUMED
     })
+
+    getInstrumentation().waitForIdleSync()
 }
 
 fun getResumedActivityInstance(): Activity {
