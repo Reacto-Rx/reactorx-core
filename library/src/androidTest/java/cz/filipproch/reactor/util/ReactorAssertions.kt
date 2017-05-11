@@ -15,8 +15,6 @@ class ReactorTranslatorAssert(translator: TestTranslator?) :
     fun receivedFollowingEventsInOrder(
             vararg eventClazz: Class<out ReactorUiEvent>
     ) {
-        Java6Assertions.assertThat(this.actual).isNotNull()
-
         Java6Assertions.assertThat(this.actual.receivedEvents)
                 .extracting<Class<out ReactorUiEvent>> { it.javaClass }
                 .containsExactly(*eventClazz)

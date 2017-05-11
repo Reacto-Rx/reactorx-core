@@ -7,7 +7,6 @@ import cz.filipproch.reactor.ui.events.*
 import cz.filipproch.reactor.util.*
 import cz.filipproch.reactor.util.view.CompatActivityTestActivity
 import cz.filipproch.reactor.util.view.ReactorViewTestHelper
-import cz.filipproch.reactor.util.view.TestTranslator
 import org.assertj.core.api.Java6Assertions.assertThat
 import org.junit.Rule
 import org.junit.Test
@@ -32,12 +31,13 @@ class CompatReactorActivityTest {
 
         activity.helper.assertMethodsCalledInOrder(
                 CompatActivityTestActivity.METHOD_CREATE_LAYOUT,
+                ReactorViewTestHelper.METHOD_EMITTERS_INIT,
                 CompatActivityTestActivity.METHOD_UI_CREATED,
                 CompatActivityTestActivity.METHOD_POST_UI_CREATED,
                 CompatActivityTestActivity.METHOD_UI_READY,
-                ReactorViewTestHelper.METHOD_EMITTERS_INIT,
                 ReactorViewTestHelper.METHOD_CONNECT_MODEL_STREAM,
-                ReactorViewTestHelper.METHOD_CONNECT_ACTION_STREAM)
+                ReactorViewTestHelper.METHOD_CONNECT_ACTION_STREAM
+        )
     }
 
     /**
@@ -49,14 +49,14 @@ class CompatReactorActivityTest {
 
         changeActivityOrientation(activity)
 
-        activity = getRestartedActivityInstance() as CompatActivityTestActivity
+        activity = getResumedActivityInstance() as CompatActivityTestActivity
 
         activity.helper.assertMethodsCalledInOrder(
                 CompatActivityTestActivity.METHOD_CREATE_LAYOUT,
+                ReactorViewTestHelper.METHOD_EMITTERS_INIT,
                 CompatActivityTestActivity.METHOD_UI_RESTORED,
                 CompatActivityTestActivity.METHOD_POST_UI_CREATED,
                 CompatActivityTestActivity.METHOD_UI_READY,
-                ReactorViewTestHelper.METHOD_EMITTERS_INIT,
                 ReactorViewTestHelper.METHOD_CONNECT_MODEL_STREAM,
                 ReactorViewTestHelper.METHOD_CONNECT_ACTION_STREAM)
     }
@@ -70,14 +70,14 @@ class CompatReactorActivityTest {
 
         recreateActivity(activity)
 
-        activity = getRestartedActivityInstance() as CompatActivityTestActivity
+        activity = getResumedActivityInstance() as CompatActivityTestActivity
 
         activity.helper.assertMethodsCalledInOrder(
                 CompatActivityTestActivity.METHOD_CREATE_LAYOUT,
+                ReactorViewTestHelper.METHOD_EMITTERS_INIT,
                 CompatActivityTestActivity.METHOD_UI_RESTORED,
                 CompatActivityTestActivity.METHOD_POST_UI_CREATED,
                 CompatActivityTestActivity.METHOD_UI_READY,
-                ReactorViewTestHelper.METHOD_EMITTERS_INIT,
                 ReactorViewTestHelper.METHOD_CONNECT_MODEL_STREAM,
                 ReactorViewTestHelper.METHOD_CONNECT_ACTION_STREAM)
     }
@@ -93,8 +93,6 @@ class CompatReactorActivityTest {
     fun testTranslatorReceivedEventsActivityCleanStart() {
         val translator = activityRule.activity.reactorViewHelper?.translator
 
-        assertThat(translator).isNotNull()
-
         assertThatTranslator(translator)
                 .receivedFollowingEventsInOrder(
                         ViewCreatedEvent::class.java,
@@ -106,7 +104,7 @@ class CompatReactorActivityTest {
     @Test
     fun testTranslatorReceivedEventsActivityFinish() {
         val activity = activityRule.activity
-        val translator = activity.reactorViewHelper?.translator as TestTranslator
+        val translator = checkNotNull(activity.reactorViewHelper?.translator)
 
         // clear the events
         translator.receivedEvents.clear()
@@ -123,7 +121,7 @@ class CompatReactorActivityTest {
                         ViewStoppedEvent::class.java
                 )
 
-        assertThat(translator.uiEventStreamCompleted).isFalse()
+        assertThat(translator.isDestroyed).isTrue()
     }
 
     @Test

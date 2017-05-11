@@ -10,12 +10,21 @@ import android.support.v7.app.AppCompatActivity
  */
 class FragmentTestActivity : AppCompatActivity() {
 
+    private val FRAGMENT_TAG = "a_fragment"
+
+    var fragment: TestFragment? = null
+        private set
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) {
+            fragment = TestFragment()
+
             supportFragmentManager.beginTransaction()
-                    .replace(android.R.id.content, TestFragment())
-                    .commit()
+                    .replace(android.R.id.content, fragment, FRAGMENT_TAG)
+                    .commitNow()
+        } else {
+            fragment = supportFragmentManager.findFragmentByTag(FRAGMENT_TAG) as TestFragment?
         }
     }
 }

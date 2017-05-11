@@ -1,6 +1,9 @@
 package cz.filipproch.reactor.util.view
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import cz.filipproch.reactor.base.translator.SimpleTranslatorFactory
 import cz.filipproch.reactor.base.translator.TranslatorFactory
 import cz.filipproch.reactor.base.view.ReactorUiAction
@@ -19,6 +22,10 @@ class TestFragment : ReactorFragment<TestTranslator>() {
 
     override val translatorFactory: TranslatorFactory<TestTranslator>
         get() = SimpleTranslatorFactory(TestTranslator::class.java)
+
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return View(context)
+    }
 
     override fun onUiCreated() {
         super.onUiCreated()

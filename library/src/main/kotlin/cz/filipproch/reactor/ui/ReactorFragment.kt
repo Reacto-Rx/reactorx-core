@@ -18,13 +18,14 @@ import io.reactivex.subjects.PublishSubject
  *
  * @author Filip Prochazka (@filipproch)
  */
-abstract class ReactorFragment<out T : ReactorTranslator> :
+abstract class ReactorFragment<T : ReactorTranslator> :
         Fragment(),
         ReactorView<T> {
 
     private val TRANSLATOR_LOADER_ID = 1
 
-    private var reactorViewHelper: ReactorViewHelper<T>? = null
+    var reactorViewHelper: ReactorViewHelper<T>? = null
+        private set
 
     private val activityEventsSubject = PublishSubject.create<ReactorUiEvent>()
 
@@ -41,6 +42,8 @@ abstract class ReactorFragment<out T : ReactorTranslator> :
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        reactorViewHelper?.onReadyToRegisterEmitters()
+
         if (savedInstanceState != null) {
             onUiRestored(savedInstanceState)
         } else {
@@ -48,6 +51,7 @@ abstract class ReactorFragment<out T : ReactorTranslator> :
         }
 
         onPostUiCreated()
+        onUiReady()
     }
 
     override fun onStart() {

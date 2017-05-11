@@ -44,7 +44,7 @@ fun changeActivityOrientation(activity: Activity) {
     })
 }
 
-fun getRestartedActivityInstance(): Activity {
+fun getResumedActivityInstance(): Activity {
     var currentActivity: Activity? = null
     InstrumentationRegistry.getInstrumentation().runOnMainSync {
         val resumedActivities = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED)

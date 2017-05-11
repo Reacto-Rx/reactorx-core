@@ -12,7 +12,6 @@ class TestTranslator : BaseReactorTranslator() {
 
     var onCreatedCalled = false
     var onDestroyedCalled = false
-    var uiEventStreamCompleted = false
 
     val receivedEvents = mutableListOf<ReactorUiEvent>()
 
@@ -20,16 +19,15 @@ class TestTranslator : BaseReactorTranslator() {
         onCreatedCalled = true
 
         reactTo {
-            it.subscribe({
+            it.subscribe {
                 receivedEvents.add(it)
-            }, { /* ignore errors */ }, {
-                uiEventStreamCompleted = true
-            })
+            }
         }
     }
 
-    override fun onDestroyed() {
-        super.onDestroyed()
+    override fun onBeforeDestroyed() {
+        super.onBeforeDestroyed()
         onDestroyedCalled = true
     }
+
 }

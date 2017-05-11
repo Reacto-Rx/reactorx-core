@@ -4,7 +4,7 @@ import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
 import cz.filipproch.reactor.util.changeActivityOrientation
 import cz.filipproch.reactor.util.finishActivitySync
-import cz.filipproch.reactor.util.getRestartedActivityInstance
+import cz.filipproch.reactor.util.getResumedActivityInstance
 import cz.filipproch.reactor.util.view.TranslatorFragmentTestActivity
 import org.assertj.core.api.Java6Assertions.assertThat
 import org.junit.Rule
@@ -45,7 +45,7 @@ class ReactorTranslatorFragmentTest {
 
         changeActivityOrientation(activity)
 
-        activity = getRestartedActivityInstance() as TranslatorFragmentTestActivity
+        activity = getResumedActivityInstance() as TranslatorFragmentTestActivity
 
         assertThat(activity.translator).isNotNull()
 

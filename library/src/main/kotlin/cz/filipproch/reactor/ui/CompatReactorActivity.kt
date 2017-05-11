@@ -32,6 +32,8 @@ abstract class CompatReactorActivity<T : ReactorTranslator> :
 
         onCreateLayout()
 
+        reactorViewHelper?.onReadyToRegisterEmitters()
+
         if (savedInstanceState != null) {
             onUiRestored(savedInstanceState)
         } else {
@@ -40,8 +42,6 @@ abstract class CompatReactorActivity<T : ReactorTranslator> :
 
         onPostUiCreated()
         onUiReady()
-
-        reactorViewHelper?.onReadyToRegisterEmitters()
 
         dispatch(ViewCreatedEvent(savedInstanceState))
     }
