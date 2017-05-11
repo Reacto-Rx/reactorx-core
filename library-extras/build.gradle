@@ -14,7 +14,7 @@ android {
         versionCode 1
         versionName libVersion
 
-        multiDexEnabled true
+        multiDexEnabled true // only for Instrumentation Tests
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     }
 
@@ -22,6 +22,9 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            testCoverageEnabled true
         }
     }
 

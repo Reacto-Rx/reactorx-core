@@ -20,7 +20,31 @@ class BaseReactorTranslatorTest {
     @Before
     fun resetTranslatorInstance() {
         translator = TestReactorTranslator()
-        translator.onCreated()
+        translator.onInstanceCreated()
+    }
+
+    @Test
+    fun testOnInstanceCreated() {
+        translator = TestReactorTranslator()
+
+        assertThat(translator.isCreated).isFalse()
+
+        translator.onInstanceCreated()
+
+        assertThat(translator.isCreated).isTrue()
+
+        assertThat(translator.onCreatedCalled).isTrue()
+    }
+
+    @Test
+    fun testOnBeforeInstanceDestroyed() {
+        assertThat(translator.isDestroyed).isFalse()
+
+        translator.onBeforeInstanceDestroyed()
+
+        assertThat(translator.isDestroyed).isTrue()
+
+        assertThat(translator.onBeforeDestroyedCalled).isTrue()
     }
 
     /**
@@ -43,6 +67,22 @@ class BaseReactorTranslatorTest {
 
         // it's the same event
         assertThat(translator.lastEvent).isEqualTo(event)
+    }
+
+    @Test
+    fun unbindView() {
+        val eventEmitter = PublishSubject.create<ReactorUiEvent>()
+
+        // bind the view
+        translator.bindView(eventEmitter)
+
+        // execute the method
+        translator.unbindView()
+
+        val event = TestReactorUiEvent()
+        eventEmitter.onNext(event)
+
+        assertThat(translator.lastEvent).isNull()
     }
 
     @Test
@@ -80,8 +120,6 @@ class BaseReactorTranslatorTest {
         assertThat(lastAction).isInstanceOf(TestReactorUiAction::class.java)
     }
 
-
-
     @Test
     fun reactTo() {
         val eventEmitter = bindEmitterToTranslator()
@@ -102,9 +140,14 @@ class BaseReactorTranslatorTest {
 
     private class TestReactorTranslator : BaseReactorTranslator() {
 
+        var onCreatedCalled: Boolean = false
+        var onBeforeDestroyedCalled: Boolean = false
+
         var lastEvent: ReactorUiEvent? = null
 
         override fun onCreated() {
+            onCreatedCalled = true
+
             reactTo {
                 it.subscribe { lastEvent = it }
             }
@@ -116,6 +159,11 @@ class BaseReactorTranslatorTest {
             translateToAction {
                 it.map { TestReactorUiAction() }
             }
+        }
+
+        override fun onBeforeDestroyed() {
+            super.onBeforeDestroyed()
+            onBeforeDestroyedCalled = true
         }
     }
 

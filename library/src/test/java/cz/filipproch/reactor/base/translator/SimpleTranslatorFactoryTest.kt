@@ -1,8 +1,7 @@
 package cz.filipproch.reactor.base.translator
 
-import org.junit.Test
-
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Test
 
 
 /**
@@ -13,7 +12,7 @@ import org.assertj.core.api.Assertions.assertThat
 class SimpleTranslatorFactoryTest {
 
     @Test
-    fun create() {
+    fun testCreate() {
         val simpleFactory = SimpleTranslatorFactory(SimpleTranslator::class.java)
 
         val translatorInstance = simpleFactory.create()
@@ -21,7 +20,31 @@ class SimpleTranslatorFactoryTest {
         assertThat(translatorInstance).isInstanceOf(SimpleTranslator::class.java)
     }
 
+    @Test(expected = RuntimeException::class)
+    fun testCreateTranslatorWithoutPublicConstructor() {
+        val simpleFactory = SimpleTranslatorFactory(SimpleBrokenTranslator::class.java)
+
+        simpleFactory.create()
+    }
+
+    @Test(expected = RuntimeException::class)
+    fun testCreateAbstractTranslator() {
+        val simpleFactory = SimpleTranslatorFactory(SimpleAbstractTranslator::class.java)
+
+        simpleFactory.create()
+    }
+
     private class SimpleTranslator : BaseReactorTranslator() {
+        override fun onCreated() {
+        }
+    }
+
+    private class SimpleBrokenTranslator private constructor() : BaseReactorTranslator() {
+        override fun onCreated() {
+        }
+    }
+
+    private abstract class SimpleAbstractTranslator : BaseReactorTranslator() {
         override fun onCreated() {
         }
     }

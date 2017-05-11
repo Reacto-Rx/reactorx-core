@@ -23,6 +23,9 @@ abstract class BaseReactorTranslator : ReactorTranslator {
     private val instanceDisposable = CompositeDisposable()
     private var viewDisposable: Disposable? = null
 
+    var isCreated: Boolean = false
+        private set
+
     var isDestroyed: Boolean = false
         private set
 
@@ -47,6 +50,7 @@ abstract class BaseReactorTranslator : ReactorTranslator {
 
     override final fun onInstanceCreated() {
         onCreated()
+        isCreated = true
     }
 
     override final fun onBeforeInstanceDestroyed() {
