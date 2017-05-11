@@ -1,6 +1,7 @@
 package cz.filipproch.reactor.util.view
 
 import cz.filipproch.reactor.base.translator.BaseReactorTranslator
+import cz.filipproch.reactor.base.view.ReactorUiEvent
 
 /**
  * TODO: add description
@@ -8,7 +9,13 @@ import cz.filipproch.reactor.base.translator.BaseReactorTranslator
  * @author Filip Prochazka (@filipproch)
  */
 class TestActivityTranslator : BaseReactorTranslator() {
-    override fun onCreated() {
 
+    val receivedEvents = mutableListOf<ReactorUiEvent>()
+
+    override fun onCreated() {
+        reactTo {
+            it.subscribe { receivedEvents.add(it) }
+        }
     }
+
 }

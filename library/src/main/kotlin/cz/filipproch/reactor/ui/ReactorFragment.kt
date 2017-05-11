@@ -147,7 +147,18 @@ abstract class ReactorFragment<out T : ReactorTranslator> :
      *
      * This method is useful to set [android.view.View] listeners or other stuff that doesn't survive activity recreation
      */
+    @Deprecated("This method was deprecated due to ambiguous name", ReplaceWith(
+            "onUiReady"
+    ))
     open fun onPostUiCreated() {
+    }
+
+    /**
+     * Called from [onViewCreated] after either [onUiCreated] or [onUiRestored] has been called
+     *
+     * This method is useful to set [android.view.View] listeners or other stuff that doesn't survive activity recreation
+     */
+    open fun onUiReady() {
     }
 
     @Deprecated("This method is not part of the Reactor architecture and was moved to the 'extras' module")

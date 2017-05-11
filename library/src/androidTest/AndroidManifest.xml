@@ -2,7 +2,8 @@
     package="cz.filipproch.reactor">
 
     <application android:label="@string/app_name">
-        <activity android:name=".util.view.TestActivity"/>
+        <activity android:name=".util.view.TestActivity"
+            android:theme="@style/Theme.AppCompat"/>
     </application>
 
 </manifest>

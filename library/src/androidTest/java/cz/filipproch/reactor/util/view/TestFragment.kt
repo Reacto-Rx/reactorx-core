@@ -5,22 +5,20 @@ import cz.filipproch.reactor.base.translator.SimpleTranslatorFactory
 import cz.filipproch.reactor.base.translator.TranslatorFactory
 import cz.filipproch.reactor.base.view.ReactorUiAction
 import cz.filipproch.reactor.base.view.ReactorUiModel
-import cz.filipproch.reactor.ui.CompatReactorActivity
+import cz.filipproch.reactor.ui.ReactorFragment
 import io.reactivex.Observable
 
 /**
- * Simple [CompatReactorActivity] to be used in tests
+ * TODO: add description
  *
  * @author Filip Prochazka (@filipproch)
  */
-class TestActivity : CompatReactorActivity<TestActivityTranslator>() {
+class TestFragment : ReactorFragment<TestFragmentTranslator>() {
 
     val helper = ReactorViewTestHelper()
 
-    /* Activity */
-
-    override val translatorFactory: TranslatorFactory<TestActivityTranslator>
-        get() = SimpleTranslatorFactory(TestActivityTranslator::class.java)
+    override val translatorFactory: TranslatorFactory<TestFragmentTranslator>
+        get() = SimpleTranslatorFactory(TestFragmentTranslator::class.java)
 
     override fun onUiCreated() {
         super.onUiCreated()
@@ -40,10 +38,6 @@ class TestActivity : CompatReactorActivity<TestActivityTranslator>() {
     override fun onUiReady() {
         super.onUiReady()
         methodCalled(METHOD_UI_READY)
-    }
-
-    override fun onCreateLayout() {
-        methodCalled(METHOD_CREATE_LAYOUT)
     }
 
     override fun onEmittersInit() {
@@ -76,9 +70,6 @@ class TestActivity : CompatReactorActivity<TestActivityTranslator>() {
         val METHOD_UI_RESTORED = "onUiRestored"
         val METHOD_POST_UI_CREATED = "onPostUiCreated"
         val METHOD_UI_READY = "onUiReady"
-        val METHOD_CREATE_LAYOUT = "onCreateLayout"
     }
 
 }
-
-data class MethodCalled(val methodName: String, val timestamp: Long)

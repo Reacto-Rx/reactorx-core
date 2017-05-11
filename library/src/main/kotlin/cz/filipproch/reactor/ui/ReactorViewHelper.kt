@@ -25,7 +25,7 @@ class ReactorViewHelper<T : ReactorTranslator>(val reactorView: ReactorView<T>) 
     private val viewBoundDisposable = CompositeDisposable()
     private val instanceDisposable = CompositeDisposable()
 
-    private var translator: T? = null
+    internal var translator: T? = null
 
     fun bindTranslatorWithView(translator: T) {
         reactorView.onEmittersInit()

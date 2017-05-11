@@ -3,7 +3,10 @@ package cz.filipproch.reactor.ui
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import cz.filipproch.reactor.base.translator.ReactorTranslator
-import cz.filipproch.reactor.base.view.*
+import cz.filipproch.reactor.base.view.ReactorUiAction
+import cz.filipproch.reactor.base.view.ReactorUiEvent
+import cz.filipproch.reactor.base.view.ReactorUiModel
+import cz.filipproch.reactor.base.view.ReactorView
 import cz.filipproch.reactor.ui.events.*
 import io.reactivex.Observable
 import io.reactivex.functions.Consumer
@@ -14,13 +17,11 @@ import io.reactivex.subjects.PublishSubject
  *
  * @author Filip Prochazka (@filipproch)
  */
-abstract class CompatReactorActivity<out T : ReactorTranslator> :
+abstract class CompatReactorActivity<T : ReactorTranslator> :
         AppCompatActivity(),
         ReactorView<T> {
 
-    private val TRANSLATOR_LOADER_ID = 1
-
-    private var reactorViewHelper: ReactorViewHelper<T>? = null
+    internal var reactorViewHelper: ReactorViewHelper<T>? = null
 
     private val activityEventsSubject = PublishSubject.create<ReactorUiEvent>()
 
@@ -29,7 +30,7 @@ abstract class CompatReactorActivity<out T : ReactorTranslator> :
         reactorViewHelper = ReactorViewHelper(this)
 
         onCreateLayout()
-        
+
         if (savedInstanceState != null) {
             onUiRestored(savedInstanceState)
         } else {
@@ -37,6 +38,7 @@ abstract class CompatReactorActivity<out T : ReactorTranslator> :
         }
 
         onPostUiCreated()
+        onUiReady()
 
         dispatch(ViewCreatedEvent(savedInstanceState))
     }
@@ -142,7 +144,19 @@ abstract class CompatReactorActivity<out T : ReactorTranslator> :
      *
      * This method is useful to set [android.view.View] listeners or other stuff that doesn't survive activity recreation
      */
+    @Deprecated("This method was deprecated due to ambiguous name", ReplaceWith(
+            "onUiReady"
+    ))
     open fun onPostUiCreated() {
+    }
+
+    /**
+     * Called from [onCreate] after either [onUiCreated] or [onUiRestored] has been called
+     *
+     * This method is useful to set [android.view.View] listeners or other stuff that doesn't survive activity recreation
+     */
+    open fun onUiReady() {
+
     }
 
     @Deprecated("This method is not part of the Reactor architecture and was moved to the 'extras' module",

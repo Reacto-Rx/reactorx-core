@@ -20,11 +20,14 @@ class DumbTranslator : ReactorTranslator {
 
     override fun onDestroyed() {}
 
-    override fun bindView(events: Observable<out ReactorUiEvent>): Observable<out ReactorUiModel> {
+    override fun bindView(events: Observable<out ReactorUiEvent>) {
+    }
+
+    override fun observeUiModels(): Observable<out ReactorUiModel> {
         return Observable.empty()
     }
 
-    override fun observeActions(): Observable<out ReactorUiAction> {
+    override fun observeUiActions(): Observable<out ReactorUiAction> {
         return Observable.empty()
     }
 
