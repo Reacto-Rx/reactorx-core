@@ -13,6 +13,9 @@ android {
         targetSdkVersion 25
         versionCode 1
         versionName libVersion
+
+        multiDexEnabled true
+        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     }
 
     buildTypes {
@@ -40,10 +43,22 @@ dependencies {
     // Android Support
     compile "com.android.support:recyclerview-v7:$supportLibraryVersion"
 
-    // Test
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.assertj:assertj-core:3.7.0'
+    /*
+        Test Dependencies
+     */
 
+    // JUnit
+    testCompile 'junit:junit:4.12'
+
+    // Useful Assertions
+    testCompile 'org.assertj:assertj-core:3.7.0'
+    androidTestCompile 'org.assertj:assertj-core:2.7.0'
+    androidTestCompile 'com.squareup.assertj:assertj-android:1.1.1'
+
+    // Android Test Framework
+    androidTestCompile('com.android.support:multidex-instrumentation:1.0.1') {
+        exclude group: 'com.android.support', module: 'multidex'
+    }
     androidTestCompile "com.android.support:support-annotations:$supportLibraryVersion"
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test:rules:0.5'

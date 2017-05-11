@@ -15,7 +15,7 @@ import cz.filipproch.reactor.ui.ReactorFragment
  *
  * @author Filip Prochazka (@filipproch)
  */
-abstract class ExtendedReactorFragment<out T : ReactorTranslator> :
+abstract class ExtendedReactorFragment<T : ReactorTranslator> :
         ReactorFragment<T>(),
         AndroidLayoutView {
 
