@@ -14,12 +14,13 @@ machine:
 
 test:
   override:
-    - ./gradlew build jacocoTestReport assembleAndroidTest
+    - ./gradlew assembleDebug -PdisablePreDex
+    - ./gradlew jacocoTestReport -PdisablePreDex
     - emulator -avd circleci-android24 -no-window:
             background: true
             parallel: true
     - circle-android wait-for-boot
-    - ./gradlew connectedAndroidTest
+    - ./gradlew connectedDebugAndroidTest -PdisablePreDex --stacktrace
     - cp -r my-project/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS
     - bash <(curl -s https://codecov.io/bash)
 
