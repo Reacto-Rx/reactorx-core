@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+//apply plugin: 'org.jetbrains.dokka'
 apply plugin: 'jacoco-android'
 
 project.archivesBaseName = 'reactor-android'
@@ -67,5 +68,20 @@ dependencies {
     androidTestCompile 'com.android.support.test:rules:0.5'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
 }
+
+/*
+dokka {
+    moduleName = 'library'
+    sourceDirs = files('src/main/kotlin')
+    outputDirectory = "$rootDir/docs/kdoc/library"
+}
+
+task dokkaJavadoc(type: org.jetbrains.dokka.gradle.DokkaTask) {
+    moduleName = 'library'
+    sourceDirs = files('src/main/kotlin')
+    outputFormat = 'javadoc'
+    outputDirectory = "$rootDir/docs/javadoc/library"
+}
+*/
 
 apply from: '../util/mavenConfig.gradle'
