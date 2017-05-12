@@ -14,9 +14,9 @@ machine:
 
 test:
   override:
-    - ./gradlew assembleDebug -PdisablePreDex
+    - ./gradlew assemble -PdisablePreDex
     - ./gradlew jacocoTestReport -PdisablePreDex
-    - ./gradlew assembleDebugAndroidTest -PdisablePreDex
+    - ./gradlew assembleAndroidTest -PdisablePreDex
     - emulator -avd circleci-android24 -no-window:
             background: true
             parallel: true
