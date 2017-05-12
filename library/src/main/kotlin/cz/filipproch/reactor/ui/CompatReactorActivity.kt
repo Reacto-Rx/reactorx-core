@@ -70,19 +70,6 @@ abstract class CompatReactorActivity<T : ReactorTranslator> :
         reactorViewHelper?.registerEmitter(emitter)
     }
 
-    override fun <T> receiveUpdatesOnUi(observable: Observable<T>, receiverAction: Consumer<T>) {
-        reactorViewHelper?.receiveUpdatesOnUi(observable, receiverAction)
-    }
-
-    @Deprecated("Replaced with extension function consumeOnUi", ReplaceWith(
-            "receiver.consumeOnUi(action)"
-    ))
-    fun <T : ReactorUiModel> receiveUpdatesOnUi(receiver: Observable<T>, action: (T) -> Unit) {
-        receiveUpdatesOnUi(receiver, Consumer<T> {
-            action.invoke(it)
-        })
-    }
-
     override fun <T> Observable<T>.consumeOnUi(receiverAction: Consumer<T>) {
         reactorViewHelper?.receiveUpdatesOnUi(this, receiverAction)
     }

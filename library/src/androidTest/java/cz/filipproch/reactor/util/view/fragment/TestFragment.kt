@@ -1,4 +1,4 @@
-package cz.filipproch.reactor.util.view
+package cz.filipproch.reactor.util.view.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,6 +9,8 @@ import cz.filipproch.reactor.base.translator.TranslatorFactory
 import cz.filipproch.reactor.base.view.ReactorUiAction
 import cz.filipproch.reactor.base.view.ReactorUiModel
 import cz.filipproch.reactor.ui.ReactorFragment
+import cz.filipproch.reactor.util.view.ReactorViewTestHelper
+import cz.filipproch.reactor.util.view.TestTranslator
 import io.reactivex.Observable
 
 /**

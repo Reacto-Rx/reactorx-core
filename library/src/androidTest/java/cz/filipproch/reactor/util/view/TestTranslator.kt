@@ -23,6 +23,16 @@ class TestTranslator : BaseReactorTranslator() {
                 receivedEvents.add(it)
             }
         }
+
+        translateToModel {
+            it.ofType(ReturnUiModelEvent::class.java)
+                    .map { TestUiModel }
+        }
+
+        translateToAction {
+            it.ofType(ReturnUiActionEvent::class.java)
+                    .map { TestUiAction }
+        }
     }
 
     override fun onBeforeDestroyed() {

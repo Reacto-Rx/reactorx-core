@@ -22,8 +22,8 @@ abstract class ToolbarReactorFragment<T : ReactorTranslator> : ExtendedReactorFr
 
     private val optionsItemSubject = PublishSubject.create<OptionsItemSelectedEvent>()
 
-    override fun onPostUiCreated() {
-        super.onPostUiCreated()
+    override fun onUiReady() {
+        super.onUiReady()
         bindToolbar()
         if (optionsMenuResId != NO_OPTIONS_MENU) {
             setHasOptionsMenu(true)

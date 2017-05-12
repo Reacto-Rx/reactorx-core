@@ -22,8 +22,6 @@ abstract class ReactorFragment<T : ReactorTranslator> :
         Fragment(),
         ReactorView<T> {
 
-    private val TRANSLATOR_LOADER_ID = 1
-
     var reactorViewHelper: ReactorViewHelper<T>? = null
         private set
 
@@ -110,19 +108,6 @@ abstract class ReactorFragment<T : ReactorTranslator> :
         reactorViewHelper?.registerEmitter(emitter)
     }
 
-    override fun <T> receiveUpdatesOnUi(observable: Observable<T>, receiverAction: Consumer<T>) {
-        reactorViewHelper?.receiveUpdatesOnUi(observable, receiverAction)
-    }
-
-    @Deprecated("Replaced with extension function consumeOnUi", ReplaceWith(
-            "receiver.consumeOnUi(action)"
-    ))
-    fun <T : ReactorUiModel> receiveUpdatesOnUi(receiver: Observable<T>, action: (T) -> Unit) {
-        receiveUpdatesOnUi(receiver, Consumer<T> {
-            action.invoke(it)
-        })
-    }
-
     override fun <T> Observable<T>.consumeOnUi(receiverAction: Consumer<T>) {
         reactorViewHelper?.receiveUpdatesOnUi(this, receiverAction)
     }
@@ -166,15 +151,6 @@ abstract class ReactorFragment<T : ReactorTranslator> :
      * This method is useful to set [android.view.View] listeners or other stuff that doesn't survive activity recreation
      */
     open fun onUiReady() {
-    }
-
-    @Deprecated("This method is not part of the Reactor architecture and was moved to the 'extras' module")
-    open fun getLayoutResId(): Int {
-        return -1
-    }
-
-    @Deprecated("This method is not part of the Reactor architecture and was moved to the 'extras' module")
-    open fun bindViews(view: View) {
     }
 
 }

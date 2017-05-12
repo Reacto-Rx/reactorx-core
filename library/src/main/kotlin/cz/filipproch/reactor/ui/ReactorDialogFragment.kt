@@ -2,7 +2,6 @@ package cz.filipproch.reactor.ui
 
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
-import android.support.v4.app.LoaderManager
 import android.view.View
 import cz.filipproch.reactor.base.translator.ReactorTranslator
 import cz.filipproch.reactor.base.view.ReactorUiAction
@@ -21,8 +20,7 @@ import io.reactivex.subjects.PublishSubject
  */
 abstract class ReactorDialogFragment<T : ReactorTranslator> :
         DialogFragment(),
-        ReactorView<T>,
-        LoaderManager.LoaderCallbacks<T> {
+        ReactorView<T> {
 
     private var reactorViewHelper: ReactorViewHelper<T>? = null
 
@@ -104,19 +102,6 @@ abstract class ReactorDialogFragment<T : ReactorTranslator> :
 
     override fun registerEmitter(emitter: Observable<out ReactorUiEvent>) {
         reactorViewHelper?.registerEmitter(emitter)
-    }
-
-    override fun <T> receiveUpdatesOnUi(observable: Observable<T>, receiverAction: Consumer<T>) {
-        reactorViewHelper?.receiveUpdatesOnUi(observable, receiverAction)
-    }
-
-    @Deprecated("Replaced with extension function consumeOnUi", ReplaceWith(
-            "receiver.consumeOnUi(action)"
-    ))
-    fun <T : ReactorUiModel> receiveUpdatesOnUi(receiver: Observable<T>, action: (T) -> Unit) {
-        receiveUpdatesOnUi(receiver, Consumer<T> {
-            action.invoke(it)
-        })
     }
 
     override fun <T> Observable<T>.consumeOnUi(receiverAction: Consumer<T>) {

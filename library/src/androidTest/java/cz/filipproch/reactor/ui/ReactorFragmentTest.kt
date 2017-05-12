@@ -1,13 +1,14 @@
 package cz.filipproch.reactor.ui
 
 import android.os.Build
+import android.support.test.InstrumentationRegistry.getInstrumentation
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
 import cz.filipproch.reactor.ui.events.*
 import cz.filipproch.reactor.util.*
-import cz.filipproch.reactor.util.view.FragmentTestActivity
-import cz.filipproch.reactor.util.view.ReactorViewTestHelper
-import cz.filipproch.reactor.util.view.TestFragment
+import cz.filipproch.reactor.util.view.*
+import cz.filipproch.reactor.util.view.fragment.FragmentTestActivity
+import cz.filipproch.reactor.util.view.fragment.TestFragment
 import org.assertj.core.api.Java6Assertions.assertThat
 import org.junit.Rule
 import org.junit.Test
@@ -126,6 +127,72 @@ class ReactorFragmentTest {
                         ViewStartedEvent::class.java,
                         ViewResumedEvent::class.java
                 )
+    }
+
+    @Test
+    fun testReceiveUiModelInResponseToEvent() {
+        fragment.dispatch(ReturnUiModelEvent)
+
+        getInstrumentation().waitForIdleSync()
+
+        assertThat(fragment.helper.receivedUiModels).hasSize(1)
+
+        assertThat(fragment.helper.receivedUiModels.first())
+                .isInstanceOf(TestUiModel::class.java)
+    }
+
+    @Test
+    fun testReceiveUiActionInResponseToEvent() {
+        fragment.dispatch(ReturnUiActionEvent)
+
+        getInstrumentation().waitForIdleSync()
+
+        assertThat(fragment.helper.receivedUiActions).hasSize(1)
+
+        assertThat(fragment.helper.receivedUiActions.first())
+                .isInstanceOf(TestUiAction::class.java)
+    }
+
+    @Test
+    fun testReceiveUiModelAfterOrientationChanges() {
+        fragment.dispatch(ReturnUiModelEvent)
+
+        changeActivityOrientation(activityRule.activity)
+
+        assertThat(fragment.helper.receivedUiModels).hasSize(1)
+
+        assertThat(fragment.helper.receivedUiModels.first())
+                .isInstanceOf(TestUiModel::class.java)
+    }
+
+    @Test
+    fun testReceiveUiModelAfterActivityRecreated() {
+        fragment.dispatch(ReturnUiModelEvent)
+
+        recreateActivity(activityRule.activity)
+
+        assertThat(fragment.helper.receivedUiModels).hasSize(1)
+
+        assertThat(fragment.helper.receivedUiModels.first())
+                .isInstanceOf(TestUiModel::class.java)
+    }
+
+    @Test
+    fun testNotReceiveUiActionAfterOrientationChanges() {
+        fragment.dispatch(ReturnUiActionEvent)
+
+        changeActivityOrientation(activityRule.activity)
+
+        assertThat(fragment.helper.receivedUiActions).isEmpty()
+    }
+
+    @Test
+    fun testNotReceiveUiActionAfterActivityRecreated() {
+        fragment.dispatch(ReturnUiActionEvent)
+
+        recreateActivity(activityRule.activity)
+
+        assertThat(fragment.helper.receivedUiActions).isEmpty()
     }
 
 }

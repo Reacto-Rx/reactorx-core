@@ -1,12 +1,13 @@
 package cz.filipproch.reactor.ui
 
 import android.os.Build
+import android.support.test.InstrumentationRegistry.getInstrumentation
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
 import cz.filipproch.reactor.ui.events.*
 import cz.filipproch.reactor.util.*
-import cz.filipproch.reactor.util.view.CompatActivityTestActivity
-import cz.filipproch.reactor.util.view.ReactorViewTestHelper
+import cz.filipproch.reactor.util.view.*
+import cz.filipproch.reactor.util.view.activity.CompatActivityTestActivity
 import org.assertj.core.api.Java6Assertions.assertThat
 import org.junit.Rule
 import org.junit.Test
@@ -143,6 +144,86 @@ class CompatReactorActivityTest {
                         ViewStartedEvent::class.java,
                         ViewResumedEvent::class.java
                 )
+    }
+
+    @Test
+    fun testReceiveUiModelInResponseToEvent() {
+        val activity = activityRule.activity
+        activity.dispatch(ReturnUiModelEvent)
+
+        getInstrumentation().waitForIdleSync()
+
+        assertThat(activity.helper.receivedUiModels).hasSize(1)
+
+        assertThat(activity.helper.receivedUiModels.first())
+                .isInstanceOf(TestUiModel::class.java)
+    }
+
+    @Test
+    fun testReceiveUiActionInResponseToEvent() {
+        val activity = activityRule.activity
+        activity.dispatch(ReturnUiActionEvent)
+
+        getInstrumentation().waitForIdleSync()
+
+        assertThat(activity.helper.receivedUiActions).hasSize(1)
+
+        assertThat(activity.helper.receivedUiActions.first())
+                .isInstanceOf(TestUiAction::class.java)
+    }
+
+    @Test
+    fun testReceiveUiModelAfterOrientationChanges() {
+        var activity = activityRule.activity
+        activity.dispatch(ReturnUiModelEvent)
+
+        changeActivityOrientation(activity)
+
+        activity = getResumedActivityInstance() as CompatActivityTestActivity
+
+        assertThat(activity.helper.receivedUiModels).hasSize(1)
+
+        assertThat(activity.helper.receivedUiModels.first())
+                .isInstanceOf(TestUiModel::class.java)
+    }
+
+    @Test
+    fun testReceiveUiModelAfterActivityRecreated() {
+        var activity = activityRule.activity
+        activity.dispatch(ReturnUiModelEvent)
+
+        recreateActivity(activity)
+
+        activity = getResumedActivityInstance() as CompatActivityTestActivity
+
+        assertThat(activity.helper.receivedUiModels).hasSize(1)
+
+        assertThat(activity.helper.receivedUiModels.first())
+                .isInstanceOf(TestUiModel::class.java)
+    }
+
+    @Test
+    fun testNotReceiveUiActionAfterOrientationChanges() {
+        var activity = activityRule.activity
+        activity.dispatch(ReturnUiActionEvent)
+
+        changeActivityOrientation(activity)
+
+        activity = getResumedActivityInstance() as CompatActivityTestActivity
+
+        assertThat(activity.helper.receivedUiActions).isEmpty()
+    }
+
+    @Test
+    fun testNotReceiveUiActionAfterActivityRecreated() {
+        var activity = activityRule.activity
+        activity.dispatch(ReturnUiActionEvent)
+
+        recreateActivity(activity)
+
+        activity = getResumedActivityInstance() as CompatActivityTestActivity
+
+        assertThat(activity.helper.receivedUiActions).isEmpty()
     }
 
 }

@@ -20,8 +20,8 @@ abstract class ToolbarReactorActivity<T : ReactorTranslator> : ExtendedReactorAc
 
     private val optionsItemSubject = PublishSubject.create<OptionsItemSelectedEvent>()
 
-    override fun onPostUiCreated() {
-        super.onPostUiCreated()
+    override fun onUiReady() {
+        super.onUiReady()
         bindToolbar()
     }
 

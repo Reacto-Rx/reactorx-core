@@ -1,10 +1,24 @@
 package cz.filipproch.reactor.ui
 
-import org.junit.Assert.*
+import android.support.test.rule.ActivityTestRule
+import android.support.test.runner.AndroidJUnit4
+import cz.filipproch.reactor.util.view.dialogfragment.DialogFragmentTestActivity
+import org.junit.Rule
+import org.junit.Test
+import org.junit.runner.RunWith
 
 /**
- * TODO: add description
-
  * @author Filip Prochazka (@filipproch)
  */
-class ReactorDialogFragmentTest
+@RunWith(AndroidJUnit4::class)
+class ReactorDialogFragmentTest {
+
+    @Rule
+    @JvmField val activityRule = ActivityTestRule(DialogFragmentTestActivity::class.java)
+
+    @Test
+    fun testDialogFragmentLifecycle() {
+
+    }
+
+}

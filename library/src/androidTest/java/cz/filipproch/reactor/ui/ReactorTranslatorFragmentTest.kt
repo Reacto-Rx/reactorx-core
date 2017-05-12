@@ -5,7 +5,7 @@ import android.support.test.runner.AndroidJUnit4
 import cz.filipproch.reactor.util.changeActivityOrientation
 import cz.filipproch.reactor.util.finishActivitySync
 import cz.filipproch.reactor.util.getResumedActivityInstance
-import cz.filipproch.reactor.util.view.TranslatorFragmentTestActivity
+import cz.filipproch.reactor.util.view.translatorfragment.TranslatorFragmentTestActivity
 import org.assertj.core.api.Java6Assertions.assertThat
 import org.junit.Rule
 import org.junit.Test

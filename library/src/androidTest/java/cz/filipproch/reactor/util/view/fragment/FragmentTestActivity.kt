@@ -1,4 +1,4 @@
-package cz.filipproch.reactor.util.view
+package cz.filipproch.reactor.util.view.fragment
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity

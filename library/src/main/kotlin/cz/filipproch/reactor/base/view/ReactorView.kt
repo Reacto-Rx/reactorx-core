@@ -59,11 +59,6 @@ interface ReactorView<out T : ReactorTranslator> {
      */
     fun dispatch(event: ReactorUiEvent)
 
-    @Deprecated("Replaced with extension function consumeOnUi", ReplaceWith(
-            "observable.consumeOnUi(receiverAction)"
-    ))
-    fun <T> receiveUpdatesOnUi(observable: Observable<T>, receiverAction: Consumer<T>)
-
     /**
      * Subscribes [receiverAction] to [Observable] on Android UI thread
      */

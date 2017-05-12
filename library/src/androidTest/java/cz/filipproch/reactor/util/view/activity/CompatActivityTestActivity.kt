@@ -1,4 +1,4 @@
-package cz.filipproch.reactor.util.view
+package cz.filipproch.reactor.util.view.activity
 
 import android.os.Bundle
 import cz.filipproch.reactor.base.translator.SimpleTranslatorFactory
@@ -6,6 +6,8 @@ import cz.filipproch.reactor.base.translator.TranslatorFactory
 import cz.filipproch.reactor.base.view.ReactorUiAction
 import cz.filipproch.reactor.base.view.ReactorUiModel
 import cz.filipproch.reactor.ui.CompatReactorActivity
+import cz.filipproch.reactor.util.view.ReactorViewTestHelper
+import cz.filipproch.reactor.util.view.TestTranslator
 import io.reactivex.Observable
 
 /**
