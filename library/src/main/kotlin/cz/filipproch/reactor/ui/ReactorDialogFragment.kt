@@ -22,7 +22,8 @@ abstract class ReactorDialogFragment<T : ReactorTranslator> :
         DialogFragment(),
         ReactorView<T> {
 
-    private var reactorViewHelper: ReactorViewHelper<T>? = null
+    var reactorViewHelper: ReactorViewHelper<T>? = null
+        private set
 
     private val activityEventsSubject = PublishSubject.create<ReactorUiEvent>()
 
@@ -39,13 +40,15 @@ abstract class ReactorDialogFragment<T : ReactorTranslator> :
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        reactorViewHelper?.onReadyToRegisterEmitters()
+
         if (savedInstanceState != null) {
             onUiRestored(savedInstanceState)
         } else {
             onUiCreated()
         }
 
-        onPostUiCreated()
+        onUiReady()
     }
 
     override fun onStart() {
@@ -131,7 +134,7 @@ abstract class ReactorDialogFragment<T : ReactorTranslator> :
      *
      * This method is useful to set [android.view.View] listeners or other stuff that doesn't survive activity recreation
      */
-    open fun onPostUiCreated() {
+    open fun onUiReady() {
     }
 
 }

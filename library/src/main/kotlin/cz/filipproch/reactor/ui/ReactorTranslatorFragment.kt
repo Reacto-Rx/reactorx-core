@@ -13,7 +13,9 @@ import cz.filipproch.reactor.base.translator.TranslatorFactory
 class ReactorTranslatorFragment<T : ReactorTranslator> : Fragment() {
 
     private var factory: TranslatorFactory<T>? = null
-    internal var isInvalid: Boolean = false
+
+    var isInvalid: Boolean = false
+        private set
 
     var isDestroyed: Boolean = true
         private set
@@ -33,6 +35,7 @@ class ReactorTranslatorFragment<T : ReactorTranslator> : Fragment() {
         super.onCreate(savedInstanceState)
         if (factory == null) {
             isInvalid = true
+            return
         }
         translator = factory?.create()
         translator?.onInstanceCreated()

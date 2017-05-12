@@ -23,14 +23,23 @@ class TranslatorFragmentTestActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        translator = ReactorTranslatorHelper.getTranslatorFromFragment(supportFragmentManager, translatorFactory)
+        translator = ReactorTranslatorHelper
+                .getTranslatorFromFragment(supportFragmentManager, translatorFactory)
 
-        translatorFragment = ReactorTranslatorHelper.findTranslatorFragment(supportFragmentManager)
+        translatorFragment = ReactorTranslatorHelper
+                .findTranslatorFragment(supportFragmentManager)
     }
 
     class TranslatorFragmentTestTranslator : BaseReactorTranslator() {
         override fun onCreated() {
         }
+    }
+
+    fun replaceFragmentWithNewInstance(fragment: ReactorTranslatorFragment<TranslatorFragmentTestTranslator>) {
+        supportFragmentManager.beginTransaction()
+                .remove(translatorFragment)
+                .add(fragment, ReactorTranslatorFragment.TAG)
+                .commitNow()
     }
 
 }
