@@ -8,6 +8,7 @@ import android.support.test.InstrumentationRegistry.getInstrumentation
 import android.support.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import android.support.test.runner.lifecycle.Stage
 import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 
 fun finishActivitySync(activity: Activity) {
     executeActionAndWaitForActivityStage({
@@ -16,6 +17,15 @@ fun finishActivitySync(activity: Activity) {
         targetActivity == activity
                 && stage == Stage.DESTROYED
     }, onMainThread = true)
+
+    getInstrumentation().waitForIdleSync()
+}
+
+fun waitForActivityToFinish(activity: Activity) {
+    executeActionAndWaitForActivityStage({}, { targetActivity, stage ->
+        targetActivity == activity
+                && stage == Stage.DESTROYED
+    })
 
     getInstrumentation().waitForIdleSync()
 }
@@ -65,7 +75,8 @@ fun getResumedActivityInstance(): Activity {
 fun executeActionAndWaitForActivityStage(
         action: () -> Unit,
         checkStage: (activity: Activity, stage: Stage) -> Boolean,
-        onMainThread: Boolean = false
+        onMainThread: Boolean = false,
+        timeout: Long = 5000
 ) {
     val countDownLatch = CountDownLatch(1)
 
@@ -92,7 +103,7 @@ fun executeActionAndWaitForActivityStage(
     }
 
     try {
-        countDownLatch.await()
+        countDownLatch.await(timeout, TimeUnit.MILLISECONDS)
     } catch (e: InterruptedException) {
         throw RuntimeException("Action failed", e)
     }

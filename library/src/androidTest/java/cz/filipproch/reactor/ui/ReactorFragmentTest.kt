@@ -2,7 +2,6 @@ package cz.filipproch.reactor.ui
 
 import android.os.Build
 import android.support.test.InstrumentationRegistry.getInstrumentation
-import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
 import cz.filipproch.reactor.ui.events.*
 import cz.filipproch.reactor.util.*
@@ -21,7 +20,7 @@ import org.junit.runner.RunWith
 class ReactorFragmentTest {
 
     @Rule
-    @JvmField val activityRule = ActivityTestRule(FragmentTestActivity::class.java)
+    @JvmField val activityRule = CustomActivityTestRule(FragmentTestActivity::class.java)
 
     private val fragment: TestFragment
         get() = checkNotNull((getResumedActivityInstance() as FragmentTestActivity).fragment)

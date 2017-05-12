@@ -1,9 +1,9 @@
 package cz.filipproch.reactor.ui
 
 import android.support.test.InstrumentationRegistry.getInstrumentation
-import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
 import android.support.v4.app.Fragment
+import cz.filipproch.reactor.util.CustomActivityTestRule
 import cz.filipproch.reactor.util.changeActivityOrientation
 import cz.filipproch.reactor.util.finishActivitySync
 import cz.filipproch.reactor.util.getResumedActivityInstance
@@ -20,7 +20,7 @@ import org.junit.runner.RunWith
 class ReactorTranslatorFragmentTest {
 
     @Rule
-    @JvmField val activityRule = ActivityTestRule(TranslatorFragmentTestActivity::class.java)
+    @JvmField val activityRule = CustomActivityTestRule(TranslatorFragmentTestActivity::class.java)
 
     @Test
     fun testTranslatorCreated() {
