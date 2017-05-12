@@ -8,11 +8,11 @@ import cz.filipproch.reactor.base.translator.TranslatorFactory
 import cz.filipproch.reactor.base.view.ReactorUiEvent
 import cz.filipproch.reactor.base.view.ReactorUiModel
 import cz.filipproch.reactor.demo.R
-import cz.filipproch.reactor.extras.ui.views.activity.ExtendedReactorActivity
+import cz.filipproch.reactor.extras.ui.views.activity.ExtendedReactorCompatActivity
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : ExtendedReactorActivity<MainTranslator>() {
+class MainCompatActivity : ExtendedReactorCompatActivity<MainTranslator>() {
 
     override val layoutResourceId: Int
         get() = R.layout.activity_main

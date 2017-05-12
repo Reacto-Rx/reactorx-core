@@ -16,7 +16,7 @@ import io.reactivex.subjects.PublishSubject
  *
  * @author Filip Prochazka (@filipproch)
  */
-abstract class ToolbarReactorActivity<T : ReactorTranslator> : ExtendedReactorActivity<T>() {
+abstract class ToolbarReactorCompatActivity<T : ReactorTranslator> : ExtendedReactorCompatActivity<T>() {
 
     private val optionsItemSubject = PublishSubject.create<OptionsItemSelectedEvent>()
 

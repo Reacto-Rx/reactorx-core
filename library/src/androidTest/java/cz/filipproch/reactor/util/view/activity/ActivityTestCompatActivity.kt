@@ -5,17 +5,17 @@ import cz.filipproch.reactor.base.translator.SimpleTranslatorFactory
 import cz.filipproch.reactor.base.translator.TranslatorFactory
 import cz.filipproch.reactor.base.view.ReactorUiAction
 import cz.filipproch.reactor.base.view.ReactorUiModel
-import cz.filipproch.reactor.ui.CompatReactorActivity
+import cz.filipproch.reactor.ui.ReactorCompatActivity
 import cz.filipproch.reactor.util.view.ReactorViewTestHelper
 import cz.filipproch.reactor.util.view.TestTranslator
 import io.reactivex.Observable
 
 /**
- * Simple [CompatReactorActivity] to be used in tests
+ * Simple [ReactorCompatActivity] to be used in tests
  *
  * @author Filip Prochazka (@filipproch)
  */
-class CompatActivityTestActivity : CompatReactorActivity<TestTranslator>() {
+class ActivityTestCompatActivity : ReactorCompatActivity<TestTranslator>() {
 
     val helper = ReactorViewTestHelper()
 

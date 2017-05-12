@@ -16,7 +16,7 @@ import cz.filipproch.reactor.extras.ui.views.dialog.ExtendedReactorDialogFragmen
 import cz.filipproch.reactor.extras.ui.views.events.ActivityResultEvent
 import cz.filipproch.reactor.extras.ui.views.events.DialogResultEvent
 import cz.filipproch.reactor.extras.ui.views.model.ContentFragmentModel
-import cz.filipproch.reactor.ui.CompatReactorActivity
+import cz.filipproch.reactor.ui.ReactorCompatActivity
 import io.reactivex.Observable
 
 /**
@@ -24,8 +24,8 @@ import io.reactivex.Observable
  *
  * @author Filip Prochazka (@filipproch)
  */
-abstract class ExtendedReactorActivity<T : ReactorTranslator> :
-        CompatReactorActivity<T>(),
+abstract class ExtendedReactorCompatActivity<T : ReactorTranslator> :
+        ReactorCompatActivity<T>(),
         ExtendedReactorDialogFragment.DialogResultListener,
         AndroidLayoutView {
 

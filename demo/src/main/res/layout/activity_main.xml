@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="cz.filipproch.reactor.demo.ui.main.MainActivity">
+    tools:context="cz.filipproch.reactor.demo.ui.main.MainCompatActivity">
 
     <TextView
         android:id="@+id/vTextView"

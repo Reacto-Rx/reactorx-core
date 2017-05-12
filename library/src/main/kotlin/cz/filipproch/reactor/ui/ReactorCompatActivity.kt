@@ -17,7 +17,7 @@ import io.reactivex.subjects.PublishSubject
  *
  * @author Filip Prochazka (@filipproch)
  */
-abstract class CompatReactorActivity<T : ReactorTranslator> :
+abstract class ReactorCompatActivity<T : ReactorTranslator> :
         AppCompatActivity(),
         ReactorView<T> {
 
@@ -114,7 +114,7 @@ abstract class CompatReactorActivity<T : ReactorTranslator> :
     }
 
     /*
-        CompatReactorActivity specific
+        ReactorCompatActivity specific
      */
 
     /**

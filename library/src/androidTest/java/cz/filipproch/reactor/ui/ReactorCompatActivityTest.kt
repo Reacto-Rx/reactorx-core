@@ -6,7 +6,7 @@ import android.support.test.runner.AndroidJUnit4
 import cz.filipproch.reactor.ui.events.*
 import cz.filipproch.reactor.util.*
 import cz.filipproch.reactor.util.view.*
-import cz.filipproch.reactor.util.view.activity.CompatActivityTestActivity
+import cz.filipproch.reactor.util.view.activity.ActivityTestCompatActivity
 import org.assertj.core.api.Java6Assertions.assertThat
 import org.junit.Rule
 import org.junit.Test
@@ -17,10 +17,10 @@ import org.junit.runner.RunWith
  * @author Filip Prochazka (@filipproch)
  */
 @RunWith(AndroidJUnit4::class)
-class CompatReactorActivityTest {
+class ReactorCompatActivityTest {
 
     @Rule
-    @JvmField val activityRule = CustomActivityTestRule(CompatActivityTestActivity::class.java)
+    @JvmField val activityRule = CustomActivityTestRule(ActivityTestCompatActivity::class.java)
 
     /**
      * Assert that all lifecycle methods were called, in correct order
@@ -30,11 +30,11 @@ class CompatReactorActivityTest {
         val activity = activityRule.activity
 
         activity.helper.assertMethodsCalledInOrder(
-                CompatActivityTestActivity.METHOD_CREATE_LAYOUT,
+                ActivityTestCompatActivity.METHOD_CREATE_LAYOUT,
                 ReactorViewTestHelper.METHOD_EMITTERS_INIT,
-                CompatActivityTestActivity.METHOD_UI_CREATED,
-                CompatActivityTestActivity.METHOD_POST_UI_CREATED,
-                CompatActivityTestActivity.METHOD_UI_READY,
+                ActivityTestCompatActivity.METHOD_UI_CREATED,
+                ActivityTestCompatActivity.METHOD_POST_UI_CREATED,
+                ActivityTestCompatActivity.METHOD_UI_READY,
                 ReactorViewTestHelper.METHOD_CONNECT_MODEL_STREAM,
                 ReactorViewTestHelper.METHOD_CONNECT_ACTION_STREAM
         )
@@ -49,14 +49,14 @@ class CompatReactorActivityTest {
 
         changeActivityOrientation(activity)
 
-        activity = getResumedActivityInstance() as CompatActivityTestActivity
+        activity = getResumedActivityInstance() as ActivityTestCompatActivity
 
         activity.helper.assertMethodsCalledInOrder(
-                CompatActivityTestActivity.METHOD_CREATE_LAYOUT,
+                ActivityTestCompatActivity.METHOD_CREATE_LAYOUT,
                 ReactorViewTestHelper.METHOD_EMITTERS_INIT,
-                CompatActivityTestActivity.METHOD_UI_RESTORED,
-                CompatActivityTestActivity.METHOD_POST_UI_CREATED,
-                CompatActivityTestActivity.METHOD_UI_READY,
+                ActivityTestCompatActivity.METHOD_UI_RESTORED,
+                ActivityTestCompatActivity.METHOD_POST_UI_CREATED,
+                ActivityTestCompatActivity.METHOD_UI_READY,
                 ReactorViewTestHelper.METHOD_CONNECT_MODEL_STREAM,
                 ReactorViewTestHelper.METHOD_CONNECT_ACTION_STREAM)
     }
@@ -70,14 +70,14 @@ class CompatReactorActivityTest {
 
         recreateActivity(activity)
 
-        activity = getResumedActivityInstance() as CompatActivityTestActivity
+        activity = getResumedActivityInstance() as ActivityTestCompatActivity
 
         activity.helper.assertMethodsCalledInOrder(
-                CompatActivityTestActivity.METHOD_CREATE_LAYOUT,
+                ActivityTestCompatActivity.METHOD_CREATE_LAYOUT,
                 ReactorViewTestHelper.METHOD_EMITTERS_INIT,
-                CompatActivityTestActivity.METHOD_UI_RESTORED,
-                CompatActivityTestActivity.METHOD_POST_UI_CREATED,
-                CompatActivityTestActivity.METHOD_UI_READY,
+                ActivityTestCompatActivity.METHOD_UI_RESTORED,
+                ActivityTestCompatActivity.METHOD_POST_UI_CREATED,
+                ActivityTestCompatActivity.METHOD_UI_READY,
                 ReactorViewTestHelper.METHOD_CONNECT_MODEL_STREAM,
                 ReactorViewTestHelper.METHOD_CONNECT_ACTION_STREAM)
     }
@@ -178,7 +178,7 @@ class CompatReactorActivityTest {
 
         changeActivityOrientation(activity)
 
-        activity = getResumedActivityInstance() as CompatActivityTestActivity
+        activity = getResumedActivityInstance() as ActivityTestCompatActivity
 
         assertThat(activity.helper.receivedUiModels).hasSize(1)
 
@@ -193,7 +193,7 @@ class CompatReactorActivityTest {
 
         recreateActivity(activity)
 
-        activity = getResumedActivityInstance() as CompatActivityTestActivity
+        activity = getResumedActivityInstance() as ActivityTestCompatActivity
 
         assertThat(activity.helper.receivedUiModels).hasSize(1)
 
@@ -208,7 +208,7 @@ class CompatReactorActivityTest {
 
         changeActivityOrientation(activity)
 
-        activity = getResumedActivityInstance() as CompatActivityTestActivity
+        activity = getResumedActivityInstance() as ActivityTestCompatActivity
 
         assertThat(activity.helper.receivedUiActions).isEmpty()
     }
@@ -220,7 +220,7 @@ class CompatReactorActivityTest {
 
         recreateActivity(activity)
 
-        activity = getResumedActivityInstance() as CompatActivityTestActivity
+        activity = getResumedActivityInstance() as ActivityTestCompatActivity
 
         assertThat(activity.helper.receivedUiActions).isEmpty()
     }
