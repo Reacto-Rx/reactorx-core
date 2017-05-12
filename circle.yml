@@ -1,0 +1,28 @@
+dependencies:
+  pre:
+    - echo y | android update sdk --no-ui --all --filter tools,platform-tools,build-tools-25.0.2,android-25,extra-google-m2repository,extra-android-m2repository
+
+# Disable emulator audio
+machine:
+  java:
+    version: oraclejdk8
+  environment:
+    QEMU_AUDIO_DRV: none
+
+test:
+  override:
+    - ./gradlew build jacocoTestReport assembleAndroidTest
+    - emulator -avd circleci-android24 -no-window:
+            background: true
+            parallel: true
+    - circle-android wait-for-boot
+    - ./gradlew connectedAndroidTest
+    - cp -r my-project/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS
+    - bash <(curl -s https://codecov.io/bash)
+
+deployment:
+  production:
+    tag: /[0-9]+(\.[0-9]+)*/
+    owner: filipproch
+    commands:
+      - ./gradlew bintrayUpload
