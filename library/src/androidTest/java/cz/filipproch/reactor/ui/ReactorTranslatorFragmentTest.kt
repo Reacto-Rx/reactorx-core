@@ -3,10 +3,7 @@ package cz.filipproch.reactor.ui
 import android.support.test.InstrumentationRegistry.getInstrumentation
 import android.support.test.runner.AndroidJUnit4
 import android.support.v4.app.Fragment
-import cz.filipproch.reactor.util.CustomActivityTestRule
-import cz.filipproch.reactor.util.changeActivityOrientation
-import cz.filipproch.reactor.util.finishActivitySync
-import cz.filipproch.reactor.util.getResumedActivityInstance
+import cz.filipproch.reactor.util.*
 import cz.filipproch.reactor.util.view.translatorfragment.TranslatorFragmentTestActivity
 import org.assertj.core.api.Java6Assertions.assertThat
 import org.junit.Rule
@@ -17,7 +14,7 @@ import org.junit.runner.RunWith
  * @author Filip Prochazka (@filipproch)
  */
 @RunWith(AndroidJUnit4::class)
-class ReactorTranslatorFragmentTest {
+class ReactorTranslatorFragmentTest : ActivityTest() {
 
     @Rule
     @JvmField val activityRule = CustomActivityTestRule(TranslatorFragmentTestActivity::class.java)

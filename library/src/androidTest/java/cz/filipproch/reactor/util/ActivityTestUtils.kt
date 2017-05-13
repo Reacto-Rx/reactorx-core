@@ -5,13 +5,14 @@ import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.support.test.InstrumentationRegistry
 import android.support.test.InstrumentationRegistry.getInstrumentation
+import android.support.test.runner.lifecycle.ActivityLifecycleCallback
 import android.support.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import android.support.test.runner.lifecycle.Stage
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
 fun finishActivitySync(activity: Activity) {
-    executeActionAndWaitForActivityStage({
+    executeActionAndWaitForActivityStage(activity, {
         activity.finish()
     }, { targetActivity, stage ->
         targetActivity == activity
@@ -22,7 +23,7 @@ fun finishActivitySync(activity: Activity) {
 }
 
 fun waitForActivityToFinish(activity: Activity) {
-    executeActionAndWaitForActivityStage({}, { targetActivity, stage ->
+    executeActionAndWaitForActivityStage(activity, {}, { targetActivity, stage ->
         targetActivity == activity
                 && stage == Stage.DESTROYED
     })
@@ -31,7 +32,7 @@ fun waitForActivityToFinish(activity: Activity) {
 }
 
 fun recreateActivity(activity: Activity) {
-    executeActionAndWaitForActivityStage({
+    executeActionAndWaitForActivityStage(activity, {
         activity.recreate()
     }, { targetActivity, stage ->
         targetActivity != activity
@@ -43,7 +44,7 @@ fun recreateActivity(activity: Activity) {
 }
 
 fun changeActivityOrientation(activity: Activity) {
-    executeActionAndWaitForActivityStage({
+    executeActionAndWaitForActivityStage(activity, {
         val context = InstrumentationRegistry.getTargetContext()
         val orientation = context.resources.configuration.orientation
 
@@ -73,7 +74,29 @@ fun getResumedActivityInstance(): Activity {
     return checkNotNull(currentActivity)
 }
 
+object ActivityStateWatcher : ActivityLifecycleCallback {
+
+    val activityStates = hashMapOf<Activity, Stage>()
+
+    fun watchActivityStates() {
+        ActivityLifecycleMonitorRegistry.getInstance()
+                .addLifecycleCallback(this)
+    }
+
+    fun cleanup() {
+        ActivityLifecycleMonitorRegistry.getInstance()
+                .removeLifecycleCallback(this)
+        activityStates.clear()
+    }
+
+    override fun onActivityLifecycleChanged(activity: Activity, stage: Stage) {
+        activityStates.put(activity, stage)
+    }
+
+}
+
 fun executeActionAndWaitForActivityStage(
+        activity: Activity,
         action: () -> Unit,
         checkStage: (activity: Activity, stage: Stage) -> Boolean,
         onMainThread: Boolean = false,
@@ -86,7 +109,6 @@ fun executeActionAndWaitForActivityStage(
             countDownLatch.countDown()
         }
     }
-
 
     getInstrumentation().runOnMainSync {
         ActivityLifecycleMonitorRegistry.getInstance()
@@ -101,13 +123,21 @@ fun executeActionAndWaitForActivityStage(
         action.invoke()
     }
 
+    if (ActivityStateWatcher.activityStates.containsKey(activity)) {
+        val stage = ActivityStateWatcher.activityStates[activity]
+        if (checkStage.invoke(activity, checkNotNull(stage))) {
+            countDownLatch.countDown()
+        }
+    }
+
     try {
         val result = countDownLatch.await(timeout, TimeUnit.MILLISECONDS)
         if (result.not()) {
-            throw RuntimeException("Action failed - timeout")
+            val stage = ActivityStateWatcher.activityStates[activity]
+            throw RuntimeException("Activity action failed - timeout (${timeout}ms elapsed) - current stage = $stage")
         }
     } catch (e: InterruptedException) {
-        throw RuntimeException("Action failed", e)
+        throw RuntimeException("Activity action failed", e)
     }
 
     ActivityLifecycleMonitorRegistry.getInstance()

@@ -16,7 +16,7 @@ import org.junit.runner.RunWith
  * @author Filip Prochazka (@filipproch)
  */
 @RunWith(AndroidJUnit4::class)
-class ReactorCompatActivityTest {
+class ReactorCompatActivityTest : ActivityTest() {
 
     @Rule
     @JvmField val activityRule = CustomActivityTestRule(ActivityTestCompatActivity::class.java)
