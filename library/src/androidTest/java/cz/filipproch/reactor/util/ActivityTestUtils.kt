@@ -14,8 +14,7 @@ fun finishActivitySync(activity: Activity) {
     executeActionAndWaitForActivityStage(activity, {
         activity.finish()
     }, { sameActivityInstance, stage ->
-        sameActivityInstance
-                && stage == Stage.DESTROYED
+        sameActivityInstance && stage == Stage.DESTROYED
     }, onMainThread = true)
 
     getInstrumentation().waitForIdleSync()
@@ -86,8 +85,8 @@ fun executeActionAndWaitForActivityStage(
     val disposable = ActivityStateWatcher.watch()
             .subscribe {
                 it.filter { it.key.startsWith(activityClazz) }
-                        .forEach { (key, stage) ->
-                            if (checkStage.invoke(key == activityInstanceId, stage)) {
+                        .forEach { (key, state) ->
+                            if (checkStage.invoke(key == activityInstanceId, state.stage)) {
                                 countDownLatch.countDown()
                             }
                         }

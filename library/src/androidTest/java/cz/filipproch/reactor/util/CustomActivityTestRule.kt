@@ -1,31 +1,38 @@
 package cz.filipproch.reactor.util
 
 import android.app.Activity
-import android.os.Build
 import android.support.test.rule.ActivityTestRule
+import android.support.test.runner.lifecycle.Stage
+import org.junit.runner.Description
+import org.junit.runners.model.Statement
 
 /**
- * TODO
- *
- * @author Filip Prochazka (@filipproch)
+ * Makes sure it terminates all activities before ending the test
  */
 class CustomActivityTestRule<T : Activity>(clazz: Class<T>) : ActivityTestRule<T>(clazz) {
 
-    private var currentActivity: T? = null
-
-    @Suppress("UNCHECKED_CAST")
-    override fun afterActivityLaunched() {
-        super.afterActivityLaunched()
-        currentActivity = getResumedActivityInstance() as T
+    override fun apply(base: Statement?, description: Description?): Statement {
+        return ActivityCleanupStatement(super.apply(base, description))
     }
 
-    override fun afterActivityFinished() {
-        super.afterActivityFinished()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
-                && currentActivity?.isDestroyed == true) {
-            return
+    private fun killAllRunningActivities() {
+        val activitiesToDie = ActivityStateWatcher.activityStates
+                .filter { it.value.stage != Stage.DESTROYED }
+                .map { it.value.activity }
+
+        activitiesToDie.forEach {
+            finishActivitySync(it)
         }
-        waitForActivityToFinish(checkNotNull(currentActivity))
+    }
+
+    private inner class ActivityCleanupStatement(private val statement: Statement) : Statement() {
+        override fun evaluate() {
+            try {
+                statement.evaluate()
+            } finally {
+                killAllRunningActivities()
+            }
+        }
     }
 
 }

@@ -10,9 +10,9 @@ import io.reactivex.subjects.BehaviorSubject
 
 object ActivityStateWatcher : ActivityLifecycleCallback {
 
-    val activityStates = hashMapOf<String, Stage>()
+    val activityStates = hashMapOf<String, ActivityState>()
 
-    val subject: BehaviorSubject<HashMap<String, Stage>> = BehaviorSubject.createDefault(activityStates)
+    val subject: BehaviorSubject<HashMap<String, ActivityState>> = BehaviorSubject.createDefault(activityStates)
 
     fun watchActivityStates() {
         ActivityLifecycleMonitorRegistry.getInstance()
@@ -25,18 +25,23 @@ object ActivityStateWatcher : ActivityLifecycleCallback {
         activityStates.clear()
     }
 
-    fun watch(): Observable<HashMap<String, Stage>> {
+    fun watch(): Observable<HashMap<String, ActivityState>> {
         return subject
     }
 
     override fun onActivityLifecycleChanged(activity: Activity, stage: Stage) {
         Log.v("ActivityStateWatcher", "onActivityLifecycleChanged($activity, $stage)")
-        activityStates.put(getActivityInstanceId(activity), stage)
+        activityStates.put(getActivityInstanceId(activity), ActivityState(activity, stage))
         subject.onNext(activityStates)
     }
 
     fun getActivityInstanceId(activity: Activity): String {
         return "${activity.javaClass.name}@${System.identityHashCode(activity)}"
     }
+
+    data class ActivityState(
+            val activity: Activity,
+            val stage: Stage
+    )
 
 }
