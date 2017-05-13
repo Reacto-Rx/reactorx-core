@@ -1,6 +1,5 @@
 package cz.filipproch.reactor.ui
 
-import android.os.Build
 import android.support.test.InstrumentationRegistry.getInstrumentation
 import android.support.test.runner.AndroidJUnit4
 import cz.filipproch.reactor.ui.events.*
@@ -93,10 +92,6 @@ class ReactorFragmentTest {
         translator.receivedEvents.clear()
 
         finishActivitySync(activity)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            assertThat(activity.isDestroyed).isTrue()
-        }
 
         assertThatTranslator(translator)
                 .receivedFollowingEventsInOrder(
