@@ -5,7 +5,6 @@ import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.support.test.InstrumentationRegistry
 import android.support.test.InstrumentationRegistry.getInstrumentation
-import android.support.test.runner.lifecycle.ActivityLifecycleCallback
 import android.support.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import android.support.test.runner.lifecycle.Stage
 import java.util.concurrent.CountDownLatch
@@ -14,8 +13,8 @@ import java.util.concurrent.TimeUnit
 fun finishActivitySync(activity: Activity) {
     executeActionAndWaitForActivityStage(activity, {
         activity.finish()
-    }, { targetActivity, stage ->
-        targetActivity == activity
+    }, { sameActivityInstance, stage ->
+        sameActivityInstance
                 && stage == Stage.DESTROYED
     }, onMainThread = true)
 
@@ -23,8 +22,8 @@ fun finishActivitySync(activity: Activity) {
 }
 
 fun waitForActivityToFinish(activity: Activity) {
-    executeActionAndWaitForActivityStage(activity, {}, { targetActivity, stage ->
-        targetActivity == activity
+    executeActionAndWaitForActivityStage(activity, {}, { sameActivityInstance, stage ->
+        sameActivityInstance
                 && stage == Stage.DESTROYED
     })
 
@@ -34,9 +33,8 @@ fun waitForActivityToFinish(activity: Activity) {
 fun recreateActivity(activity: Activity) {
     executeActionAndWaitForActivityStage(activity, {
         activity.recreate()
-    }, { targetActivity, stage ->
-        targetActivity != activity
-                && targetActivity.javaClass == activity.javaClass
+    }, { sameActivityInstance, stage ->
+        sameActivityInstance.not()
                 && stage == Stage.RESUMED
     }, onMainThread = true)
 
@@ -52,9 +50,8 @@ fun changeActivityOrientation(activity: Activity) {
             ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         else
             ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-    }, { targetActivity, stage ->
-        targetActivity != activity
-                && targetActivity.javaClass == activity.javaClass
+    }, { sameActivityInstance, stage ->
+        sameActivityInstance.not()
                 && stage == Stage.RESUMED
     })
 
@@ -74,72 +71,43 @@ fun getResumedActivityInstance(): Activity {
     return checkNotNull(currentActivity)
 }
 
-object ActivityStateWatcher : ActivityLifecycleCallback {
-
-    val activityStates = hashMapOf<Activity, Stage>()
-
-    fun watchActivityStates() {
-        ActivityLifecycleMonitorRegistry.getInstance()
-                .addLifecycleCallback(this)
-    }
-
-    fun cleanup() {
-        ActivityLifecycleMonitorRegistry.getInstance()
-                .removeLifecycleCallback(this)
-        activityStates.clear()
-    }
-
-    override fun onActivityLifecycleChanged(activity: Activity, stage: Stage) {
-        activityStates.put(activity, stage)
-    }
-
-}
-
 fun executeActionAndWaitForActivityStage(
         activity: Activity,
         action: () -> Unit,
-        checkStage: (activity: Activity, stage: Stage) -> Boolean,
+        checkStage: (sameActivityInstance: Boolean, stage: Stage) -> Boolean,
         onMainThread: Boolean = false,
-        timeout: Long = 20000
+        timeout: Long = 60000
 ) {
     val countDownLatch = CountDownLatch(1)
 
-    val callback = { targetActivity: Activity, stage: Stage ->
-        if (checkStage.invoke(targetActivity, stage)) {
-            countDownLatch.countDown()
-        }
-    }
+    val activityClazz = activity.javaClass.name
+    val activityInstanceId = ActivityStateWatcher.getActivityInstanceId(activity)
 
-    getInstrumentation().runOnMainSync {
-        ActivityLifecycleMonitorRegistry.getInstance()
-                .addLifecycleCallback(callback)
+    val disposable = ActivityStateWatcher.watch()
+            .subscribe {
+                it.filter { it.key.startsWith(activityClazz) }
+                        .forEach { (key, stage) ->
+                            if (checkStage.invoke(key == activityInstanceId, stage)) {
+                                countDownLatch.countDown()
+                            }
+                        }
+            }
 
-        if (onMainThread) {
-            action.invoke()
-        }
-    }
-
-    if (onMainThread.not()) {
+    if (onMainThread) {
+        getInstrumentation().runOnMainSync { action.invoke() }
+    } else {
         action.invoke()
-    }
-
-    if (ActivityStateWatcher.activityStates.containsKey(activity)) {
-        val stage = ActivityStateWatcher.activityStates[activity]
-        if (checkStage.invoke(activity, checkNotNull(stage))) {
-            countDownLatch.countDown()
-        }
     }
 
     try {
         val result = countDownLatch.await(timeout, TimeUnit.MILLISECONDS)
         if (result.not()) {
-            val stage = ActivityStateWatcher.activityStates[activity]
-            throw RuntimeException("Activity action failed - timeout (${timeout}ms elapsed) - current stage = $stage")
+            val stage = ActivityStateWatcher.activityStates[activityInstanceId]
+            throw RuntimeException("Activity action failed - timeout (${timeout}ms elapsed) - original Activity current stage = $stage")
         }
     } catch (e: InterruptedException) {
         throw RuntimeException("Activity action failed", e)
     }
 
-    ActivityLifecycleMonitorRegistry.getInstance()
-            .removeLifecycleCallback(callback)
+    disposable.dispose()
 }
