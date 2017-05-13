@@ -1,6 +1,5 @@
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
-//apply plugin: 'org.jetbrains.dokka-android'
 
 group = 'cz.filipproch.lib'
 version = libVersion
@@ -23,20 +22,14 @@ task sourcesJar(type: Jar) {
     classifier = 'sources'
 }
 
-/*task dokkaJavadoc(type: org.jetbrains.dokka.gradle.DokkaTask) {
-    outputFormat = 'javadoc'
-    outputDirectory = javadoc.destinationDir
-    inputs.dir 'src/main/kotlin'
-}
-
 task javadocJar(type: Jar, dependsOn: dokkaJavadoc) {
     classifier = 'javadoc'
-    from javadoc.destinationDir
-}*/
+    from "$rootDir/build/docs/javadoc/$project.name"
+}
 
 artifacts {
     archives sourcesJar
-    //archives javadocJar
+    archives javadocJar
 }
 
 bintray {

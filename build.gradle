@@ -16,7 +16,9 @@ buildscript {
 
     repositories {
         jcenter()
-        maven { url 'https://jitpack.io' }
+        maven {
+            url "https://dl.bintray.com/kotlin/kotlin-dev"
+        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.1'
@@ -24,7 +26,7 @@ buildscript {
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
         classpath 'com.dicedmelon.gradle:jacoco-android:0.1.1'
-        // classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:${dokkaVersion}"
+        classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:${dokkaVersion}"
     }
 }
 
