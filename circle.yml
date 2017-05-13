@@ -12,16 +12,17 @@ machine:
   environment:
     QEMU_AUDIO_DRV: none
     ADB_INSTALL_TIMEOUT: "10"
+    _JAVA_OPTIONS: "-Xms512m -Xmx1024m"
     GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
 
 test:
   override:
     # assemble the sources
-    - ./gradlew :library:assemble :library-extras:assemble -PdisablePreDex
+    - ./gradlew :library:assemble :library-extras:assemble -PdisablePreDex -Pkotlin.incremental=false
     # generate jacoco test report
-    - ./gradlew :library:jacocoTestReport :library-extras:jacocoTestReport -PdisablePreDex
+    - ./gradlew :library:jacocoTestReport :library-extras:jacocoTestReport -PdisablePreDex -Pkotlin.incremental=false
     # assemble androidTest sources
-    - ./gradlew :library:assembleAndroidTest :library-extras:assembleAndroidTest -PdisablePreDex
+    - ./gradlew :library:assembleAndroidTest :library-extras:assembleAndroidTest -PdisablePreDex -Pkotlin.incremental=false
     # start the emulator
     - emulator -avd circleci-android24 -no-window:
             background: true
@@ -32,7 +33,7 @@ test:
     - sleep 30
     - adb shell input keyevent 82
     # run tests  against the emulator.
-    - ./gradlew :library:connectedAndroidTest :library-extras:connectedAndroidTest -PdisablePreDex
+    - ./gradlew :library:connectedAndroidTest :library-extras:connectedAndroidTest -PdisablePreDex -Pkotlin.incremental=false
     # copy the test results to the test results directory.
     - cp -r my-project/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS
     # upload codecov.io
