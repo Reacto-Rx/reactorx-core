@@ -63,7 +63,8 @@ fun changeActivityOrientation(activity: Activity) {
 fun getResumedActivityInstance(): Activity {
     var currentActivity: Activity? = null
     InstrumentationRegistry.getInstrumentation().runOnMainSync {
-        val resumedActivities = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED)
+        val resumedActivities = ActivityLifecycleMonitorRegistry.getInstance()
+                .getActivitiesInStage(Stage.RESUMED)
         if (resumedActivities.iterator().hasNext()) {
             currentActivity = resumedActivities.iterator().next()
         }
@@ -86,19 +87,17 @@ fun executeActionAndWaitForActivityStage(
         }
     }
 
-    if (onMainThread) {
-        getInstrumentation().runOnMainSync {
-            ActivityLifecycleMonitorRegistry.getInstance()
-                    .addLifecycleCallback(callback)
 
+    getInstrumentation().runOnMainSync {
+        ActivityLifecycleMonitorRegistry.getInstance()
+                .addLifecycleCallback(callback)
+
+        if (onMainThread) {
             action.invoke()
         }
-    } else {
-        getInstrumentation().runOnMainSync {
-            ActivityLifecycleMonitorRegistry.getInstance()
-                    .addLifecycleCallback(callback)
-        }
+    }
 
+    if (onMainThread.not()) {
         action.invoke()
     }
 

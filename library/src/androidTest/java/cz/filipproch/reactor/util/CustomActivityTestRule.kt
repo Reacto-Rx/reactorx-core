@@ -1,6 +1,7 @@
 package cz.filipproch.reactor.util
 
 import android.app.Activity
+import android.os.Build
 import android.support.test.rule.ActivityTestRule
 
 /**
@@ -20,6 +21,10 @@ class CustomActivityTestRule<T : Activity>(clazz: Class<T>) : ActivityTestRule<T
 
     override fun afterActivityFinished() {
         super.afterActivityFinished()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
+                && currentActivity?.isDestroyed == true) {
+            return
+        }
         waitForActivityToFinish(checkNotNull(currentActivity))
     }
 
