@@ -17,3 +17,11 @@ class ViewCreatedEvent(val savedInstanceState: Bundle?) : ReactorUiEvent
 fun Observable<out ReactorUiEvent>.whenViewCreated(): Observable<ViewCreatedEvent> {
     return ofType(ViewCreatedEvent::class.java)
 }
+
+/**
+ * Helper filter for [ViewCreatedEvent]s
+ */
+fun Observable<out ReactorUiEvent>.whenViewCreatedFirstTime(): Observable<ViewCreatedEvent> {
+    return ofType(ViewCreatedEvent::class.java)
+            .filter { it.savedInstanceState == null }
+}

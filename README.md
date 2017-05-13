@@ -2,7 +2,7 @@
 
 # reactor-android
 
-[![Build Status](https://travis-ci.org/filipproch/reactor-android.svg?branch=master)](https://travis-ci.org/filipproch/reactor-android)
+![Build Status](https://circleci.com/gh/filipproch/reactor-android/tree/master.svg?style=shield)
 ![Latest Version](https://api.bintray.com/packages/filipproch/maven/reactor-android/images/download.svg)
 [![codecov](https://codecov.io/gh/filipproch/reactor-android/branch/master/graph/badge.svg)](https://codecov.io/gh/filipproch/reactor-android)
 

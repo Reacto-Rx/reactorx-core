@@ -76,7 +76,7 @@ fun executeActionAndWaitForActivityStage(
         action: () -> Unit,
         checkStage: (activity: Activity, stage: Stage) -> Boolean,
         onMainThread: Boolean = false,
-        timeout: Long = 5000
+        timeout: Long = 20000
 ) {
     val countDownLatch = CountDownLatch(1)
 
@@ -103,7 +103,10 @@ fun executeActionAndWaitForActivityStage(
     }
 
     try {
-        countDownLatch.await(timeout, TimeUnit.MILLISECONDS)
+        val result = countDownLatch.await(timeout, TimeUnit.MILLISECONDS)
+        if (result.not()) {
+            throw RuntimeException("Action failed - timeout")
+        }
     } catch (e: InterruptedException) {
         throw RuntimeException("Action failed", e)
     }
