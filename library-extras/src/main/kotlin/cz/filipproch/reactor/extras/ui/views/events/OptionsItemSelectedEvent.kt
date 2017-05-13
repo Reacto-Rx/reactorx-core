@@ -5,7 +5,7 @@ import cz.filipproch.reactor.base.view.ReactorUiEvent
 
 /**
  * TODO: add description
- *
- * @author Filip Prochazka (@filipproch)
  */
-data class OptionsItemSelectedEvent(val menuItem: MenuItem) : ReactorUiEvent
+data class OptionsItemSelectedEvent(
+        val menuItem: MenuItem
+) : ReactorUiEvent

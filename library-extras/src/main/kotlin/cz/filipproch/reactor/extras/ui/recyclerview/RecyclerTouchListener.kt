@@ -5,11 +5,6 @@ import android.support.v7.widget.RecyclerView
 import android.view.GestureDetector
 import android.view.MotionEvent
 
-/**
- * TODO: add description
- *
- * @author Filip Prochazka (filip.prochazka@ubnt.com)
- */
 @Deprecated("Depracated in favor of ReactorRecyclerListAdapter")
 class RecyclerTouchListener(context: Context, recycler: RecyclerView, private val listener: RecyclerItemClickListener) : RecyclerView.OnItemTouchListener {
 

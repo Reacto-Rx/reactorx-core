@@ -7,8 +7,6 @@ import io.reactivex.subjects.PublishSubject
 
 /**
  * TODO: add description
- *
- * @author Filip Prochazka (@filipproch)
  */
 abstract class ReactorRecyclerDataAdapter<T, VH : RecyclerView.ViewHolder> : RecyclerView.Adapter<VH>() {
 

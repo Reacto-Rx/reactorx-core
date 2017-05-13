@@ -6,7 +6,7 @@ import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import cz.filipproch.reactor.base.translator.ReactorTranslator
+import cz.filipproch.reactor.base.translator.IReactorTranslator
 import cz.filipproch.reactor.base.view.ReactorUiModel
 import cz.filipproch.reactor.extras.ui.views.events.OptionsItemSelectedEvent
 import cz.filipproch.reactor.extras.ui.views.model.ToolbarUiModel
@@ -15,10 +15,8 @@ import io.reactivex.subjects.PublishSubject
 
 /**
  * TODO: add description
- *
- * @author Filip Prochazka (@filipproch)
  */
-abstract class ToolbarReactorFragment<T : ReactorTranslator> : ExtendedReactorFragment<T>() {
+abstract class ToolbarReactorFragment<T : IReactorTranslator> : ExtendedReactorFragment<T>() {
 
     private val optionsItemSubject = PublishSubject.create<OptionsItemSelectedEvent>()
 

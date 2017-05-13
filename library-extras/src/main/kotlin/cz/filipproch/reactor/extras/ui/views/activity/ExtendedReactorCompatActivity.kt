@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.View
-import cz.filipproch.reactor.base.translator.ReactorTranslator
+import cz.filipproch.reactor.base.translator.IReactorTranslator
 import cz.filipproch.reactor.base.view.ReactorUiAction
 import cz.filipproch.reactor.base.view.ReactorUiModel
 import cz.filipproch.reactor.extras.ui.iface.AndroidLayoutView
@@ -21,10 +21,8 @@ import io.reactivex.Observable
 
 /**
  * TODO: add description
- *
- * @author Filip Prochazka (@filipproch)
  */
-abstract class ExtendedReactorCompatActivity<T : ReactorTranslator> :
+abstract class ExtendedReactorCompatActivity<T : IReactorTranslator> :
         ReactorCompatActivity<T>(),
         ExtendedReactorDialogFragment.DialogResultListener,
         AndroidLayoutView {

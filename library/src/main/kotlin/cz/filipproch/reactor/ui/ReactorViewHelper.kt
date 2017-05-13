@@ -1,6 +1,6 @@
 package cz.filipproch.reactor.ui
 
-import cz.filipproch.reactor.base.translator.ReactorTranslator
+import cz.filipproch.reactor.base.translator.IReactorTranslator
 import cz.filipproch.reactor.base.view.ReactorUiEvent
 import cz.filipproch.reactor.base.view.ReactorView
 import io.reactivex.Observable
@@ -10,11 +10,10 @@ import io.reactivex.functions.Consumer
 import io.reactivex.subjects.PublishSubject
 
 /**
- * Helper class for [ReactorView] implementations
- *
- * @author Filip Prochazka (@filipproch)
+ * Helper class for [ReactorView] implementations to manage
+ * the connection between [ReactorView] and [IReactorTranslator]
  */
-class ReactorViewHelper<T : ReactorTranslator>(val reactorView: ReactorView<T>) {
+class ReactorViewHelper<T : IReactorTranslator>(val reactorView: ReactorView<T>) {
 
     private var isEmittersRegistrationAllowed = false
 
@@ -32,14 +31,23 @@ class ReactorViewHelper<T : ReactorTranslator>(val reactorView: ReactorView<T>) 
         }
     }
 
+    /**
+     * TODO
+     */
     var translator: T? = null
 
+    /**
+     * TODO
+     */
     fun onReadyToRegisterEmitters() {
         isEmittersRegistrationAllowed = true
         reactorView.onEmittersInit()
         isEmittersRegistrationAllowed = false
     }
 
+    /**
+     * TODO
+     */
     fun bindTranslatorWithView(translator: T) {
         viewBoundDisposable = CompositeDisposable()
         this.translator = translator
@@ -71,11 +79,17 @@ class ReactorViewHelper<T : ReactorTranslator>(val reactorView: ReactorView<T>) 
         viewBoundDisposable?.add(uiActionStream.connect())
     }
 
+    /**
+     * TODO
+     */
     fun onViewNotUsable() {
         viewBoundDisposable?.dispose()
         viewBoundDisposable = null
     }
 
+    /**
+     * TODO
+     */
     fun onViewDestroyed() {
         instanceDisposable.dispose()
 
@@ -83,6 +97,9 @@ class ReactorViewHelper<T : ReactorTranslator>(val reactorView: ReactorView<T>) 
         eventSubject = null
     }
 
+    /**
+     * TODO
+     */
     fun registerEmitter(emitter: Observable<out ReactorUiEvent>) {
         if (isEmittersRegistrationAllowed.not()) {
             throw IllegalLifecycleOperation("registerEmitter can be only called in onEmittersInit()")
@@ -90,6 +107,9 @@ class ReactorViewHelper<T : ReactorTranslator>(val reactorView: ReactorView<T>) 
         emitter.subscribe(emitterConsumer)
     }
 
+    /**
+     * TODO
+     */
     fun <T> receiveUpdatesOnUi(observable: Observable<T>, receiverAction: Consumer<T>) {
         viewBoundDisposable?.add(
                 observable

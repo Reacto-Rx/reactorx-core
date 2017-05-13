@@ -6,16 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import io.reactivex.functions.Consumer
 
-/**
- * TODO
- *
- * @author Filip Prochazka (@filipproch)
- */
 @Deprecated("Depracated in favor of ReactorRecyclerListAdapter",
-    ReplaceWith(
-            "SimpleRecyclerListAdapter",
-            "cz.filipproch.reactor.extras.ui.recyclerview.adapter.SimpleRecyclerListAdapter"
-    )
+        ReplaceWith(
+                "SimpleRecyclerListAdapter",
+                "cz.filipproch.reactor.extras.ui.recyclerview.adapter.SimpleRecyclerListAdapter"
+        )
 )
 class SimpleListAdapter<T>(val itemLayoutRes: Int, val viewBinder: DataViewBinder<T>) : RecyclerView.Adapter<SimpleListAdapter.SimpleViewHolder>() {
 

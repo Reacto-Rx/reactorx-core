@@ -1,11 +1,15 @@
 package cz.filipproch.reactor.base.translator
 
+import android.support.annotation.NonNull
+
 /**
- * TODO
+ * Simple implementation of the [TranslatorFactory].
  *
- * @author Filip Prochazka (@filipproch)
+ * Internally uses the [Class.newInstance] method.
  */
-class SimpleTranslatorFactory<T : ReactorTranslator>(val translatorClazz: Class<T>) : TranslatorFactory<T> {
+class SimpleTranslatorFactory<T : IReactorTranslator>(val translatorClazz: Class<T>) : TranslatorFactory<T> {
+
+    @NonNull
     override fun create(): T {
         try {
             return translatorClazz.newInstance()
@@ -16,4 +20,5 @@ class SimpleTranslatorFactory<T : ReactorTranslator>(val translatorClazz: Class<
         }
 
     }
+
 }

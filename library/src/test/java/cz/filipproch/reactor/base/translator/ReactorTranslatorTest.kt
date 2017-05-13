@@ -9,11 +9,11 @@ import org.junit.Before
 import org.junit.Test
 
 /**
- * Tests for [BaseReactorTranslator]
+ * Tests for [ReactorTranslator]
  *
  * @author Filip Prochazka (@filipproch)
  */
-class BaseReactorTranslatorTest {
+class ReactorTranslatorTest {
 
     private lateinit var translator: TestReactorTranslator
 
@@ -48,7 +48,7 @@ class BaseReactorTranslatorTest {
     }
 
     /**
-     * Note: this test depends on [BaseReactorTranslator.reactTo] to work properly
+     * Note: this test depends on [ReactorTranslator.reactTo] to work properly
      */
     @Test
     fun bindView() {
@@ -138,7 +138,7 @@ class BaseReactorTranslatorTest {
         return eventEmitter
     }
 
-    private class TestReactorTranslator : BaseReactorTranslator() {
+    private class TestReactorTranslator : ReactorTranslator() {
 
         var onCreatedCalled: Boolean = false
         var onBeforeDestroyedCalled: Boolean = false

@@ -4,7 +4,7 @@ import android.support.v7.app.ActionBar
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
-import cz.filipproch.reactor.base.translator.ReactorTranslator
+import cz.filipproch.reactor.base.translator.IReactorTranslator
 import cz.filipproch.reactor.base.view.ReactorUiModel
 import cz.filipproch.reactor.extras.ui.views.events.OptionsItemSelectedEvent
 import cz.filipproch.reactor.extras.ui.views.model.ToolbarUiModel
@@ -13,10 +13,8 @@ import io.reactivex.subjects.PublishSubject
 
 /**
  * TODO: add description
- *
- * @author Filip Prochazka (@filipproch)
  */
-abstract class ToolbarReactorCompatActivity<T : ReactorTranslator> : ExtendedReactorCompatActivity<T>() {
+abstract class ToolbarReactorCompatActivity<T : IReactorTranslator> : ExtendedReactorCompatActivity<T>() {
 
     private val optionsItemSubject = PublishSubject.create<OptionsItemSelectedEvent>()
 

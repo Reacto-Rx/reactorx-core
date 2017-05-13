@@ -5,8 +5,6 @@ import cz.filipproch.reactor.base.view.ReactorUiModel
 
 /**
  * TODO: add description
- *
- * @author Filip Prochazka (@filipproch)
  */
 data class ToolbarUiModel(
         val title: String?,

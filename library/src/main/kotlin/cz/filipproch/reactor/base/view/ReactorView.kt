@@ -1,30 +1,32 @@
 package cz.filipproch.reactor.base.view
 
-import cz.filipproch.reactor.base.translator.ReactorTranslator
+import cz.filipproch.reactor.base.translator.IReactorTranslator
 import cz.filipproch.reactor.base.translator.TranslatorFactory
 import io.reactivex.Observable
 import io.reactivex.functions.Consumer
 
 /**
- * TODO
- *
- * @author Filip Prochazka (@filipproch)
+ * This is the interface representation of the <b>View</b> concept in
+ * the <b>Reactor</b> library
  */
-interface ReactorView<out T : ReactorTranslator> {
+interface ReactorView<out T : IReactorTranslator> {
 
     /**
-     * Should return a [TranslatorFactory] instance that's used to create [ReactorTranslator] instances
+     * Must return a [TranslatorFactory] instance that's used to
+     * create [IReactorTranslator] instances as needed.
      */
     val translatorFactory: TranslatorFactory<T>
 
     /**
-     * Called during [ReactorView] initialization, it's a place where you can register [ReactorUiEvent] emitters
-     * using [registerEmitter] method
+     * Called during [ReactorView] initialization, it's the only place
+     * where you can register [ReactorUiEvent] emitters
+     * using the [registerEmitter] method
      */
     fun onEmittersInit()
 
     /**
-     * Called when the stream of [ReactorUiModel] is connected from the [ReactorTranslator] to the [ReactorView]
+     * Called when the stream of [ReactorUiModel] is connected
+     * to this [ReactorView]
      */
     @Deprecated("Replaced with onConnectModelStream", ReplaceWith(
             "onConnectModelStream(modelStream)"
@@ -32,12 +34,14 @@ interface ReactorView<out T : ReactorTranslator> {
     fun onConnectModelChannel(modelStream: Observable<out ReactorUiModel>)
 
     /**
-     * Called when the stream of [ReactorUiModel] is connected from the [ReactorTranslator] to the [ReactorView]
+     * Called when the stream of [ReactorUiModel] is connected
+     * to this [ReactorView]
      */
     fun onConnectModelStream(modelStream: Observable<out ReactorUiModel>)
 
     /**
-     * Called when the stream of [ReactorUiAction] is connected from the [ReactorTranslator] to the [ReactorView]
+     * Called when the stream of [ReactorUiAction] is connected
+     * to this [ReactorView]
      */
     @Deprecated("Replaced with onConnectActionStream", ReplaceWith(
             "onConnectActionStream(actionStream)"
@@ -45,17 +49,20 @@ interface ReactorView<out T : ReactorTranslator> {
     fun onConnectActionChannel(actionStream: Observable<out ReactorUiAction>)
 
     /**
-     * Called when the stream of [ReactorUiAction] is connected from the [ReactorTranslator] to the [ReactorView]
+     * Called when the stream of [ReactorUiAction] is connected
+     * to this [ReactorView]
      */
     fun onConnectActionStream(actionStream: Observable<out ReactorUiAction>)
 
     /**
-     * Registers [emitter], so the events it emits are delivered to [ReactorTranslator]
+     * Registers [emitter] stream, so that the events
+     * it emits are delivered to the bound [IReactorTranslator]
      */
     fun registerEmitter(emitter: Observable<out ReactorUiEvent>)
 
     /**
-     * Method to dispatch [ReactorUiEvent] directly from [ReactorView] using it's own registered emitter
+     * Method to dispatch [ReactorUiEvent] directly from [ReactorView]
+     * using it's own registered emitter
      */
     fun dispatch(event: ReactorUiEvent)
 

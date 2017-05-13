@@ -5,8 +5,6 @@ import android.view.View
 /**
  * Interface for [cz.filipproch.reactor.base.view.ReactorView] that is using
  * Android Layout XML for it's layout
- *
- * @author Filip Prochazka (@filipproch)
  */
 interface AndroidLayoutView {
 

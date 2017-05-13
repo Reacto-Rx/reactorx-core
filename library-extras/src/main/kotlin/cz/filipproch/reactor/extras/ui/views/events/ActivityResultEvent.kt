@@ -5,7 +5,9 @@ import cz.filipproch.reactor.base.view.ReactorUiEvent
 
 /**
  * TODO: add description
- *
- * @author Filip Prochazka (@filipproch)
  */
-class ActivityResultEvent(val requestCode: Int, val resultCode: Int, val data: Intent?) : ReactorUiEvent
+class ActivityResultEvent(
+        val requestCode: Int,
+        val resultCode: Int,
+        val data: Intent?
+) : ReactorUiEvent

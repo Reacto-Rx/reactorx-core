@@ -4,10 +4,9 @@ import cz.filipproch.reactor.base.view.ReactorUiEvent
 import io.reactivex.Observable
 
 /**
- * [ReactorUiEvent] that's dispatched by some [cz.filipproch.reactor.base.view.ReactorView] implementations
- * when the [cz.filipproch.reactor.base.view.ReactorView] is stopped
+ * Represents [android.app.Activity.onStop] call in the Android Activity lifecycle
  *
- * @author Filip Prochazka (@filipproch)
+ * Used by some built-in [cz.filipproch.reactor.base.view.ReactorView] implementations
  */
 object ViewStoppedEvent : ReactorUiEvent
 

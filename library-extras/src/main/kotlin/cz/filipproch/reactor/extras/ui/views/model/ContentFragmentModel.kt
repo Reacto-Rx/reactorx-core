@@ -5,10 +5,10 @@ import cz.filipproch.reactor.base.view.ReactorUiModel
 
 /**
  * TODO: add description
- *
- * @author Filip Prochazka (@filipproch)
  */
-class ContentFragmentModel(val fragment: Fragment?) : ReactorUiModel {
+class ContentFragmentModel(
+        val fragment: Fragment?
+) : ReactorUiModel {
     override fun getType(): Class<*> {
         return ContentFragmentModel::class.java
     }

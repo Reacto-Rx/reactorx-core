@@ -8,8 +8,6 @@ import android.view.ViewGroup
 
 /**
  * TODO: add description
- *
- * @author Filip Prochazka (@filipproch)
  */
 open class SimpleRecyclerListAdapter<T> : ReactorRecyclerListAdapter<T, SimpleRecyclerListAdapter.Holder> {
 

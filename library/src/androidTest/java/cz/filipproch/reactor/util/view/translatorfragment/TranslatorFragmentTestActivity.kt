@@ -1,7 +1,7 @@
 package cz.filipproch.reactor.util.view.translatorfragment
 
 import android.support.v7.app.AppCompatActivity
-import cz.filipproch.reactor.base.translator.BaseReactorTranslator
+import cz.filipproch.reactor.base.translator.ReactorTranslator
 import cz.filipproch.reactor.base.translator.SimpleTranslatorFactory
 import cz.filipproch.reactor.ui.ReactorTranslatorFragment
 import cz.filipproch.reactor.ui.ReactorTranslatorHelper
@@ -30,7 +30,7 @@ class TranslatorFragmentTestActivity : AppCompatActivity() {
                 .findTranslatorFragment(supportFragmentManager)
     }
 
-    class TranslatorFragmentTestTranslator : BaseReactorTranslator() {
+    class TranslatorFragmentTestTranslator : ReactorTranslator() {
         override fun onCreated() {
         }
     }

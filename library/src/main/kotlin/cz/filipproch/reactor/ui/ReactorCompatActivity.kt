@@ -2,7 +2,7 @@ package cz.filipproch.reactor.ui
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import cz.filipproch.reactor.base.translator.ReactorTranslator
+import cz.filipproch.reactor.base.translator.IReactorTranslator
 import cz.filipproch.reactor.base.view.ReactorUiAction
 import cz.filipproch.reactor.base.view.ReactorUiEvent
 import cz.filipproch.reactor.base.view.ReactorUiModel
@@ -13,11 +13,9 @@ import io.reactivex.functions.Consumer
 import io.reactivex.subjects.PublishSubject
 
 /**
- * [AppCompatActivity] implementation of [ReactorView]
- *
- * @author Filip Prochazka (@filipproch)
+ * [AppCompatActivity] implementation of the [ReactorView]
  */
-abstract class ReactorCompatActivity<T : ReactorTranslator> :
+abstract class ReactorCompatActivity<T : IReactorTranslator> :
         AppCompatActivity(),
         ReactorView<T> {
 

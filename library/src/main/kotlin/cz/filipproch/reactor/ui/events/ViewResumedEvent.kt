@@ -4,9 +4,9 @@ import cz.filipproch.reactor.base.view.ReactorUiEvent
 import io.reactivex.Observable
 
 /**
- * TODO
+ * Represents [android.app.Activity.onResume] call in the Android Activity lifecycle
  *
- * @author Filip Prochazka (@filipproch)
+ * Used by some built-in [cz.filipproch.reactor.base.view.ReactorView] implementations
  */
 object ViewResumedEvent : ReactorUiEvent
 

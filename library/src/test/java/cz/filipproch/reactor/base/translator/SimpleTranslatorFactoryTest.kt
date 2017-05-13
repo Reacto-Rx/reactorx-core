@@ -34,17 +34,17 @@ class SimpleTranslatorFactoryTest {
         simpleFactory.create()
     }
 
-    private class SimpleTranslator : BaseReactorTranslator() {
+    private class SimpleTranslator : ReactorTranslator() {
         override fun onCreated() {
         }
     }
 
-    private class SimpleBrokenTranslator private constructor() : BaseReactorTranslator() {
+    private class SimpleBrokenTranslator private constructor() : ReactorTranslator() {
         override fun onCreated() {
         }
     }
 
-    private abstract class SimpleAbstractTranslator : BaseReactorTranslator() {
+    private abstract class SimpleAbstractTranslator : ReactorTranslator() {
         override fun onCreated() {
         }
     }

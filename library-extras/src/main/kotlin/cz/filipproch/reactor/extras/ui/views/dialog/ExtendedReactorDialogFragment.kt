@@ -2,18 +2,15 @@ package cz.filipproch.reactor.extras.ui.views.dialog
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
 import android.view.View
-import cz.filipproch.reactor.base.translator.ReactorTranslator
+import cz.filipproch.reactor.base.translator.IReactorTranslator
+import cz.filipproch.reactor.ui.ReactorDialogFragment
 
 /**
  * TODO: add description
- *
- * @author Filip Prochazka (@filipproch)
  */
-@Deprecated("No implemented, does not work!!!")
-abstract class ExtendedReactorDialogFragment<T : ReactorTranslator> : DialogFragment() {
+abstract class ExtendedReactorDialogFragment<T : IReactorTranslator> : ReactorDialogFragment<T>() {
 
     private val STATE_REQUEST_CODE = "request_code"
 

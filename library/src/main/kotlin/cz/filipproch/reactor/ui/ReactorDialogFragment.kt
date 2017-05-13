@@ -3,7 +3,7 @@ package cz.filipproch.reactor.ui
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.view.View
-import cz.filipproch.reactor.base.translator.ReactorTranslator
+import cz.filipproch.reactor.base.translator.IReactorTranslator
 import cz.filipproch.reactor.base.view.ReactorUiAction
 import cz.filipproch.reactor.base.view.ReactorUiEvent
 import cz.filipproch.reactor.base.view.ReactorUiModel
@@ -14,11 +14,9 @@ import io.reactivex.functions.Consumer
 import io.reactivex.subjects.PublishSubject
 
 /**
- * [DialogFragment] implementation of [ReactorView]
- *
- * @author Filip Prochazka (@filipproch)
+ * [DialogFragment] implementation of the [ReactorView]
  */
-abstract class ReactorDialogFragment<T : ReactorTranslator> :
+abstract class ReactorDialogFragment<T : IReactorTranslator> :
         DialogFragment(),
         ReactorView<T> {
 

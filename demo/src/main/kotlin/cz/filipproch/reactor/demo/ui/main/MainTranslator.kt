@@ -1,6 +1,6 @@
 package cz.filipproch.reactor.demo.ui.main
 
-import cz.filipproch.reactor.base.translator.BaseReactorTranslator
+import cz.filipproch.reactor.base.translator.ReactorTranslator
 import cz.filipproch.reactor.demo.data.AwesomeNetworkModel
 import cz.filipproch.reactor.ui.events.ViewCreatedEvent
 import io.reactivex.ObservableTransformer
@@ -10,7 +10,7 @@ import io.reactivex.ObservableTransformer
  *
  * @author Filip Prochazka (@filipproch)
  */
-class MainTranslator : BaseReactorTranslator() {
+class MainTranslator : ReactorTranslator() {
 
     override fun onCreated() {
         val fetchPostDetail = ObservableTransformer<ViewCreatedEvent, MainUiModel> {

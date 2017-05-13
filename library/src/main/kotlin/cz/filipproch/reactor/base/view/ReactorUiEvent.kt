@@ -1,8 +1,6 @@
 package cz.filipproch.reactor.base.view
 
 /**
- * TODO
- *
- * @author Filip Prochazka (@filipproch)
+ * Interface to be implemented by every <b>UI Event</b>
  */
 interface ReactorUiEvent

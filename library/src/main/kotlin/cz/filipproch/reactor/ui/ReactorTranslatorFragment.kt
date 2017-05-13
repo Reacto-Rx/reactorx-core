@@ -2,15 +2,13 @@ package cz.filipproch.reactor.ui
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import cz.filipproch.reactor.base.translator.ReactorTranslator
+import cz.filipproch.reactor.base.translator.IReactorTranslator
 import cz.filipproch.reactor.base.translator.TranslatorFactory
 
 /**
- * Fragment that has no [android.view.View] and is used to retain [ReactorTranslator] instance
- *
- * @author Filip Prochazka (@filipproch)
+ * Fragment that has no [android.view.View] and is used to retain [IReactorTranslator] instance
  */
-class ReactorTranslatorFragment<T : ReactorTranslator> : Fragment() {
+class ReactorTranslatorFragment<T : IReactorTranslator> : Fragment() {
 
     private var factory: TranslatorFactory<T>? = null
 

@@ -1,5 +1,6 @@
 package cz.filipproch.reactor.rx
 
+import android.support.annotation.NonNull
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
@@ -11,10 +12,8 @@ import io.reactivex.subjects.BehaviorSubject
  *
  * Emits last received instance of each unique [Class] type upon subscription
  * and than continues emitting received objects.
- *
- * @author Filip Prochazka (@filipproch)
  */
-class TypeBehaviorSubject<T: TypedObject> private constructor() : Observer<T> {
+class TypeBehaviorSubject<T : TypedObject> private constructor() : Observer<T> {
 
     private val subject = BehaviorSubject.create<Map<Class<*>, T>>()
 
@@ -41,6 +40,11 @@ class TypeBehaviorSubject<T: TypedObject> private constructor() : Observer<T> {
         return subject.onError(e)
     }
 
+    /**
+     * Returns [Observable] that emits the unique instances of
+     * given [TypedObject]s
+     */
+    @NonNull
     fun asObservable(): Observable<T> {
         // todo: fix, do not emit all values every time !!!
         return subject.concatMapIterable {
@@ -50,7 +54,7 @@ class TypeBehaviorSubject<T: TypedObject> private constructor() : Observer<T> {
 
     companion object {
 
-        fun <T: TypedObject> create(): TypeBehaviorSubject<T> {
+        fun <T : TypedObject> create(): TypeBehaviorSubject<T> {
             return TypeBehaviorSubject()
         }
 

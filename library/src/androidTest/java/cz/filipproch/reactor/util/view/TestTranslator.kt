@@ -1,12 +1,12 @@
 package cz.filipproch.reactor.util.view
 
-import cz.filipproch.reactor.base.translator.BaseReactorTranslator
+import cz.filipproch.reactor.base.translator.ReactorTranslator
 import cz.filipproch.reactor.base.view.ReactorUiEvent
 
 /**
  * @author Filip Prochazka (@filipproch)
  */
-class TestTranslator : BaseReactorTranslator() {
+class TestTranslator : ReactorTranslator() {
 
     var onCreatedCalled = false
     var onDestroyedCalled = false

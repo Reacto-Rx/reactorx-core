@@ -3,10 +3,29 @@ package cz.filipproch.reactor.extras.ui.views.actions
 import android.app.Activity
 import cz.filipproch.reactor.base.view.ReactorUiAction
 
+/**
+ * TODO
+ */
 object FinishActivityAction : ReactorUiAction
 
-class FinishActivityWithResultAction(val resultCode: Int) : ReactorUiAction
+/**
+ * TODO
+ */
+class FinishActivityWithResultAction(
+        val resultCode: Int
+) : ReactorUiAction
 
-class StartActivityAction(val activity: Class<out Activity>): ReactorUiAction
+/**
+ * TODO
+ */
+class StartActivityAction(
+        val activity: Class<out Activity>
+) : ReactorUiAction
 
-class StartActivityForResultAction(val activity: Class<out Activity>, val requestCode: Int): ReactorUiAction
+/**
+ * TODO
+ */
+class StartActivityForResultAction(
+        val activity: Class<out Activity>,
+        val requestCode: Int
+) : ReactorUiAction

@@ -5,17 +5,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import cz.filipproch.reactor.base.translator.ReactorTranslator
+import cz.filipproch.reactor.base.translator.IReactorTranslator
 import cz.filipproch.reactor.extras.ui.iface.AndroidLayoutView
 import cz.filipproch.reactor.extras.ui.views.events.ActivityResultEvent
 import cz.filipproch.reactor.ui.ReactorFragment
 
 /**
  * TODO: add description
- *
- * @author Filip Prochazka (@filipproch)
  */
-abstract class ExtendedReactorFragment<T : ReactorTranslator> :
+abstract class ExtendedReactorFragment<T : IReactorTranslator> :
         ReactorFragment<T>(),
         AndroidLayoutView {
 
