@@ -81,7 +81,7 @@ class RxSharedPreferences {
     /**
      * TODO
      */
-    fun observeString(key: String, defaultValue: String? = null): Observable<PreferenceValue<String>> {
+    fun observeString(key: String, defaultValue: String? = null): Observable<PreferenceValue<String?>> {
         return observePreference(key)
                 .map { PreferenceValue(sharedPrefs.getString(key, defaultValue)) }
     }
@@ -189,7 +189,7 @@ class RxSharedPreferences {
     /**
      * TODO
      */
-    data class PreferenceValue<out T>(val value: T)
+    data class PreferenceValue<out T>(val value: T?)
 
     /**
      * TODO
