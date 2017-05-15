@@ -23,7 +23,8 @@ test:
     # generate jacoco test report
     - ./gradlew :library:jacocoTestReport :library-extras:jacocoTestReport -PdisablePreDex -Pkotlin.incremental=false
     # assemble androidTest sources
-    - ./gradlew :library:assembleAndroidTest :library-extras:assembleAndroidTest -PdisablePreDex -Pkotlin.incremental=false
+    - ./gradlew :library:assembleAndroidTest :library-extras:assembleAndroidTest -PdisablePreDex -Pkotlin.incremental=false:
+            timeout: 1200
     # start the emulator
     - emulator -avd circleci-android24 -no-window:
             background: true
@@ -34,7 +35,8 @@ test:
     - sleep 30
     - adb shell input keyevent 82
     # run tests against the emulator.
-    - ./gradlew :library:connectedAndroidTest :library-extras:connectedAndroidTest -PdisablePreDex -Pkotlin.incremental=false
+    - ./gradlew :library:connectedAndroidTest :library-extras:connectedAndroidTest -PdisablePreDex -Pkotlin.incremental=false:
+            timeout: 1200
     # copy the test results to the test results directory.
     - cp -r library/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS
     - cp -r library-extras/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS
