@@ -81,6 +81,15 @@ class RxSharedPreferences {
     /**
      * TODO
      */
+    fun removeKey(key: String, commit: Boolean = false): Completable {
+        return sharedPrefs.editInline(commit) {
+            it.remove(key)
+        }
+    }
+
+    /**
+     * TODO
+     */
     fun observeString(key: String, defaultValue: String? = null): Observable<PreferenceValue<String?>> {
         return observePreference(key)
                 .map { PreferenceValue(sharedPrefs.getString(key, defaultValue)) }
