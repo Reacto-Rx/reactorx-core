@@ -149,15 +149,15 @@ class ReactorTranslatorTest {
             onCreatedCalled = true
 
             reactTo {
-                it.subscribe { lastEvent = it }
+                subscribe { lastEvent = it }
             }
 
             translateToModel {
-                it.map { TestReactorUiModel() }
+                map { TestReactorUiModel() }
             }
 
             translateToAction {
-                it.map { TestReactorUiAction() }
+                map { TestReactorUiAction() }
             }
         }
 

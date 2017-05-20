@@ -1,10 +1,11 @@
 package cz.filipproch.reactor.rx
 
-import android.support.annotation.NonNull
-import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.Subject
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Helper class, implementation on top of [BehaviorSubject],
@@ -13,14 +14,30 @@ import io.reactivex.subjects.BehaviorSubject
  * Emits last received instance of each unique [Class] type upon subscription
  * and than continues emitting received objects.
  */
-class TypeBehaviorSubject<T : TypedObject> private constructor() : Observer<T> {
+internal class TypeBehaviorSubject<T : TypedObject> private constructor() : Subject<T>() {
 
-    private val subject = BehaviorSubject.create<Map<Class<*>, T>>()
+    internal val typesMemory = ConcurrentHashMap<Class<*>, T>()
 
-    private val typesMap = mutableMapOf<Class<*>, T>()
+    internal val subject = PublishSubject.create<T>()
 
-    init {
-        subject.onNext(mutableMapOf())
+    override fun hasComplete(): Boolean {
+        return subject.hasComplete()
+    }
+
+    override fun hasObservers(): Boolean {
+        return subject.hasObservers()
+    }
+
+    override fun hasThrowable(): Boolean {
+        return subject.hasThrowable()
+    }
+
+    override fun subscribeActual(observer: Observer<in T>?) {
+        subject.subscribeActual(observer)
+
+        typesMemory.forEach { (_, value) ->
+            observer?.onNext(value)
+        }
     }
 
     override fun onComplete() {
@@ -31,25 +48,22 @@ class TypeBehaviorSubject<T : TypedObject> private constructor() : Observer<T> {
         subject.onSubscribe(d)
     }
 
-    override fun onNext(value: T) {
-        typesMap[value.getType()] = value
-        return subject.onNext(typesMap)
+    override fun getThrowable(): Throwable {
+        return subject.throwable
     }
 
     override fun onError(e: Throwable?) {
-        return subject.onError(e)
+        subject.onError(e)
     }
 
-    /**
-     * Returns [Observable] that emits the unique instances of
-     * given [TypedObject]s
-     */
-    @NonNull
-    fun asObservable(): Observable<T> {
-        // todo: fix, do not emit all values every time !!!
-        return subject.concatMapIterable {
-            it.entries.map { it.value }
-        }
+    override fun onNext(t: T) {
+        cacheToTypeMemory(t)
+
+        subject.onNext(t)
+    }
+
+    private fun cacheToTypeMemory(t: T) {
+        typesMemory[t.getType()] = t
     }
 
     companion object {

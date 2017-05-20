@@ -41,7 +41,7 @@ abstract class ReactorTranslator : IReactorTranslator {
     }
 
     override fun observeUiModels(): Observable<out ReactorUiModel> {
-        return outputModelSubject.asObservable()
+        return outputModelSubject
     }
 
     override fun observeUiActions(): Observable<out ReactorUiAction> {
@@ -80,42 +80,35 @@ abstract class ReactorTranslator : IReactorTranslator {
     open fun onBeforeDestroyed() {
     }
 
-    fun translateToModel(reaction: (events: Observable<out ReactorUiEvent>) -> Observable<out ReactorUiModel>) {
-        this.translate(object : EventModelTranslation {
-            override fun translate(events: Observable<out ReactorUiEvent>): Observable<out ReactorUiModel> {
-                return reaction.invoke(events)
-            }
-        })
+    fun translateToModel(reaction: Observable<out ReactorUiEvent>.() -> Observable<out ReactorUiModel>) {
+        instanceDisposable.add(reaction.invoke(inputSubject)
+                .subscribe(outputModelSubject::onNext))
     }
 
+    @Deprecated("Use the lambda syntax")
     fun translate(translation: EventModelTranslation) {
         instanceDisposable.add(
                 translation.translate(inputSubject)
                         .subscribe(outputModelSubject::onNext))
     }
 
-    fun translateToAction(reaction: (events: Observable<out ReactorUiEvent>) -> Observable<out ReactorUiAction>) {
-        this.translate(object : EventActionTranslation {
-            override fun translate(events: Observable<out ReactorUiEvent>): Observable<out ReactorUiAction> {
-                return reaction.invoke(events)
-            }
-        })
+    fun translateToAction(reaction: Observable<out ReactorUiEvent>.() -> Observable<out ReactorUiAction>) {
+        instanceDisposable.add(reaction.invoke(inputSubject)
+                .subscribe(outputActionSubject::onNext))
     }
 
+    @Deprecated("Use the lambda syntax")
     fun translate(translation: EventActionTranslation) {
         instanceDisposable.add(
                 translation.translate(inputSubject)
                         .subscribe(outputActionSubject::onNext))
     }
 
-    fun reactTo(reaction: (events: Observable<out ReactorUiEvent>) -> Disposable) {
-        this.reactTo(object : EventReaction {
-            override fun react(events: Observable<out ReactorUiEvent>): Disposable {
-                return reaction.invoke(events)
-            }
-        })
+    fun reactTo(reaction: Observable<out ReactorUiEvent>.() -> Disposable) {
+        instanceDisposable.add(reaction.invoke(inputSubject))
     }
 
+    @Deprecated("Use the lambda syntax")
     fun reactTo(reaction: EventReaction) {
         instanceDisposable.add(reaction.react(inputSubject))
     }
@@ -137,6 +130,7 @@ abstract class ReactorTranslator : IReactorTranslator {
     /**
      *  Interface used internally by [ReactorTranslator] to register reactions
      */
+    @Deprecated("Use the lambda syntax")
     interface EventReaction {
         fun react(events: Observable<out ReactorUiEvent>): Disposable
     }
