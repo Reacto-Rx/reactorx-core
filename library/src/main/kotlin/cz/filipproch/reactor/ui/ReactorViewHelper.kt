@@ -83,6 +83,8 @@ class ReactorViewHelper<T : IReactorTranslator>(val reactorView: ReactorView<T>)
      * TODO
      */
     fun onViewNotUsable() {
+        translator?.unbindView()
+        
         viewBoundDisposable?.dispose()
         viewBoundDisposable = null
     }
@@ -93,7 +95,6 @@ class ReactorViewHelper<T : IReactorTranslator>(val reactorView: ReactorView<T>)
     fun onViewDestroyed() {
         instanceDisposable.dispose()
 
-        translator?.unbindView()
         eventSubject = null
     }
 
