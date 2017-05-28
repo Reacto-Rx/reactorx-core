@@ -77,7 +77,6 @@ abstract class ReactorDialogFragment<T : IReactorTranslator> :
 
     override fun onDestroy() {
         super.onDestroy()
-        dispatch(ViewDestroyedEvent)
         reactorViewHelper?.onViewDestroyed()
     }
 

@@ -26,7 +26,7 @@ open class SimpleRecyclerListAdapter<T> : ReactorRecyclerListAdapter<T, SimpleRe
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
         super.onBindViewHolder(holder, position)
-        binder.bindItem(holder.itemView, getItem(position))
+        binder.bindItem(position, holder.itemView, getItem(position))
     }
 
     override fun getItemCount(): Int {
@@ -35,8 +35,11 @@ open class SimpleRecyclerListAdapter<T> : ReactorRecyclerListAdapter<T, SimpleRe
 
     class Holder(view: View) : RecyclerView.ViewHolder(view)
 
-    interface Binder<in T> {
-        fun bindItem(view: View, item: T)
+    abstract class Binder<in T> {
+        open fun bindItem(position: Int, view: View, item: T) {
+            this.bindItem(view, item)
+        }
+        open fun bindItem(view: View, item: T) {}
     }
 
 }

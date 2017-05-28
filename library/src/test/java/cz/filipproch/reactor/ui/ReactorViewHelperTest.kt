@@ -89,7 +89,6 @@ class ReactorViewHelperTest {
         // emit an event
         emitter.onNext(TestEvent)
 
-        // nothing should arrive
         assertThat(translator.receivedEvents).hasSize(0)
 
         // rebind view
@@ -97,6 +96,33 @@ class ReactorViewHelperTest {
 
         // emit an event
         emitter.onNext(TestEvent)
+
+        // single event should arrive
+        assertThat(translator.receivedEvents).hasSize(2)
+    }
+
+    @Test
+    fun eventsAreDeliveredToTranslatorAfterUnbindAndRebind() {
+        // prepare for the test
+        val emitter = PublishSubject.create<ReactorUiEvent>()
+        reactorView?.setOnEmittersInitCallback {
+            viewHelper?.registerEmitter(emitter)
+        }
+        viewHelper?.onReadyToRegisterEmitters()
+
+        val translator = TestTranslator()
+        translator.onCreated()
+
+        viewHelper?.bindTranslatorWithView(translator)
+
+        // the test
+
+        viewHelper?.onViewNotUsable()
+
+        // emit an event
+        emitter.onNext(TestEvent)
+
+        viewHelper?.bindTranslatorWithView(translator)
 
         // single event should arrive
         assertThat(translator.receivedEvents).hasSize(1)
