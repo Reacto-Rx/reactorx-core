@@ -28,25 +28,7 @@ interface ReactorView<out T : IReactorTranslator> {
      * Called when the stream of [ReactorUiModel] is connected
      * to this [ReactorView]
      */
-    @Deprecated("Replaced with onConnectModelStream", ReplaceWith(
-            "onConnectModelStream(modelStream)"
-    ))
-    fun onConnectModelChannel(modelStream: Observable<out ReactorUiModel>)
-
-    /**
-     * Called when the stream of [ReactorUiModel] is connected
-     * to this [ReactorView]
-     */
     fun onConnectModelStream(modelStream: Observable<out ReactorUiModel>)
-
-    /**
-     * Called when the stream of [ReactorUiAction] is connected
-     * to this [ReactorView]
-     */
-    @Deprecated("Replaced with onConnectActionStream", ReplaceWith(
-            "onConnectActionStream(actionStream)"
-    ))
-    fun onConnectActionChannel(actionStream: Observable<out ReactorUiAction>)
 
     /**
      * Called when the stream of [ReactorUiAction] is connected

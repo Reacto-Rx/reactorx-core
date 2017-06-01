@@ -16,11 +16,17 @@ import io.reactivex.subjects.PublishSubject
 abstract class ReactorTranslator : IReactorTranslator {
 
     private val inputSubject = PublishSubject.create<ReactorUiEvent>()
-    private val outputModelSubject = TypeBehaviorSubject.create<ReactorUiModel>()
+    private val outputModelSubject = TypeBehaviorSubject.create()
     private val outputActionSubject = PublishSubject.create<ReactorUiAction>()
 
     private val instanceDisposable = CompositeDisposable()
     private var viewDisposable: Disposable? = null
+
+    /**
+     * Stream of events from ReactorView
+     */
+    val eventStream: Observable<ReactorUiEvent>
+        get() = inputSubject
 
     /**
      * Whether the instance of [ReactorTranslator] was initialized ([onInstanceCreated] was called)

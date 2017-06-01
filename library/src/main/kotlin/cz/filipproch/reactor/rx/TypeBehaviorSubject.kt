@@ -1,5 +1,7 @@
 package cz.filipproch.reactor.rx
 
+import cz.filipproch.reactor.base.view.ReactorUiModel
+import cz.filipproch.reactor.base.view.StateAwareUiModel
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
@@ -14,11 +16,11 @@ import java.util.concurrent.ConcurrentHashMap
  * Emits last received instance of each unique [Class] type upon subscription
  * and than continues emitting received objects.
  */
-internal class TypeBehaviorSubject<T : TypedObject> private constructor() : Subject<T>() {
+internal class TypeBehaviorSubject private constructor() : Subject<ReactorUiModel>() {
 
-    internal val typesMemory = ConcurrentHashMap<Class<*>, T>()
+    internal val typesMemory = ConcurrentHashMap<Class<*>, ReactorUiModel>()
 
-    internal val subject = PublishSubject.create<T>()
+    internal val subject = PublishSubject.create<ReactorUiModel>()
 
     override fun hasComplete(): Boolean {
         return subject.hasComplete()
@@ -32,10 +34,13 @@ internal class TypeBehaviorSubject<T : TypedObject> private constructor() : Subj
         return subject.hasThrowable()
     }
 
-    override fun subscribeActual(observer: Observer<in T>?) {
+    override fun subscribeActual(observer: Observer<in ReactorUiModel>?) {
         subject.subscribeActual(observer)
 
         typesMemory.forEach { (_, value) ->
+            if (value is StateAwareUiModel) {
+                value.setCached()
+            }
             observer?.onNext(value)
         }
     }
@@ -56,19 +61,19 @@ internal class TypeBehaviorSubject<T : TypedObject> private constructor() : Subj
         subject.onError(e)
     }
 
-    override fun onNext(t: T) {
+    override fun onNext(t: ReactorUiModel) {
         cacheToTypeMemory(t)
 
         subject.onNext(t)
     }
 
-    private fun cacheToTypeMemory(t: T) {
+    private fun cacheToTypeMemory(t: ReactorUiModel) {
         typesMemory[t.getType()] = t
     }
 
     companion object {
 
-        fun <T : TypedObject> create(): TypeBehaviorSubject<T> {
+        fun create(): TypeBehaviorSubject {
             return TypeBehaviorSubject()
         }
 

@@ -66,15 +66,14 @@ class ReactorViewHelper<T : IReactorTranslator>(val reactorView: ReactorView<T>)
     private fun connectUiModels(translator: T) {
         val uiModelStream = translator.observeUiModels()
                 .publish()
-        reactorView.onConnectModelChannel(uiModelStream)
         reactorView.onConnectModelStream(uiModelStream)
+
         viewBoundDisposable?.add(uiModelStream.connect())
     }
 
     private fun connectUiActions(translator: T) {
         val uiActionStream = translator.observeUiActions()
                 .publish()
-        reactorView.onConnectActionChannel(uiActionStream)
         reactorView.onConnectActionStream(uiActionStream)
         viewBoundDisposable?.add(uiActionStream.connect())
     }

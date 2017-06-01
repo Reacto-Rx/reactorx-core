@@ -84,13 +84,7 @@ abstract class ReactorDialogFragment<T : IReactorTranslator> :
         registerEmitter(activityEventsSubject)
     }
 
-    override fun onConnectModelChannel(modelStream: Observable<out ReactorUiModel>) {
-    }
-
     override fun onConnectModelStream(modelStream: Observable<out ReactorUiModel>) {
-    }
-
-    override fun onConnectActionChannel(actionStream: Observable<out ReactorUiAction>) {
     }
 
     override fun onConnectActionStream(actionStream: Observable<out ReactorUiAction>) {
