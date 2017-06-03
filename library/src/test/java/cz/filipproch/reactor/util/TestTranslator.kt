@@ -17,7 +17,7 @@ class TestTranslator : ReactorTranslator() {
         onCreatedCalled = true
 
         reactTo {
-            it.subscribe {
+            subscribe {
                 receivedEvents.add(it)
             }
         }

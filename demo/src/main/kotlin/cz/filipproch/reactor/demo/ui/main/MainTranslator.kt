@@ -3,6 +3,7 @@ package cz.filipproch.reactor.demo.ui.main
 import cz.filipproch.reactor.base.translator.ReactorTranslator
 import cz.filipproch.reactor.demo.data.AwesomeNetworkModel
 import cz.filipproch.reactor.ui.events.ViewCreatedEvent
+import cz.filipproch.reactor.ui.events.whenViewCreatedFirstTime
 import io.reactivex.ObservableTransformer
 
 /**
@@ -28,7 +29,7 @@ class MainTranslator : ReactorTranslator() {
         }
 
         translateToModel {
-            it.ofType(ViewCreatedEvent::class.java)
+            whenViewCreatedFirstTime()
                     .compose(fetchPostDetail)
         }
     }

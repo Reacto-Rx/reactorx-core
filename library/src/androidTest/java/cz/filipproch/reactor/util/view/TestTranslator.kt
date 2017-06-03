@@ -17,18 +17,18 @@ class TestTranslator : ReactorTranslator() {
         onCreatedCalled = true
 
         reactTo {
-            it.subscribe {
+            subscribe {
                 receivedEvents.add(it)
             }
         }
 
         translateToModel {
-            it.ofType(ReturnUiModelEvent::class.java)
+            ofType(ReturnUiModelEvent::class.java)
                     .map { TestUiModel }
         }
 
         translateToAction {
-            it.ofType(ReturnUiActionEvent::class.java)
+            ofType(ReturnUiActionEvent::class.java)
                     .map { TestUiAction }
         }
     }

@@ -113,7 +113,6 @@ class ReactorDialogFragmentTest : ActivityTest() {
                 .receivedFollowingEventsInOrder(
                         ViewPausedEvent::class.java,
                         ViewStoppedEvent::class.java,
-                        ViewDestroyedEvent::class.java,
                         ViewCreatedEvent::class.java,
                         ViewStartedEvent::class.java,
                         ViewResumedEvent::class.java

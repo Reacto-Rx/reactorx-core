@@ -66,15 +66,14 @@ class ReactorViewHelper<T : IReactorTranslator>(val reactorView: ReactorView<T>)
     private fun connectUiModels(translator: T) {
         val uiModelStream = translator.observeUiModels()
                 .publish()
-        reactorView.onConnectModelChannel(uiModelStream)
         reactorView.onConnectModelStream(uiModelStream)
+
         viewBoundDisposable?.add(uiModelStream.connect())
     }
 
     private fun connectUiActions(translator: T) {
         val uiActionStream = translator.observeUiActions()
                 .publish()
-        reactorView.onConnectActionChannel(uiActionStream)
         reactorView.onConnectActionStream(uiActionStream)
         viewBoundDisposable?.add(uiActionStream.connect())
     }
@@ -83,6 +82,9 @@ class ReactorViewHelper<T : IReactorTranslator>(val reactorView: ReactorView<T>)
      * TODO
      */
     fun onViewNotUsable() {
+        translator?.unbindView()
+        translator = null
+
         viewBoundDisposable?.dispose()
         viewBoundDisposable = null
     }
@@ -93,7 +95,6 @@ class ReactorViewHelper<T : IReactorTranslator>(val reactorView: ReactorView<T>)
     fun onViewDestroyed() {
         instanceDisposable.dispose()
 
-        translator?.unbindView()
         eventSubject = null
     }
 

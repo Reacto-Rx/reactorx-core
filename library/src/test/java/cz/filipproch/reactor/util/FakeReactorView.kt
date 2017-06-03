@@ -36,16 +36,8 @@ class FakeReactorView : ReactorView<TestTranslator> {
         onEmittersInitCallback?.invoke()
     }
 
-    override fun onConnectModelChannel(modelStream: Observable<out ReactorUiModel>) {
-        onConnectModelChannelCalled = true
-    }
-
     override fun onConnectModelStream(modelStream: Observable<out ReactorUiModel>) {
         onConnectModelStreamCalled = true
-    }
-
-    override fun onConnectActionChannel(actionStream: Observable<out ReactorUiAction>) {
-        onConnectActionChannelCalled = true
     }
 
     override fun onConnectActionStream(actionStream: Observable<out ReactorUiAction>) {

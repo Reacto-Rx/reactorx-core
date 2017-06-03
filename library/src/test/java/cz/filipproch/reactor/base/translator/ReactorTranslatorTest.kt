@@ -89,35 +89,35 @@ class ReactorTranslatorTest {
     fun translateToModel() {
         val eventEmitter = bindEmitterToTranslator()
 
-        var lastModel: ReactorUiModel? = null
+        val receivedModels = mutableListOf<ReactorUiModel>()
 
         translator.observeUiModels()
-                .subscribe { lastModel = it }
+                .subscribe { receivedModels.add(it) }
 
         val event = TestReactorUiEvent()
         eventEmitter.onNext(event)
 
-        assertThat(lastModel).isNotNull()
+        assertThat(receivedModels).hasSize(1)
 
-        assertThat(lastModel).isInstanceOf(TestReactorUiModel::class.java)
+        assertThat(receivedModels.first()).isInstanceOf(TestReactorUiModel::class.java)
     }
 
     @Test
     fun translateToAction() {
         val eventEmitter = bindEmitterToTranslator()
 
-        var lastAction: ReactorUiAction? = null
+        val receivedActions = mutableListOf<ReactorUiAction>()
 
         // bind event emissions
         translator.observeUiActions()
-                .subscribe { lastAction = it }
+                .subscribe { receivedActions.add(it) }
 
         val event = TestReactorUiEvent()
         eventEmitter.onNext(event)
 
-        assertThat(lastAction).isNotNull()
+        assertThat(receivedActions).hasSize(1)
 
-        assertThat(lastAction).isInstanceOf(TestReactorUiAction::class.java)
+        assertThat(receivedActions.first()).isInstanceOf(TestReactorUiAction::class.java)
     }
 
     @Test
@@ -149,15 +149,15 @@ class ReactorTranslatorTest {
             onCreatedCalled = true
 
             reactTo {
-                it.subscribe { lastEvent = it }
+                subscribe { lastEvent = it }
             }
 
             translateToModel {
-                it.map { TestReactorUiModel() }
+                map { TestReactorUiModel() }
             }
 
             translateToAction {
-                it.map { TestReactorUiAction() }
+                map { TestReactorUiAction() }
             }
         }
 
