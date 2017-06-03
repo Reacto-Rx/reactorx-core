@@ -23,26 +23,26 @@ test:
     # generate jacoco test report
     - ./gradlew :library:jacocoTestReport :library-extras:jacocoTestReport -PdisablePreDex -Pkotlin.incremental=false
     # assemble androidTest sources
-    - ./gradlew :library:assembleAndroidTest :library-extras:assembleAndroidTest -PdisablePreDex -Pkotlin.incremental=false:
-            timeout: 1200
+    #- ./gradlew :library:assembleAndroidTest :library-extras:assembleAndroidTest -PdisablePreDex -Pkotlin.incremental=false:
+    #        timeout: 1200
     # start the emulator
-    - emulator -avd circleci-android24 -no-window:
-            background: true
-            parallel: true
+    #- emulator -avd circleci-android24 -no-window:
+    #        background: true
+    #        parallel: true
     # wait for it to have booted
-    - circle-android wait-for-boot
+    #- circle-android wait-for-boot
     # unlock the emulator screen
-    - sleep 30
-    - adb shell input keyevent 82
+    #- sleep 30
+    #- adb shell input keyevent 82
     # run tests against the emulator.
-    - ./gradlew :library:connectedAndroidTest :library-extras:connectedAndroidTest -PdisablePreDex -Pkotlin.incremental=false:
-            timeout: 1200
+    #- ./gradlew :library:connectedAndroidTest :library-extras:connectedAndroidTest -PdisablePreDex -Pkotlin.incremental=false:
+    #        timeout: 1200
     # copy the test results to the test results directory.
-    - cp -r library/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS
-    - cp -r library-extras/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS
+    #- cp -r library/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS
+    #- cp -r library-extras/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS
     # copy test reports
-    - cp -r library/build/reports/androidTests/* $CIRCLE_ARTIFACTS
-    - cp -r library-extras/build/reports/androidTests/* $CIRCLE_ARTIFACTS
+    #- cp -r library/build/reports/androidTests/* $CIRCLE_ARTIFACTS
+    #- cp -r library-extras/build/reports/androidTests/* $CIRCLE_ARTIFACTS
     # upload codecov.io
     - bash <(curl -s https://codecov.io/bash)
 

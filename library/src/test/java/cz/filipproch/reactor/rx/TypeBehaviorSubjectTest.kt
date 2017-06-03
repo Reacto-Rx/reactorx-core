@@ -1,12 +1,13 @@
 package cz.filipproch.reactor.rx
 
+import cz.filipproch.reactor.base.view.ReactorUiModel
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
 
 class TypeBehaviorSubjectTest {
 
-    private lateinit var subject: TypeBehaviorSubject<TypedObject>
+    private lateinit var subject: TypeBehaviorSubject
 
     @Before
     fun setupInstance() {
@@ -67,13 +68,13 @@ class TypeBehaviorSubjectTest {
         assertThat(emittedItems.last()).isEqualTo(test2)
     }
 
-    class TestObject : TypedObject {
+    class TestObject : ReactorUiModel {
         override fun getType(): Class<*> {
             return TestObject::class.java
         }
     }
 
-    class TestObject2 : TypedObject {
+    class TestObject2 : ReactorUiModel {
         override fun getType(): Class<*> {
             return TestObject2::class.java
         }
