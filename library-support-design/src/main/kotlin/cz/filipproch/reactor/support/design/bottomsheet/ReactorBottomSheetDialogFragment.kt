@@ -1,6 +1,7 @@
-package cz.filipproch.reactor.ui
+package cz.filipproch.reactor.support.design.bottomsheet
 
 import android.os.Bundle
+import android.support.design.widget.BottomSheetDialogFragment
 import android.support.v4.app.DialogFragment
 import android.view.View
 import cz.filipproch.reactor.base.translator.IReactorTranslator
@@ -18,8 +19,8 @@ import io.reactivex.subjects.PublishSubject
 /**
  * [DialogFragment] implementation of the [ReactorView]
  */
-abstract class ReactorDialogFragment<T : IReactorTranslator> :
-        DialogFragment(),
+abstract class ReactorBottomSheetDialogFragment<T : IReactorTranslator> :
+        BottomSheetDialogFragment(),
         ReactorView<T> {
 
     var reactorViewHelper: ReactorViewHelper<T>? = null

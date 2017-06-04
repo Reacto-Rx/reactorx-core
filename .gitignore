@@ -8,3 +8,9 @@
 .externalNativeBuild
 docs/Gemfile.lock
 docs/_site
+
+/library-common/build
+/library-support-design/build
+/library-support-recyclerview/build
+
+library-extras

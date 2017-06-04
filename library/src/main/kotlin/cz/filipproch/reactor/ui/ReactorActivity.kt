@@ -1,8 +1,7 @@
 package cz.filipproch.reactor.ui
 
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.view.View
+import android.support.v7.app.AppCompatActivity
 import cz.filipproch.reactor.base.translator.IReactorTranslator
 import cz.filipproch.reactor.base.view.ReactorUiAction
 import cz.filipproch.reactor.base.view.ReactorUiEvent
@@ -16,10 +15,10 @@ import io.reactivex.functions.Consumer
 import io.reactivex.subjects.PublishSubject
 
 /**
- * [DialogFragment] implementation of the [ReactorView]
+ * [AppCompatActivity] implementation of the [ReactorView]
  */
-abstract class ReactorDialogFragment<T : IReactorTranslator> :
-        DialogFragment(),
+abstract class ReactorActivity<T : IReactorTranslator> :
+        AppCompatActivity(),
         ReactorView<T> {
 
     var reactorViewHelper: ReactorViewHelper<T>? = null
@@ -27,19 +26,12 @@ abstract class ReactorDialogFragment<T : IReactorTranslator> :
 
     private val activityEventsSubject = PublishSubject.create<ReactorUiEvent>()
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        dispatch(ViewCreatedEvent(savedInstanceState))
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         reactorViewHelper = ReactorViewHelper(this)
-    }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        onCreateLayout()
+
         reactorViewHelper?.onReadyToRegisterEmitters()
 
         if (savedInstanceState != null) {
@@ -49,37 +41,8 @@ abstract class ReactorDialogFragment<T : IReactorTranslator> :
         }
 
         onUiReady()
-    }
 
-    override fun onStart() {
-        super.onStart()
-        reactorViewHelper?.bindTranslatorWithView(
-                ReactorTranslatorHelper.getTranslatorFromFragment(childFragmentManager, translatorFactory)
-        )
-
-        dispatch(ViewStartedEvent)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        dispatch(ViewResumedEvent)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        dispatch(ViewPausedEvent)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        dispatch(ViewStoppedEvent)
-
-        reactorViewHelper?.onViewNotUsable()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        reactorViewHelper?.onViewDestroyed()
+        dispatch(ViewCreatedEvent(savedInstanceState))
     }
 
     override fun onEmittersInit() {
@@ -110,24 +73,65 @@ abstract class ReactorDialogFragment<T : IReactorTranslator> :
         })
     }
 
+    override fun onStart() {
+        super.onStart()
+        reactorViewHelper?.bindTranslatorWithView(
+                ReactorTranslatorHelper.getTranslatorFromFragment(supportFragmentManager, translatorFactory)
+        )
+
+        dispatch(ViewStartedEvent)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        dispatch(ViewResumedEvent)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        dispatch(ViewPausedEvent)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        dispatch(ViewStoppedEvent)
+
+        reactorViewHelper?.onViewNotUsable()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        reactorViewHelper?.onViewDestroyed()
+    }
+
+    /*
+        ReactorActivity specific
+     */
+
     /**
-     * Called from [onViewCreated] is savedInstanceState is null
+     * Called from [onCreate] is savedInstanceState is null
      */
     open fun onUiCreated() {
     }
 
     /**
-     * Called from [onViewCreated] is savedInstanceState is not null
+     * Called from [onCreate] is savedInstanceState is not null
      */
     open fun onUiRestored(savedInstanceState: Bundle) {
     }
 
     /**
-     * Called from [onViewCreated] after either [onUiCreated] or [onUiRestored] has been called
+     * Called from [onCreate] after either [onUiCreated] or [onUiRestored] has been called
      *
      * This method is useful to set [android.view.View] listeners or other stuff that doesn't survive activity recreation
      */
     open fun onUiReady() {
     }
+
+    /**
+     * Called to create the layout for the view
+     */
+    abstract fun onCreateLayout()
 
 }

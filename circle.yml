@@ -19,9 +19,9 @@ machine:
 test:
   override:
     # assemble the sources
-    - ./gradlew :library:assemble :library-extras:assemble -PdisablePreDex -Pkotlin.incremental=false
+    - ./gradlew assemble -PdisablePreDex -Pkotlin.incremental=false
     # generate jacoco test report
-    - ./gradlew :library:jacocoTestReport :library-extras:jacocoTestReport -PdisablePreDex -Pkotlin.incremental=false
+    - ./gradlew jacocoTestReport -PdisablePreDex -Pkotlin.incremental=false
     # assemble androidTest sources
     #- ./gradlew :library:assembleAndroidTest :library-extras:assembleAndroidTest -PdisablePreDex -Pkotlin.incremental=false:
     #        timeout: 1200

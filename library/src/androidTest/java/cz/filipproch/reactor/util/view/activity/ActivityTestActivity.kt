@@ -1,33 +1,28 @@
-package cz.filipproch.reactor.util.view.fragment
+package cz.filipproch.reactor.util.view.activity
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import cz.filipproch.reactor.base.translator.SimpleTranslatorFactory
 import cz.filipproch.reactor.base.translator.TranslatorFactory
 import cz.filipproch.reactor.base.view.ReactorUiAction
 import cz.filipproch.reactor.base.view.ReactorUiModel
-import cz.filipproch.reactor.ui.ReactorFragment
+import cz.filipproch.reactor.ui.ReactorActivity
 import cz.filipproch.reactor.util.view.ReactorViewTestHelper
 import cz.filipproch.reactor.util.view.TestTranslator
 import io.reactivex.Observable
 
 /**
- * TODO: add description
+ * Simple [ReactorActivity] to be used in tests
  *
  * @author Filip Prochazka (@filipproch)
  */
-class TestFragment : ReactorFragment<TestTranslator>() {
+class ActivityTestActivity : ReactorActivity<TestTranslator>() {
 
     val helper = ReactorViewTestHelper()
 
+    /* Activity */
+
     override val translatorFactory: TranslatorFactory<TestTranslator>
         get() = SimpleTranslatorFactory(TestTranslator::class.java)
-
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return View(context)
-    }
 
     override fun onUiCreated() {
         super.onUiCreated()
@@ -42,6 +37,10 @@ class TestFragment : ReactorFragment<TestTranslator>() {
     override fun onUiReady() {
         super.onUiReady()
         methodCalled(METHOD_UI_READY)
+    }
+
+    override fun onCreateLayout() {
+        methodCalled(METHOD_CREATE_LAYOUT)
     }
 
     override fun onEmittersInit() {
@@ -72,8 +71,8 @@ class TestFragment : ReactorFragment<TestTranslator>() {
     companion object {
         val METHOD_UI_CREATED = "onUiCreated"
         val METHOD_UI_RESTORED = "onUiRestored"
-        val METHOD_POST_UI_CREATED = "onPostUiCreated"
         val METHOD_UI_READY = "onUiReady"
+        val METHOD_CREATE_LAYOUT = "onCreateLayout"
     }
 
 }

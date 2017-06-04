@@ -9,6 +9,8 @@ import cz.filipproch.reactor.base.view.ReactorUiEvent
 import cz.filipproch.reactor.base.view.ReactorUiModel
 import cz.filipproch.reactor.base.view.ReactorView
 import cz.filipproch.reactor.ui.events.*
+import cz.filipproch.reactor.ui.helper.ReactorTranslatorHelper
+import cz.filipproch.reactor.ui.helper.ReactorViewHelper
 import io.reactivex.Observable
 import io.reactivex.functions.Consumer
 import io.reactivex.subjects.PublishSubject
@@ -46,7 +48,6 @@ abstract class ReactorFragment<T : IReactorTranslator> :
             onUiCreated()
         }
 
-        onPostUiCreated()
         onUiReady()
     }
 
@@ -123,17 +124,6 @@ abstract class ReactorFragment<T : IReactorTranslator> :
      * Called from [onViewCreated] is savedInstanceState is not null
      */
     open fun onUiRestored(savedInstanceState: Bundle) {
-    }
-
-    /**
-     * Called from [onViewCreated] after either [onUiCreated] or [onUiRestored] has been called
-     *
-     * This method is useful to set [android.view.View] listeners or other stuff that doesn't survive activity recreation
-     */
-    @Deprecated("This method was deprecated due to ambiguous name", ReplaceWith(
-            "onUiReady"
-    ))
-    open fun onPostUiCreated() {
     }
 
     /**

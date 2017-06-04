@@ -35,7 +35,9 @@ android {
 
 dependencies {
     compile project(':library')
-    compile project(':library-extras')
+    compile project(':library-common')
+    compile project(':library-support-recyclerview')
+    compile project(':library-support-design')
 
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:design:25.3.1'

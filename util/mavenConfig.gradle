@@ -1,7 +1,7 @@
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
-group = 'cz.filipproch.lib'
+group = 'cz.filipproch.reactor-android'
 version = libVersion
 
 def mavenRepo = "maven"

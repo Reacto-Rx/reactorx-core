@@ -11,7 +11,7 @@ buildscript {
         rxBindingVersion = '2.0.0'
 
         // Library
-        libVersion = '0.7.0-dev'
+        libVersion = '0.7.0-SNAPSHOT'
     }
 
     repositories {

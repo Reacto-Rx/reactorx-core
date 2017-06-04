@@ -2,6 +2,7 @@ package cz.filipproch.reactor.ui
 
 import cz.filipproch.reactor.base.view.ReactorUiEvent
 import cz.filipproch.reactor.ui.events.TestEvent
+import cz.filipproch.reactor.ui.helper.ReactorViewHelper
 import cz.filipproch.reactor.util.FakeReactorView
 import cz.filipproch.reactor.util.TestTranslator
 import io.reactivex.Observable

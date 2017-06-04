@@ -3,8 +3,8 @@ package cz.filipproch.reactor.util.view.translatorfragment
 import android.support.v7.app.AppCompatActivity
 import cz.filipproch.reactor.base.translator.ReactorTranslator
 import cz.filipproch.reactor.base.translator.SimpleTranslatorFactory
-import cz.filipproch.reactor.ui.ReactorTranslatorFragment
-import cz.filipproch.reactor.ui.ReactorTranslatorHelper
+import cz.filipproch.reactor.ui.helper.ReactorTranslatorFragment
+import cz.filipproch.reactor.ui.helper.ReactorTranslatorHelper
 
 /**
  * TODO
