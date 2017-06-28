@@ -46,6 +46,7 @@ bintray {
     pkg {
         repo = mavenRepo
         name = project.archivesBaseName
+        userOrg = 'reacto-rx'
         publish = true
     }
 }
