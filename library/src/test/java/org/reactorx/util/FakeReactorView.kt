@@ -1,4 +1,4 @@
-package cz.filipproch.reactor.util.view
+package org.reactorx.util
 
 import cz.filipproch.reactor.base.translator.SimpleTranslatorFactory
 import cz.filipproch.reactor.base.translator.TranslatorFactory
@@ -26,11 +26,14 @@ class FakeReactorView : ReactorView<TestTranslator> {
     var dispatchExecutions = 0
     var consumeOnUiExecutions = 0
 
+    private var onEmittersInitCallback: (() -> Unit)? = null
+
     override val translatorFactory: TranslatorFactory<TestTranslator>
         get() = SimpleTranslatorFactory(TestTranslator::class.java)
 
     override fun onEmittersInit() {
         onEmittersInitCalled = true
+        onEmittersInitCallback?.invoke()
     }
 
     override fun onConnectModelStream(modelStream: Observable<out UiModel>) {
@@ -51,5 +54,9 @@ class FakeReactorView : ReactorView<TestTranslator> {
 
     override fun <T> Observable<T>.consumeOnUi(receiverAction: Consumer<T>) {
         consumeOnUiExecutions++
+    }
+
+    fun setOnEmittersInitCallback(callback: () -> Unit) {
+        onEmittersInitCallback = callback
     }
 }

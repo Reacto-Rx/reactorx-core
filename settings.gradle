@@ -1,1 +1,1 @@
-include ':library', ':demo', ':library-common', ':library-support-design', ':library-support-recyclerview'
+include ':library'/*, ':demo', ':library-common', ':library-support-design', ':library-support-recyclerview'*/

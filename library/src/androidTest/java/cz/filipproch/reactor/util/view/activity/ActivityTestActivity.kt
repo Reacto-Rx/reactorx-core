@@ -4,8 +4,8 @@ import android.os.Bundle
 import cz.filipproch.reactor.base.translator.SimpleTranslatorFactory
 import cz.filipproch.reactor.base.translator.TranslatorFactory
 import cz.filipproch.reactor.base.view.ReactorUiAction
-import cz.filipproch.reactor.base.view.ReactorUiModel
-import cz.filipproch.reactor.ui.ReactorActivity
+import cz.filipproch.reactor.base.view.UiModel
+import org.reactorx.ui.ReactorActivity
 import cz.filipproch.reactor.util.view.ReactorViewTestHelper
 import cz.filipproch.reactor.util.view.TestTranslator
 import io.reactivex.Observable
@@ -48,7 +48,7 @@ class ActivityTestActivity : ReactorActivity<TestTranslator>() {
         methodCalled(ReactorViewTestHelper.METHOD_EMITTERS_INIT)
     }
 
-    override fun onConnectModelStream(modelStream: Observable<out ReactorUiModel>) {
+    override fun onConnectModelStream(modelStream: Observable<out UiModel>) {
         super.onConnectModelStream(modelStream)
         methodCalled(ReactorViewTestHelper.METHOD_CONNECT_MODEL_STREAM)
         modelStream.consumeOnUi {

@@ -1,7 +1,7 @@
 package cz.filipproch.reactor.util.view
 
-import cz.filipproch.reactor.base.view.ReactorUiEvent
+import cz.filipproch.reactor.base.view.UiEvent
 
-object ReturnUiModelEvent : ReactorUiEvent
+object ReturnUiModelEvent : UiEvent
 
-object ReturnUiActionEvent : ReactorUiEvent
+object ReturnUiActionEvent : UiEvent

@@ -1,6 +1,6 @@
 package cz.filipproch.reactor.extras.ui.recyclerview.event
 
-import cz.filipproch.reactor.base.view.ReactorUiEvent
+import cz.filipproch.reactor.base.view.UiEvent
 
 /**
  * TODO: add description
@@ -8,4 +8,4 @@ import cz.filipproch.reactor.base.view.ReactorUiEvent
 data class AdapterItemClickedEvent<out T>(
         val position: Int,
         val item: T
-) : ReactorUiEvent
+) : UiEvent

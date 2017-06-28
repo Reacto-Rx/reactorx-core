@@ -2,8 +2,8 @@ package cz.filipproch.reactor.common.translator
 
 import cz.filipproch.reactor.base.translator.IReactorTranslator
 import cz.filipproch.reactor.base.view.ReactorUiAction
-import cz.filipproch.reactor.base.view.ReactorUiEvent
-import cz.filipproch.reactor.base.view.ReactorUiModel
+import cz.filipproch.reactor.base.view.UiEvent
+import cz.filipproch.reactor.base.view.UiModel
 import io.reactivex.Observable
 
 /**
@@ -20,10 +20,10 @@ class DumbTranslator : IReactorTranslator {
     override fun onBeforeInstanceDestroyed() {
     }
 
-    override fun bindView(events: Observable<out ReactorUiEvent>) {
+    override fun bindView(events: Observable<out UiEvent>) {
     }
 
-    override fun observeUiModels(): Observable<out ReactorUiModel> {
+    override fun observeUiModels(): Observable<out UiModel> {
         return Observable.empty()
     }
 

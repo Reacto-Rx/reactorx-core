@@ -5,8 +5,8 @@ import android.widget.Toast
 import com.jakewharton.rxbinding2.view.clicks
 import cz.filipproch.reactor.base.translator.SimpleTranslatorFactory
 import cz.filipproch.reactor.base.translator.TranslatorFactory
-import cz.filipproch.reactor.base.view.ReactorUiEvent
-import cz.filipproch.reactor.base.view.ReactorUiModel
+import cz.filipproch.reactor.base.view.UiEvent
+import cz.filipproch.reactor.base.view.UiModel
 import cz.filipproch.reactor.common.views.activity.ExtendedReactorActivity
 import cz.filipproch.reactor.demo.R
 import io.reactivex.Observable
@@ -20,7 +20,7 @@ class MainCompatActivity : ExtendedReactorActivity<MainTranslator>() {
     override val translatorFactory: TranslatorFactory<MainTranslator>
         get() = SimpleTranslatorFactory(MainTranslator::class.java)
 
-    override fun onConnectModelStream(modelStream: Observable<out ReactorUiModel>) {
+    override fun onConnectModelStream(modelStream: Observable<out UiModel>) {
         super.onConnectModelStream(modelStream)
         modelStream.ofType(MainUiModel::class.java).consumeOnUi {
             vProgressBar.visibility = if (it.isLoading) View.VISIBLE else View.GONE
@@ -44,4 +44,4 @@ class MainCompatActivity : ExtendedReactorActivity<MainTranslator>() {
 
 }
 
-object MasterButtonClicked : ReactorUiEvent
+object MasterButtonClicked : UiEvent

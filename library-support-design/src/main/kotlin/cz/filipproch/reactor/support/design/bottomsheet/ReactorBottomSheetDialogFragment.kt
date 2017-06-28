@@ -6,8 +6,8 @@ import android.support.v4.app.DialogFragment
 import android.view.View
 import cz.filipproch.reactor.base.translator.IReactorTranslator
 import cz.filipproch.reactor.base.view.ReactorUiAction
-import cz.filipproch.reactor.base.view.ReactorUiEvent
-import cz.filipproch.reactor.base.view.ReactorUiModel
+import cz.filipproch.reactor.base.view.UiEvent
+import cz.filipproch.reactor.base.view.UiModel
 import cz.filipproch.reactor.base.view.ReactorView
 import cz.filipproch.reactor.ui.events.*
 import cz.filipproch.reactor.ui.helper.ReactorTranslatorHelper
@@ -26,7 +26,7 @@ abstract class ReactorBottomSheetDialogFragment<T : IReactorTranslator> :
     var reactorViewHelper: ReactorViewHelper<T>? = null
         private set
 
-    private val activityEventsSubject = PublishSubject.create<ReactorUiEvent>()
+    private val activityEventsSubject = PublishSubject.create<UiEvent>()
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -87,17 +87,17 @@ abstract class ReactorBottomSheetDialogFragment<T : IReactorTranslator> :
         registerEmitter(activityEventsSubject)
     }
 
-    override fun onConnectModelStream(modelStream: Observable<out ReactorUiModel>) {
+    override fun onConnectModelStream(modelStream: Observable<out UiModel>) {
     }
 
     override fun onConnectActionStream(actionStream: Observable<out ReactorUiAction>) {
     }
 
-    override fun dispatch(event: ReactorUiEvent) {
+    override fun dispatch(event: UiEvent) {
         activityEventsSubject.onNext(event)
     }
 
-    override fun registerEmitter(emitter: Observable<out ReactorUiEvent>) {
+    override fun registerEmitter(emitter: Observable<out UiEvent>) {
         reactorViewHelper?.registerEmitter(emitter)
     }
 

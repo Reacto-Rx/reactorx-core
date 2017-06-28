@@ -6,7 +6,7 @@ import android.support.v4.app.Fragment
 import android.view.View
 import cz.filipproch.reactor.base.translator.IReactorTranslator
 import cz.filipproch.reactor.base.view.ReactorUiAction
-import cz.filipproch.reactor.base.view.ReactorUiModel
+import cz.filipproch.reactor.base.view.UiModel
 import cz.filipproch.reactor.common.iface.AndroidLayoutView
 import cz.filipproch.reactor.common.views.actions.FinishActivityAction
 import cz.filipproch.reactor.common.views.actions.FinishActivityWithResultAction
@@ -16,7 +16,7 @@ import cz.filipproch.reactor.common.views.dialog.ExtendedReactorDialogFragment
 import cz.filipproch.reactor.common.views.events.ActivityResultEvent
 import cz.filipproch.reactor.common.views.events.DialogResultEvent
 import cz.filipproch.reactor.common.views.model.ContentFragmentModel
-import cz.filipproch.reactor.ui.ReactorActivity
+import org.reactorx.ui.ReactorActivity
 import io.reactivex.Observable
 
 /**
@@ -59,7 +59,7 @@ abstract class ExtendedReactorActivity<T : IReactorTranslator> :
         }
     }
 
-    override fun onConnectModelStream(modelStream: Observable<out ReactorUiModel>) {
+    override fun onConnectModelStream(modelStream: Observable<out UiModel>) {
         super.onConnectModelStream(modelStream)
 
         modelStream.ofType(ContentFragmentModel::class.java).consumeOnUi {

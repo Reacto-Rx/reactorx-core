@@ -7,7 +7,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import cz.filipproch.reactor.base.translator.IReactorTranslator
-import cz.filipproch.reactor.base.view.ReactorUiModel
+import cz.filipproch.reactor.base.view.UiModel
 import cz.filipproch.reactor.common.views.model.ToolbarUiModel
 import cz.filipproch.reactor.common.views.events.OptionsItemSelectedEvent
 import io.reactivex.Observable
@@ -33,7 +33,7 @@ abstract class ToolbarReactorFragment<T : IReactorTranslator> : ExtendedReactorF
         registerEmitter(optionsItemSubject)
     }
 
-    override fun onConnectModelStream(modelStream: Observable<out ReactorUiModel>) {
+    override fun onConnectModelStream(modelStream: Observable<out UiModel>) {
         super.onConnectModelStream(modelStream)
 
         modelStream.ofType(ToolbarUiModel::class.java).consumeOnUi {

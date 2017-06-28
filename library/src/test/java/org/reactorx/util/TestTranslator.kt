@@ -1,4 +1,4 @@
-package cz.filipproch.reactor.util.view
+package org.reactorx.util
 
 import cz.filipproch.reactor.base.translator.ReactorTranslator
 import cz.filipproch.reactor.base.view.UiEvent
@@ -20,16 +20,6 @@ class TestTranslator : ReactorTranslator() {
             subscribe {
                 receivedEvents.add(it)
             }
-        }
-
-        translateToModel {
-            ofType(ReturnUiModelEvent::class.java)
-                    .map { TestUiModel }
-        }
-
-        translateToAction {
-            ofType(ReturnUiActionEvent::class.java)
-                    .map { TestUiAction }
         }
     }
 

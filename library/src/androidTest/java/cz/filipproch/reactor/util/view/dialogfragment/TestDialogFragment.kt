@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import cz.filipproch.reactor.base.translator.SimpleTranslatorFactory
 import cz.filipproch.reactor.base.translator.TranslatorFactory
 import cz.filipproch.reactor.base.view.ReactorUiAction
-import cz.filipproch.reactor.base.view.ReactorUiModel
+import cz.filipproch.reactor.base.view.UiModel
 import cz.filipproch.reactor.ui.ReactorDialogFragment
 import cz.filipproch.reactor.util.view.ReactorViewTestHelper
 import cz.filipproch.reactor.util.view.TestTranslator
@@ -49,7 +49,7 @@ class TestDialogFragment : ReactorDialogFragment<TestTranslator>() {
         methodCalled(ReactorViewTestHelper.METHOD_EMITTERS_INIT)
     }
 
-    override fun onConnectModelStream(modelStream: Observable<out ReactorUiModel>) {
+    override fun onConnectModelStream(modelStream: Observable<out UiModel>) {
         super.onConnectModelStream(modelStream)
         methodCalled(ReactorViewTestHelper.METHOD_CONNECT_MODEL_STREAM)
         modelStream.consumeOnUi {

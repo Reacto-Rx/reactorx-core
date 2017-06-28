@@ -1,7 +1,7 @@
 package cz.filipproch.reactor.util.view
 
 import cz.filipproch.reactor.base.view.ReactorUiAction
-import cz.filipproch.reactor.base.view.ReactorUiModel
+import cz.filipproch.reactor.base.view.UiModel
 import cz.filipproch.reactor.util.MethodCalled
 import org.assertj.core.api.Java6Assertions
 
@@ -16,14 +16,14 @@ class ReactorViewTestHelper {
 
     var methodCalls = mutableListOf<MethodCalled>()
 
-    val receivedUiModels = mutableListOf<ReactorUiModel>()
+    val receivedUiModels = mutableListOf<UiModel>()
     val receivedUiActions = mutableListOf<ReactorUiAction>()
 
     fun methodCalled(methodName: String) {
         methodCalls.add(MethodCalled(methodName, System.currentTimeMillis()))
     }
 
-    fun uiModelReceived(model: ReactorUiModel) {
+    fun uiModelReceived(model: UiModel) {
         receivedUiModels.add(model)
     }
 

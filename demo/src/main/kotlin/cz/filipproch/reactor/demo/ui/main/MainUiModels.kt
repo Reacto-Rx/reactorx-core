@@ -1,6 +1,6 @@
 package cz.filipproch.reactor.demo.ui.main
 
-import cz.filipproch.reactor.base.view.ReactorUiModel
+import cz.filipproch.reactor.base.view.UiModel
 
 /**
  * TODO
@@ -12,7 +12,7 @@ data class MainUiModel(
         val postContent: String?,
         val isLoading: Boolean,
         val success: Boolean?
-) : ReactorUiModel {
+) : UiModel {
 
     override fun getType(): Class<*> {
         return MainUiModel::class.java
