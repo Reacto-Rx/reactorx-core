@@ -21,7 +21,7 @@ class ViewHelper<M : Any, P : Presenter<M>>(
 
     lateinit var presenter: P
 
-    lateinit var lastState: M
+    var lastState: M? = null
 
     private var disposable: Disposable? = null
 

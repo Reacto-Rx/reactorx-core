@@ -25,6 +25,7 @@ abstract class Presenter<M> : ViewModel() {
         transformer = ObservableTransformer { events ->
             events.publish { shared ->
                 Observable.mergeArray(*onCreateStreams(shared))
+                        .doOnError { onErrorInTransformers(it) }
             }.scan(initialState, {
                 previousState, action ->
                 stateReducer(previousState, action)
@@ -37,13 +38,20 @@ abstract class Presenter<M> : ViewModel() {
     open protected fun createUiModelObservable(): Observable<M> {
         return uiEvents.compose(transformer)
                 .replay(1).autoConnect()
+                .doOnError { onErrorInStream(it) }
+    }
+
+    open fun onErrorInTransformers(error: Throwable) {
+    }
+
+    open fun onErrorInStream(error: Throwable) {
     }
 
     open fun observeUiModel(): Observable<M> {
         return uiModelObservable
     }
 
-    abstract protected fun onCreateStreams(shared: Observable<UiEvent>): Array<Observable<Action>>
+    abstract protected fun onCreateStreams(shared: Observable<out UiEvent>): Array<Observable<out Action>>
 
     abstract protected fun stateReducer(previousState: M, action: Action): M
 
