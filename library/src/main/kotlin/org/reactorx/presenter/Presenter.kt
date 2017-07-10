@@ -21,7 +21,7 @@ abstract class Presenter<M> : ViewModel() {
 
     protected lateinit var uiModelObservable: Observable<M>
 
-    fun onPostCreated() {
+    open fun onPostCreated() {
         transformer = ObservableTransformer { events ->
             events.publish { shared ->
                 Observable.mergeArray(*onCreateStreams(shared))
