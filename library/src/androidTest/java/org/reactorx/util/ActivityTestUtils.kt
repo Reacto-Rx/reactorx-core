@@ -1,4 +1,4 @@
-package cz.filipproch.reactor.util
+package org.reactorx.util
 
 import android.app.Activity
 import android.content.pm.ActivityInfo

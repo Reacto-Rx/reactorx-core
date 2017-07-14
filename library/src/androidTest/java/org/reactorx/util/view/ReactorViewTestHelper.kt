@@ -1,8 +1,8 @@
-package cz.filipproch.reactor.util.view
+package org.reactorx.util.view
 
 import cz.filipproch.reactor.base.view.ReactorUiAction
 import cz.filipproch.reactor.base.view.UiModel
-import cz.filipproch.reactor.util.MethodCalled
+import org.reactorx.util.MethodCalled
 import org.assertj.core.api.Java6Assertions
 
 /**

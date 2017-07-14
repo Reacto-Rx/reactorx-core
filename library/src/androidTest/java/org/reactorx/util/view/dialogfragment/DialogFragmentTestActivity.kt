@@ -1,8 +1,7 @@
-package cz.filipproch.reactor.util.view.dialogfragment
+package org.reactorx.util.view.dialogfragment
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import cz.filipproch.reactor.util.view.dialogfragment.TestDialogFragment
 
 /**
  * TODO

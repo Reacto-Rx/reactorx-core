@@ -4,12 +4,12 @@ import android.support.test.InstrumentationRegistry.getInstrumentation
 import android.support.test.runner.AndroidJUnit4
 import android.support.v4.app.Fragment
 import cz.filipproch.reactor.ui.helper.ReactorTranslatorFragment
-import cz.filipproch.reactor.util.*
-import cz.filipproch.reactor.util.view.translatorfragment.TranslatorFragmentTestActivity
+import org.reactorx.util.view.translatorfragment.TranslatorFragmentTestActivity
 import org.assertj.core.api.Java6Assertions.assertThat
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.reactorx.util.*
 
 /**
  * @author Filip Prochazka (@filipproch)

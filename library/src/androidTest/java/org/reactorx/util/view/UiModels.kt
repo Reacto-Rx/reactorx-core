@@ -1,4 +1,4 @@
-package cz.filipproch.reactor.util.view
+package org.reactorx.util.view
 
 import cz.filipproch.reactor.base.view.UiModel
 

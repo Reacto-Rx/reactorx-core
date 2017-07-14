@@ -1,4 +1,4 @@
-package cz.filipproch.reactor.util.view
+package org.reactorx.util.view
 
 import cz.filipproch.reactor.base.translator.SimpleTranslatorFactory
 import cz.filipproch.reactor.base.translator.TranslatorFactory

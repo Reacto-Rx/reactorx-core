@@ -1,4 +1,4 @@
-package cz.filipproch.reactor.util
+package org.reactorx.util
 
 /**
  * @author Filip Prochazka (@filipproch)

@@ -1,7 +1,7 @@
-package cz.filipproch.reactor.util
+package org.reactorx.util
 
 import cz.filipproch.reactor.base.view.UiEvent
-import cz.filipproch.reactor.util.view.TestTranslator
+import org.reactorx.util.view.TestTranslator
 import org.assertj.core.api.AbstractAssert
 import org.assertj.core.api.Java6Assertions
 

@@ -2,15 +2,15 @@ package cz.filipproch.reactor.ui
 
 import android.support.test.InstrumentationRegistry.getInstrumentation
 import android.support.test.runner.AndroidJUnit4
-import cz.filipproch.reactor.ui.events.*
-import cz.filipproch.reactor.util.*
 import cz.filipproch.reactor.util.view.*
-import cz.filipproch.reactor.util.view.dialogfragment.DialogFragmentTestActivity
-import cz.filipproch.reactor.util.view.dialogfragment.TestDialogFragment
+import org.reactorx.util.view.dialogfragment.DialogFragmentTestActivity
+import org.reactorx.util.view.dialogfragment.TestDialogFragment
 import org.assertj.core.api.Java6Assertions.assertThat
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.reactorx.util.*
+import org.reactorx.util.view.*
 
 /**
  * @author Filip Prochazka (@filipproch)

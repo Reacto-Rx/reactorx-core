@@ -1,4 +1,4 @@
-package cz.filipproch.reactor.util
+package org.reactorx.util
 
 import org.junit.AfterClass
 import org.junit.BeforeClass

@@ -1,4 +1,4 @@
-package cz.filipproch.reactor.util.view.translatorfragment
+package org.reactorx.util.view.translatorfragment
 
 import android.support.v7.app.AppCompatActivity
 import cz.filipproch.reactor.base.translator.ReactorTranslator
