@@ -80,7 +80,9 @@ class ViewHelper<M : Any, P : Presenter<M>>(
     fun instantiatePresenter(
             factory: PresenterFactory<P>
     ) {
-        presenterInstance = factory.newInstance()
+        presenterInstance = factory.newInstance().apply {
+            onPostCreated()
+        }
     }
 
     fun destroyPresenter() {
