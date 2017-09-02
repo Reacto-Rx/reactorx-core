@@ -5,8 +5,8 @@ apply plugin: 'jacoco-android'
 project.archivesBaseName = 'reactorx'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion 26
+    buildToolsVersion "26.0.1"
 
     defaultConfig {
         minSdkVersion 16
@@ -62,16 +62,9 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
     // Useful Assertions
-    testCompile 'org.assertj:assertj-core:3.7.0'
-    androidTestCompile 'org.assertj:assertj-core:2.7.0'
+    testCompile 'org.assertj:assertj-core:3.8.0'
+    androidTestCompile 'org.assertj:assertj-core:3.8.0'
     androidTestCompile 'com.squareup.assertj:assertj-android:1.1.1'
-
-    // Android Test Framework
-    androidTestCompile 'com.android.support:multidex-instrumentation:1.0.1'
-    androidTestCompile "com.android.support:support-annotations:$supportLibraryVersion"
-    androidTestCompile 'com.android.support.test:runner:0.5'
-    androidTestCompile 'com.android.support.test:rules:0.5'
-    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
 }
 
 apply from: '../util/dokkaConfig.gradle'

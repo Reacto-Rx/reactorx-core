@@ -3,9 +3,9 @@ package org.reactorx.presenter
 import android.arch.lifecycle.ViewModel
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
-import org.reactorx.presenter.model.Action
+import io.reactivex.rxkotlin.cast
+import org.reactorx.state.StateStore
+import org.reactorx.state.model.Action
 import org.reactorx.view.model.UiEvent
 
 /**
@@ -15,44 +15,80 @@ abstract class Presenter<M> : ViewModel() {
 
     abstract val initialState: M
 
-    open val uiEvents: Subject<UiEvent> = PublishSubject.create()
+    private lateinit var stateStore: StateStore<M>
 
-    private lateinit var transformer: ObservableTransformer<UiEvent, M>
+    var isDestroyed: Boolean = false
 
-    protected lateinit var uiModelObservable: Observable<M>
+    open protected val transformers: Array<ObservableTransformer<Action, Action>> = emptyArray()
+    open protected val middleware: Array<ObservableTransformer<Action, Action>> = emptyArray()
 
-    open fun onPostCreated() {
-        transformer = ObservableTransformer { events ->
-            events.publish { shared ->
-                Observable.mergeArray(*onCreateStreams(shared))
-                        .doOnError { onErrorInTransformers(it) }
-            }.scan(initialState, {
-                previousState, action ->
-                stateReducer(previousState, action)
-            })
+    fun dispatch(uiEvent: UiEvent) {
+        if (isDestroyed) {
+            throw IllegalStateException("Presenter is destroyed and unusable")
         }
 
-        uiModelObservable = createUiModelObservable()
+        stateStore.dispatch(uiEvent)
     }
 
-    open protected fun createUiModelObservable(): Observable<M> {
-        return uiEvents.compose(transformer)
-                .replay(1).autoConnect()
-                .doOnError { onErrorInStream(it) }
+    fun destroySelf() {
+        onCleared()
     }
 
+    open fun onPostCreated() {
+        stateStore = StateStore.Builder(initialState)
+                .enableInputPasstrough { it !is UiEvent }
+                .withReducer(this::reduceState)
+                .withTransformer(*transformers)
+                .withMiddleware(*middleware)
+                .errorCallback(this::onError)
+                // hack not to break build, TODO: remove in beta
+                .extraTransformerObservablesObtainer {
+                    onCreateStreams(it.filter {
+                        it is UiEvent
+                    }.cast())
+                }
+                .build()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        stateStore.dispose()
+        isDestroyed = true
+    }
+
+    private fun onError(throwable: Throwable) {
+        onErrorInStream(throwable)
+        onErrorInTransformers(throwable)
+    }
+
+    @Deprecated("Use onErrorInStream (both are now called at the same time",
+            ReplaceWith("onErrorInStream(error)"))
     open fun onErrorInTransformers(error: Throwable) {
     }
 
     open fun onErrorInStream(error: Throwable) {
     }
 
-    open fun observeUiModel(): Observable<M> {
-        return uiModelObservable
+    fun observeUiModel() = stateStore.observe()
+
+    @Deprecated("Replaced by transformers & middleware arrays")
+    open protected fun onCreateStreams(
+            shared: Observable<out UiEvent>
+    ): Array<Observable<out org.reactorx.presenter.model.Action>> {
+        return emptyArray()
     }
 
-    abstract protected fun onCreateStreams(shared: Observable<out UiEvent>): Array<Observable<out Action>>
+    open protected fun reduceState(previousState: M, action: Action): M {
+        return if (action is org.reactorx.presenter.model.Action) {
+            this.stateReducer(previousState, action)
+        } else {
+            previousState
+        }
+    }
 
-    abstract protected fun stateReducer(previousState: M, action: Action): M
+    @Deprecated("Replaced by reduceState", ReplaceWith("reduceState(previousState, action)"))
+    open protected fun stateReducer(previousState: M, action: org.reactorx.presenter.model.Action): M {
+        return previousState
+    }
 
 }

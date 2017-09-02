@@ -1,5 +1,6 @@
 package org.reactorx.view
 
+import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
@@ -19,32 +20,102 @@ class ViewHelper<M : Any, P : Presenter<M>>(
         private val errorCallback: ((Throwable) -> Unit)? = null
 ) {
 
-    lateinit var presenter: P
+    val presenter: P
+        get() = presenterInstance ?: throw IllegalStateException("presenter not instantiated")
 
+    val hasPresenterInstance: Boolean get() = presenterInstance != null
     var lastState: M? = null
+
+    private var presenterInstance: P? = null
 
     private var disposable: Disposable? = null
 
-    fun bindPresenter(activity: FragmentActivity, presenterClazz: Class<P>, factory: PresenterFactory<P>) {
-        presenter = ViewModelProviders.of(activity, factory)
-                .get(presenterClazz)
+    fun restorePresenterInstance(
+            activity: FragmentActivity,
+            presenterClazz: Class<P>,
+            factory: PresenterFactory<P>
+    ) {
+        restorePresenterInstance(
+                viewModelProvider = ViewModelProviders.of(activity, factory),
+                presenterClazz = presenterClazz
+        )
     }
 
-    fun bindPresenter(fragment: Fragment, presenterClazz: Class<P>, factory: PresenterFactory<P>) {
-        presenter = ViewModelProviders.of(fragment, factory)
-                .get(presenterClazz)
+    @Deprecated("Replaced by restorePresenterInstance()", ReplaceWith("restorePresenterInstance(activity, presenterClazz, factory)"))
+    fun bindPresenter(
+            activity: FragmentActivity,
+            presenterClazz: Class<P>,
+            factory: PresenterFactory<P>
+    ) {
+        restorePresenterInstance(activity, presenterClazz, factory)
     }
 
-    fun onStart() {
+    fun restorePresenterInstance(
+            fragment: Fragment,
+            presenterClazz: Class<P>,
+            factory: PresenterFactory<P>
+    ) {
+        restorePresenterInstance(
+                viewModelProvider = ViewModelProviders.of(fragment, factory),
+                presenterClazz = presenterClazz
+        )
+    }
+
+    @Deprecated("Replaced by restorePresenterInstance()", ReplaceWith("restorePresenterInstance(fragment, presenterClazz, factory)"))
+    fun bindPresenter(
+            fragment: Fragment,
+            presenterClazz: Class<P>,
+            factory: PresenterFactory<P>
+    ) {
+        restorePresenterInstance(fragment, presenterClazz, factory)
+    }
+
+    fun restorePresenterInstance(
+            viewModelProvider: ViewModelProvider,
+            presenterClazz: Class<P>
+    ) {
+        presenterInstance = viewModelProvider.get(presenterClazz)
+    }
+
+    fun instantiatePresenter(
+            factory: PresenterFactory<P>
+    ) {
+        presenterInstance = factory.newInstance()
+    }
+
+    fun destroyPresenter() {
+        presenterInstance?.destroySelf()
+        presenterInstance = null
+    }
+
+    fun connectPresenter() {
+        if (!hasPresenterInstance) {
+            throw IllegalStateException("ViewHelper was disposed by destroyPresenter()")
+        }
+
         disposable = presenter.observeUiModel()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(onNext = this::processUiModel, onError = this::processStreamError)
-        presenter.uiEvents.onNext(ViewStarted)
+        presenter.dispatch(ViewStarted)
     }
 
-    fun onStop() {
-        presenter.uiEvents.onNext(ViewStopped)
+    @Deprecated("Replaced with connectPresenter()", ReplaceWith("connectPresenter()"))
+    fun onStart() {
+        connectPresenter()
+    }
+
+    fun disconnectPresenter() {
+        if (!hasPresenterInstance) {
+            throw IllegalStateException("ViewHelper was disposed by destroyPresenter()")
+        }
+
+        presenter.dispatch(ViewStopped)
         disposable?.dispose()
+    }
+
+    @Deprecated("Replaced with disconnectPresenter()", ReplaceWith("disconnectPresenter()"))
+    fun onStop() {
+        disconnectPresenter()
     }
 
     private fun processUiModel(uiModel: M) {
