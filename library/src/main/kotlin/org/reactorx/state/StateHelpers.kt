@@ -9,13 +9,26 @@ import org.reactorx.state.model.Action
  */
 inline fun plainTransformer(
         crossinline transformFun: (Observable<Action>) -> Observable<Action>
-) = transformer(transformFun)
+): ObservableTransformer<Action, Action> = transformer<Action> { _, allEvents ->
+    transformFun.invoke(allEvents)
+}
 
 /**
  * @author Filip Prochazka (@filipproch)
  */
 inline fun <reified T> transformer(
-        crossinline transformFun: (Observable<T>) -> Observable<Action>
+        crossinline transformFun: (stream: Observable<T>, allEvents: Observable<Action>) -> Observable<Action>
 ): ObservableTransformer<Action, Action> {
-    return ObservableTransformer { transformFun.invoke(it.ofType(T::class.java)) }
+    return ObservableTransformer { transformFun.invoke(it.ofType(T::class.java), it) }
+}
+
+/**
+ * @author Filip Prochazka (@filipproch)
+ */
+inline fun <reified T> flatMapTransformer(
+        crossinline transformFun: (value: T, allEvents: Observable<Action>) -> Observable<Action>
+): ObservableTransformer<Action, Action> = transformer<T> { events, allEvents ->
+    events.flatMap { value ->
+        transformFun.invoke(value, allEvents)
+    }
 }

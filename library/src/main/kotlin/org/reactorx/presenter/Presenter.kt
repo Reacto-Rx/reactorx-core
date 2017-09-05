@@ -19,6 +19,8 @@ abstract class Presenter<M> : ViewModel() {
 
     var isDestroyed: Boolean = false
 
+    protected val currentState: M get() = stateStore.currentState
+
     open protected val transformers: Array<ObservableTransformer<Action, Action>> = emptyArray()
     open protected val middleware: Array<ObservableTransformer<Action, Action>> = emptyArray()
 

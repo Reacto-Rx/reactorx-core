@@ -3,7 +3,7 @@
 buildscript {
     ext {
         // Dependencies
-        kotlinVersion = '1.1.4-2'
+        kotlinVersion = '1.1.4-3'
         dokkaVersion = '0.9.14-eap-3'
 
         supportLibraryVersion = '26.0.2'
@@ -16,7 +16,7 @@ buildscript {
         rxBindingVersion = '2.0.0'
 
         // Library
-        libVersion = '1.0.0-alpha7'
+        libVersion = '1.0.0-alpha11'
     }
 
     repositories {
