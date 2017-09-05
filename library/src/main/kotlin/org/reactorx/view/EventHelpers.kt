@@ -2,6 +2,7 @@ package org.reactorx.view
 
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
+import io.reactivex.rxkotlin.cast
 import org.reactorx.ext.takeUntilViewStopped
 import org.reactorx.state.model.Action
 import org.reactorx.state.transformer
@@ -12,15 +13,22 @@ import org.reactorx.view.events.ViewStarted
  */
 inline fun viewStartedTransformer(
         terminateViewStopped: Boolean = true,
-        crossinline transformFun: (allEvents: Observable<Action>) -> Observable<Action>
+        endWithValue: Action? = null,
+        crossinline transformFun: (allEvents: Observable<Action>) -> Observable<out Action>
 ): ObservableTransformer<Action, Action> = transformer<ViewStarted> { events, allEvents ->
     events.flatMap {
-        val observable = transformFun.invoke(allEvents)
+        var observable: Observable<Action> = transformFun.invoke(allEvents).cast()
 
-        if (terminateViewStopped) {
+        observable = if (terminateViewStopped) {
             observable.takeUntilViewStopped(allEvents)
         } else {
             observable
         }
+
+        if (endWithValue != null) {
+            observable = observable.concatWith(Observable.just(endWithValue))
+        }
+
+        observable
     }
 }

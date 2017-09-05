@@ -26,7 +26,7 @@ inline fun <reified T> transformer(
  * @author Filip Prochazka (@filipproch)
  */
 inline fun <reified T> flatMapTransformer(
-        crossinline transformFun: (value: T, allEvents: Observable<Action>) -> Observable<Action>
+        crossinline transformFun: (value: T, allEvents: Observable<Action>) -> Observable<out Action>
 ): ObservableTransformer<Action, Action> = transformer<T> { events, allEvents ->
     events.flatMap { value ->
         transformFun.invoke(value, allEvents)
