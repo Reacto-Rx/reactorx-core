@@ -16,7 +16,7 @@ inline fun viewStartedTransformer(
         endWithValue: Action? = null,
         crossinline transformFun: (allEvents: Observable<Action>) -> Observable<out Action>
 ): ObservableTransformer<Action, Action> = transformer<ViewStarted> { events, allEvents ->
-    events.flatMap {
+    events.switchMap {
         var observable: Observable<Action> = transformFun.invoke(allEvents).cast()
 
         observable = if (terminateViewStopped) {

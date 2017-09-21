@@ -63,6 +63,7 @@ class StateStore<T>(
             .map { (_, newState) -> newState }
             .replay(1)
             .autoConnect()
+            .doOnError { errorCallback?.invoke(it) }
 
     init {
         // Initialize middleware streams

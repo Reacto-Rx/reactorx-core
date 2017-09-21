@@ -4,31 +4,45 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import io.reactivex.rxkotlin.subscribeBy
 import org.reactorx.presenter.Presenter
 import org.reactorx.presenter.PresenterFactory
 import org.reactorx.view.events.ViewStarted
 import org.reactorx.view.events.ViewStopped
+import org.reactorx.view.model.UiEvent
+import org.reactorx.view.util.UiEventBuffer
 
 /**
  * @author Filip Prochazka (@filipproch)
  */
-class ViewHelper<M : Any, P : Presenter<M>>(
-        private val uiModelCallback: (M) -> Unit,
-        private val errorCallback: ((Throwable) -> Unit)? = null
-) {
+class ViewHelper<M : Any, P : Presenter<M>> : UiEventBuffer {
 
     val presenter: P
         get() = presenterInstance ?: throw IllegalStateException("presenter not instantiated")
 
     val hasPresenterInstance: Boolean get() = presenterInstance != null
-    var lastState: M? = null
+
+    override var isPresenterConnected: Boolean = false
+        private set
+
+    @Deprecated("Replaced by viewModel", ReplaceWith("viewModel"))
+    val lastState: M?
+        get() = viewModel
+
+    var viewModel: M? = null
 
     private var presenterInstance: P? = null
 
+    private var sharedUiModelObservable: Observable<M>? = null
     private var disposable: Disposable? = null
+
+    override val bufferedEvents: MutableList<UiEvent> = mutableListOf()
+
+    /*
+        Instance methods
+     */
 
     fun restorePresenterInstance(
             activity: FragmentActivity,
@@ -90,14 +104,27 @@ class ViewHelper<M : Any, P : Presenter<M>>(
         presenterInstance = null
     }
 
+    /*
+        Connection methods
+     */
+
     fun connectPresenter() {
         if (!hasPresenterInstance) {
             throw IllegalStateException("ViewHelper was disposed by destroyPresenter()")
         }
 
-        disposable = presenter.observeUiModel()
+        presenter.observeUiModel()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeBy(onNext = this::processUiModel, onError = this::processStreamError)
+                .doOnNext { this.viewModel = it } // update viewModel variable
+                .publish()
+                .let { observable ->
+                    sharedUiModelObservable = observable
+
+                    disposable = observable.connect()
+                }
+
+        updatePresenterConnected(true)
+
         presenter.dispatch(ViewStarted)
     }
 
@@ -111,7 +138,11 @@ class ViewHelper<M : Any, P : Presenter<M>>(
             throw IllegalStateException("ViewHelper was disposed by destroyPresenter()")
         }
 
-        presenter.dispatch(ViewStopped)
+        dispatch(ViewStopped)
+
+        updatePresenterConnected(false)
+
+        sharedUiModelObservable = null
         disposable?.dispose()
     }
 
@@ -120,13 +151,44 @@ class ViewHelper<M : Any, P : Presenter<M>>(
         disconnectPresenter()
     }
 
-    private fun processUiModel(uiModel: M) {
-        this.lastState = uiModel
-        uiModelCallback.invoke(uiModel)
+    /*
+        ViewModel helpers
+     */
+
+    fun observeViewModel(): Observable<M> {
+        if (!hasPresenterInstance) {
+            throw IllegalStateException("ViewHelper was disposed by destroyPresenter()")
+        }
+
+        return sharedUiModelObservable
+                ?: throw IllegalStateException("ViewHelper is not connected with presenter")
     }
 
-    private fun processStreamError(throwable: Throwable) {
-        errorCallback?.invoke(throwable)
+    fun <T> observeViewModelChanges(
+            valueMapper: (M) -> T
+    ): Observable<T> {
+        return observeViewModel()
+                .map(valueMapper)
+                .distinctUntilChanged()
+    }
+
+    /*
+        UiEvents helpers
+     */
+
+    override fun dispatch(event: UiEvent) {
+        if (isPresenterConnected) {
+            presenter.dispatch(event)
+        } else {
+            bufferEvent(event)
+        }
+    }
+
+    private fun updatePresenterConnected(connected: Boolean) {
+        this.isPresenterConnected = connected
+        if (connected) {
+            dispatchAllBufferedEvents()
+        }
     }
 
 }
