@@ -3,8 +3,10 @@ package org.reactorx.state
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
+import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import org.reactorx.state.model.Action
 import org.reactorx.state.model.impl.Init
@@ -20,6 +22,7 @@ class StateStore<T>(
         private val middleware: List<Middleware>,
         subscribeImmediately: Boolean = false,
         private val errorCallback: ((Throwable) -> Unit)? = null,
+        private val transformersScheduler: Scheduler,
         /* Hack not to break build with upgrade to newer version, TODO: remove */
         private val extraTransformerObservablesObtainer: ((Observable<Action>) -> Array<Observable<out org.reactorx.presenter.model.Action>>)? = null
 ) {
@@ -55,6 +58,7 @@ class StateStore<T>(
     }
 
     private val observable = subject
+            .observeOn(transformersScheduler)
             .compose(transformer)
             .startWith(ACTION_INIT)
             .doOnNext { invokePreStateMiddleware(it) }
@@ -159,6 +163,7 @@ class StateStore<T>(
         private val middleware: MutableList<Middleware> = mutableListOf()
         private var subscribeImmediately: Boolean = false
         private var errorCallback: ((Throwable) -> Unit)? = null
+        private var transformersScheduler = Schedulers.computation()
 
         private var extraTransformerObservablesObtainer: ((Observable<Action>) -> Array<Observable<out org.reactorx.presenter.model.Action>>)? = null
 
@@ -217,6 +222,11 @@ class StateStore<T>(
             return this
         }
 
+        fun withScheduler(scheduler: Scheduler): Builder<T> {
+            this.transformersScheduler = scheduler
+            return this
+        }
+
         fun subscribeImmediately(): Builder<T> {
             this.subscribeImmediately = true
             return this
@@ -244,6 +254,7 @@ class StateStore<T>(
                     middleware,
                     subscribeImmediately,
                     errorCallback,
+                    transformersScheduler,
                     extraTransformerObservablesObtainer
             )
         }
