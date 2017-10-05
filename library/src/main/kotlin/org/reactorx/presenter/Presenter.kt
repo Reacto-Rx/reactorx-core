@@ -3,6 +3,7 @@ package org.reactorx.presenter
 import android.arch.lifecycle.ViewModel
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.cast
 import org.reactorx.state.StateStore
 import org.reactorx.state.model.Action
@@ -24,6 +25,9 @@ abstract class Presenter<M> : ViewModel() {
     open protected val transformers: Array<ObservableTransformer<Action, Action>> = emptyArray()
     open protected val middleware: Array<ObservableTransformer<Action, Action>> = emptyArray()
 
+    /**
+     * Dispatch [uiEvent] to the underlying [StateStore]
+     */
     fun dispatch(uiEvent: UiEvent) {
         if (isDestroyed) {
             throw IllegalStateException("Presenter is destroyed and unusable")

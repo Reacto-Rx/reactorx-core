@@ -12,6 +12,7 @@ import org.reactorx.presenter.PresenterFactory
 import org.reactorx.view.events.ViewStarted
 import org.reactorx.view.events.ViewStopped
 import org.reactorx.view.model.UiEvent
+import org.reactorx.view.util.NullableValue
 import org.reactorx.view.util.UiEventBuffer
 
 /**
@@ -164,11 +165,21 @@ class ViewHelper<M : Any, P : Presenter<M>> : UiEventBuffer {
                 ?: throw IllegalStateException("ViewHelper is not connected with presenter")
     }
 
-    fun <T> observeViewModelChanges(
+    fun <T : Any> observeViewModelChanges(
             valueMapper: (M) -> T
     ): Observable<T> {
         return observeViewModel()
                 .map(valueMapper)
+                .distinctUntilChanged()
+    }
+
+    fun <T : Any?> observeViewModelNullableChanges(
+            valueMapper: (M) -> T
+    ): Observable<NullableValue<T>> {
+        return observeViewModel()
+                .map {
+                    NullableValue(value = valueMapper.invoke(it))
+                }
                 .distinctUntilChanged()
     }
 

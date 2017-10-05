@@ -50,9 +50,15 @@ interface PresenterView<M : Any, P : Presenter<M>> : ObservableViewUtils {
         onUiModel(viewModel) // todo: remove in Beta
     }
 
-    fun <T> observeViewModelChanges(
+    fun observeViewModel() = viewHelper.observeViewModel()
+
+    fun <T : Any> observeViewModelChanges(
             valueMapper: (M) -> T
     ) = viewHelper.observeViewModelChanges(valueMapper)
+
+    fun <T : Any?> observeViewModelNullableChanges(
+            valueMapper: (M) -> T
+    ) = viewHelper.observeViewModelNullableChanges(valueMapper)
 
     fun <T : UiEvent> Observable<T>.subscribeByDispatch() {
         this.subscribeWithView(this@PresenterView::dispatch)

@@ -1,8 +1,8 @@
 package org.reactorx.view.events
 
-import org.reactorx.view.model.UiEvent
+import org.reactorx.view.model.LifecycleEvent
 
 /**
  * @author Filip Prochazka (@filipproch)
  */
-object ViewStarted : UiEvent
+object ViewStarted : LifecycleEvent
