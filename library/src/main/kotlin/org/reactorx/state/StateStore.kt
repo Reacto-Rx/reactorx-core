@@ -17,7 +17,7 @@ import org.reactorx.state.model.impl.Void
 class StateStore<T>(
         private val reducer: (T, Action) -> T,
         initialState: T,
-        private val transformers: List<ObservableTransformer<Action, Action>>,
+        private val transformers: List<StateStoreTransformer<Action, Action>>,
         private val middleware: List<Middleware>,
         subscribeImmediately: Boolean = false,
         private val errorCallback: ((Throwable) -> Unit)? = null,
@@ -75,6 +75,9 @@ class StateStore<T>(
     }
 
     init {
+        transformers.forEach { it.bindStateStore(this) }
+        middleware.forEach { it.transformer.bindStateStore(this) }
+
         // Initialize middleware streams
         internalSubscriptionsDisposable.add(
                 preStateMiddlewareSubject
@@ -164,7 +167,7 @@ class StateStore<T>(
     ) {
 
         private lateinit var reducer: (T, Action) -> T
-        private val transformers: MutableList<ObservableTransformer<Action, Action>> = mutableListOf()
+        private val transformers: MutableList<StateStoreTransformer<Action, Action>> = mutableListOf()
         private val middleware: MutableList<Middleware> = mutableListOf()
         private var subscribeImmediately: Boolean = false
         private var errorCallback: ((Throwable) -> Unit)? = null
@@ -175,13 +178,14 @@ class StateStore<T>(
         fun enableInputPasstrough(
                 filter: ((Action) -> Boolean)? = null
         ): Builder<T> {
-            withTransformer(ObservableTransformer { inputActions ->
+            /* TODO:
+            withTransformer(object : StateStoreTransformer() { inputActions ->
                 if (filter == null) {
                     inputActions
                 } else {
                     inputActions.filter(filter)
                 }
-            })
+            })*/
 
             return this
         }
@@ -194,21 +198,25 @@ class StateStore<T>(
         }
 
         fun withTransformer(
-                vararg transformers: ObservableTransformer<Action, Action>
+                vararg transformers: StateStoreTransformer<Action, Action>
         ): Builder<T> {
             this.transformers.addAll(transformers)
             return this
         }
 
+        fun withTransformer(
+                vararg transformers: ObservableTransformer<Action, Action>
+        ) = withTransformers(transformers.map { StateStoreTransformer.from(it) })
+
         fun withTransformers(
-                transformers: Collection<ObservableTransformer<Action, Action>>
+                transformers: Collection<StateStoreTransformer<Action, Action>>
         ): Builder<T> {
             this.transformers.addAll(transformers)
             return this
         }
 
         fun withMiddleware(
-                vararg transformers: ObservableTransformer<Action, Action>,
+                vararg transformers: StateStoreTransformer<Action, Action>,
                 phase: Int = Middleware.PHASE_AFTER_STATE_CHANGED
         ): Builder<T> {
             this.middleware.addAll(transformers.map {
@@ -217,8 +225,16 @@ class StateStore<T>(
             return this
         }
 
+        fun withMiddleware(
+                vararg transformers: ObservableTransformer<Action, Action>,
+                phase: Int = Middleware.PHASE_AFTER_STATE_CHANGED
+        ) = withMiddlewares(
+                transformers = transformers.map { StateStoreTransformer.from(it) },
+                phase = phase
+        )
+
         fun withMiddlewares(
-                transformers: Collection<ObservableTransformer<Action, Action>>,
+                transformers: Collection<StateStoreTransformer<Action, Action>>,
                 phase: Int = Middleware.PHASE_AFTER_STATE_CHANGED
         ): Builder<T> {
             this.middleware.addAll(transformers.map {

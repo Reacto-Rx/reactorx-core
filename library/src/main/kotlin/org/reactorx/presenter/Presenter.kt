@@ -6,6 +6,7 @@ import io.reactivex.ObservableTransformer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.cast
 import org.reactorx.state.StateStore
+import org.reactorx.state.StateStoreTransformer
 import org.reactorx.state.model.Action
 import org.reactorx.view.model.UiEvent
 
@@ -22,8 +23,8 @@ abstract class Presenter<M> : ViewModel() {
 
     protected val currentState: M get() = stateStore.currentState
 
-    open protected val transformers: Array<ObservableTransformer<Action, Action>> = emptyArray()
-    open protected val middleware: Array<ObservableTransformer<Action, Action>> = emptyArray()
+    open protected val transformers: Array<StateStoreTransformer<Action, Action>> = emptyArray()
+    open protected val middleware: Array<StateStoreTransformer<Action, Action>> = emptyArray()
 
     /**
      * Dispatch [uiEvent] to the underlying [StateStore]

@@ -1,13 +1,12 @@
 package org.reactorx.state
 
-import io.reactivex.ObservableTransformer
 import org.reactorx.state.model.Action
 
 /**
  * @author Filip Prochazka (@filipproch)
  */
 data class Middleware(
-        val transformer: ObservableTransformer<Action, Action>,
+        val transformer: StateStoreTransformer<Action, Action>,
         val phase: Int
 ) {
     companion object {
