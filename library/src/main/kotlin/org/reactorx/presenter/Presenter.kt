@@ -2,8 +2,6 @@ package org.reactorx.presenter
 
 import android.arch.lifecycle.ViewModel
 import io.reactivex.Observable
-import io.reactivex.ObservableTransformer
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.cast
 import org.reactorx.state.StateStore
 import org.reactorx.state.StateStoreTransformer
@@ -11,36 +9,48 @@ import org.reactorx.state.model.Action
 import org.reactorx.view.model.UiEvent
 
 /**
- * @author Filip Prochazka (@filipproch)
+ * Presenter is a controller for a view. It separates the view specific logic from
+ * the view.
+ *
+ * Holds an state for the view in a [StateStore]. Enforces unidirectional data flow,
+ * as the only way to modify the state. [UiEvent] are dispatched using [dispatch], then
+ * transformed with [transformers] to [Action]s which modify the internal state. The view
+ * can then observe changes to the state using [observeUiModel]
  */
 abstract class Presenter<M> : ViewModel() {
 
-    abstract val initialState: M
-
     private lateinit var stateStore: StateStore<M>
 
-    var isDestroyed: Boolean = false
-
+    /**
+     * Returns latest state value
+     */
     protected val currentState: M get() = stateStore.currentState
 
+    /**
+     * Initial internal state value
+     */
+    abstract val initialState: M
+
+    /**
+     * Returns true if this instance was already destroyed and internal resources were disposed
+     */
+    var isDestroyed: Boolean = false
+
+    /**
+     * Transformers that convert [UiEvent]s to [Action] that will be dispatched to modify the state
+     */
     open protected val transformers: Array<StateStoreTransformer<Action, Action>> = emptyArray()
+
+    /**
+     * Transformers, that receive all dispatched [Action]s, after the state was modified
+     * and returns stream of [Action]s
+     */
     open protected val middleware: Array<StateStoreTransformer<Action, Action>> = emptyArray()
 
     /**
-     * Dispatch [uiEvent] to the underlying [StateStore]
+     * Invoked after the instance was created, internally instantiates
+     * the [StateStore]
      */
-    fun dispatch(uiEvent: UiEvent) {
-        if (isDestroyed) {
-            throw IllegalStateException("Presenter is destroyed and unusable")
-        }
-
-        stateStore.dispatch(uiEvent)
-    }
-
-    fun destroySelf() {
-        onCleared()
-    }
-
     open fun onPostCreated() {
         stateStore = StateStore.Builder(initialState)
                 .enableInputPasstrough { it !is UiEvent }
@@ -55,6 +65,26 @@ abstract class Presenter<M> : ViewModel() {
                     }.cast())
                 }
                 .build()
+    }
+
+    /**
+     * Dispatch [uiEvent] to the underlying [StateStore]
+     *
+     * @throws IllegalStateException If [isDestroyed] returns true
+     */
+    fun dispatch(uiEvent: UiEvent) {
+        if (isDestroyed) {
+            throw IllegalStateException("Presenter is destroyed and unusable")
+        }
+
+        stateStore.dispatch(uiEvent)
+    }
+
+    /**
+     * Destroys the instance and disposes resources
+     */
+    fun destroySelf() {
+        onCleared()
     }
 
     override fun onCleared() {
@@ -73,10 +103,19 @@ abstract class Presenter<M> : ViewModel() {
     open fun onErrorInTransformers(error: Throwable) {
     }
 
+    /**
+     * Invoked when error is thrown by a transformer/middleware
+     */
     open fun onErrorInStream(error: Throwable) {
     }
 
-    fun observeUiModel() = stateStore.observe()
+    @Deprecated("Replaced by observeStateChanges", ReplaceWith("observeStateChanges()"))
+    fun observeUiModel() = observeStateChanges()
+
+    /**
+     * Stream of state values. Emissions happen whenever an [Action] is dispatched.
+     */
+    fun observeStateChanges() = stateStore.observe()
 
     @Deprecated("Replaced by transformers & middleware arrays")
     open protected fun onCreateStreams(
@@ -85,6 +124,10 @@ abstract class Presenter<M> : ViewModel() {
         return emptyArray()
     }
 
+    /**
+     * Function that takes [Action] and current state and returns a new state. Has to be
+     * a pure function.
+     */
     open protected fun reduceState(previousState: M, action: Action): M {
         return if (action is org.reactorx.presenter.model.Action) {
             this.stateReducer(previousState, action)

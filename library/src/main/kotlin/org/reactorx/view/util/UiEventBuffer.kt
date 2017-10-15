@@ -3,7 +3,7 @@ package org.reactorx.view.util
 import org.reactorx.view.model.UiEvent
 
 /**
- * @author Filip Prochazka (@filipproch)
+ * TODO
  */
 internal interface UiEventBuffer {
 

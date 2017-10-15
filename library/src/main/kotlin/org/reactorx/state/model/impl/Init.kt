@@ -3,6 +3,7 @@ package org.reactorx.state.model.impl
 import org.reactorx.state.model.Action
 
 /**
- * @author Filip Prochazka (@filipproch)
+ * [Action] that is dispatched to [org.reactorx.state.StateStore] internally
+ * right after it's creation (instantiation)
  */
-class Init : Action
+object Init : Action

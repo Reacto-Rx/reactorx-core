@@ -5,7 +5,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
 
 /**
- * @author Filip Prochazka (@filipproch)
+ * TODO
  */
 interface ObservableViewUtils {
 

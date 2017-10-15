@@ -4,11 +4,11 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 
 /**
- * @author Filip Prochazka (@filipproch)
+ * Factory class for [Presenter]
  */
 abstract class PresenterFactory<out P: Presenter<*>> : ViewModelProvider.Factory {
 
-    override fun <T : ViewModel> create(clazz: Class<T>): T {
+    override final fun <T : ViewModel> create(clazz: Class<T>): T {
         @Suppress("UNCHECKED_CAST")
         return newInstance().apply {
             onPostCreated()

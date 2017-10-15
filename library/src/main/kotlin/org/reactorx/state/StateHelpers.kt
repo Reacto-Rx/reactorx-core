@@ -6,8 +6,6 @@ import org.reactorx.state.util.castTo
 
 /**
  * Transform function which transforms [Observable] stream of [Action]s to another stream of [Action]s.
- *
- * @author Filip Prochazka (@filipproch)
  */
 inline fun <reified T, reified S> epic(
         crossinline transformFun: (inputStream: Observable<T>, stream: Observable<Action>, store: StateStore<S>) -> Observable<Action>
@@ -20,8 +18,6 @@ inline fun <reified T, reified S> epic(
 /**
  * Transformer function to transform stream of [Action] to another stream of [Action]. Specific for
  * use with [StateStore], contains it's instance as param.
- *
- * @author Filip Prochazka (@filipproch)
  */
 inline fun <reified S> plainEpic(
         crossinline transformFun: (Observable<Action>, store: StateStore<S>) -> Observable<Action>
@@ -31,8 +27,6 @@ inline fun <reified S> plainEpic(
 
 /**
  * TODO
- *
- * @author Filip Prochazka (@filipproch)
  */
 inline fun <reified T, reified S> flatMapEpic(
         crossinline transformFun: (value: T, stream: Observable<Action>, store: StateStore<S>) -> Observable<out Action>
@@ -44,8 +38,6 @@ inline fun <reified T, reified S> flatMapEpic(
 
 /**
  * TODO
- *
- * @author Filip Prochazka (@filipproch)
  */
 inline fun <reified T> transformer(
         crossinline transformFun: (inputStream: Observable<T>, stream: Observable<Action>) -> Observable<Action>
@@ -55,8 +47,6 @@ inline fun <reified T> transformer(
 
 /**
  * Transformer function to transform stream of [Action] to another stream of [Action]
- *
- * @author Filip Prochazka (@filipproch)
  */
 inline fun plainTransformer(
         crossinline transformFun: (Observable<Action>) -> Observable<Action>
@@ -66,8 +56,6 @@ inline fun plainTransformer(
 
 /**
  * TODO
- *
- * @author Filip Prochazka (@filipproch)
  */
 inline fun <reified T> flatMapTransformer(
         crossinline transformFun: (value: T, stream: Observable<Action>) -> Observable<out Action>
@@ -77,8 +65,6 @@ inline fun <reified T> flatMapTransformer(
 
 /**
  * TODO
- *
- * @author Filip Prochazka (@filipproch)
  */
 inline fun <reified T> switchMapTransformer(
         crossinline transformFun: (value: T, stream: Observable<Action>) -> Observable<out Action>

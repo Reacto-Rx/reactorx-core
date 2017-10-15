@@ -6,15 +6,19 @@ import io.reactivex.ObservableTransformer
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
+import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.PublishSubject
 import org.reactorx.state.model.Action
 import org.reactorx.state.model.impl.Init
 import org.reactorx.state.model.impl.Void
 
 /**
- * @author Filip Prochazka (@filipproch)
+ * Store for a "state", represented by an object. Enforces unidirectional dataflow
+ * by only allowing modifications by dispatching [Action]s to a reducer. Reducer is
+ * a pure function that takes current "state" and [Action] as input and returns new "state"
+ * as output.
  */
-class StateStore<T>(
+class StateStore<T> private constructor(
         private val reducer: (T, Action) -> T,
         initialState: T,
         private val transformers: List<StateStoreTransformer<Action, Action>>,
@@ -22,16 +26,22 @@ class StateStore<T>(
         subscribeImmediately: Boolean = false,
         private val errorCallback: ((Throwable) -> Unit)? = null,
         private val transformersScheduler: Scheduler?,
-        /* Hack not to break build with upgrade to newer version, TODO: remove */
+        @Deprecated(" Hack not to break build with upgrade to newer version")
         private val extraTransformerObservablesObtainer: ((Observable<Action>) -> Array<Observable<out org.reactorx.presenter.model.Action>>)? = null
 ) {
 
-    private val subject = PublishSubject.create<Action>()
+    /**
+     * The current "state" stored in the store
+     */
     var currentState: T = initialState
         private set
 
+    private val subject = PublishSubject.create<Action>()
+
     private val preStateMiddlewareSubject = PublishSubject.create<Action>()
     private val postStateMiddlewareSubject = PublishSubject.create<Action>()
+
+    private val internalPostTransformationSubject = PublishSubject.create<Action>()
 
     private val internalSubscriptionsDisposable: CompositeDisposable = CompositeDisposable()
 
@@ -63,7 +73,10 @@ class StateStore<T>(
             subject
         }
 
-        source.compose(transformer)
+        Observable.merge(
+                source.compose(transformer),
+                internalPostTransformationSubject
+        )
                 .startWith(ACTION_INIT)
                 .doOnNext { invokePreStateMiddleware(it) }
                 .compose(reduceTransformer)
@@ -75,6 +88,7 @@ class StateStore<T>(
     }
 
     init {
+        // Bind StateStore to transformers
         transformers.forEach { it.bindStateStore(this) }
         middleware.forEach { it.transformer.bindStateStore(this) }
 
@@ -83,13 +97,13 @@ class StateStore<T>(
                 preStateMiddlewareSubject
                         .compose(newMiddlewareTransformer(Middleware.PHASE_BEFORE_STATE_CHANGED))
                         .doOnError { errorCallback?.invoke(it) }
-                        .subscribe(dispatch())
+                        .subscribeBy(onNext = internalPostTransformationSubject::onNext)
         )
         internalSubscriptionsDisposable.add(
                 postStateMiddlewareSubject
                         .compose(newMiddlewareTransformer(Middleware.PHASE_AFTER_STATE_CHANGED))
                         .doOnError { errorCallback?.invoke(it) }
-                        .subscribe(dispatch())
+                        .subscribeBy(onNext = internalPostTransformationSubject::onNext)
         )
 
         // If configured, immediately accept dispatched actions (don't wait for observe() to be called)
@@ -132,8 +146,14 @@ class StateStore<T>(
         }
     }
 
+    /**
+     * Stream of "state", invoked whenever the "state" changes
+     */
     fun observe(): Observable<T> = observable
 
+    /**
+     * Dispatches [input] [Action] to the transformers in the store
+     */
     fun dispatch(input: Action) {
         if (internalSubscriptionsDisposable.isDisposed) {
             throw RuntimeException("StateStore is disposed")
@@ -142,8 +162,14 @@ class StateStore<T>(
         subject.onNext(input)
     }
 
+    /**
+     * Dispatches consumed [Action] to the transformers in the store
+     */
     fun dispatch(): Consumer<Action> = Consumer { dispatch(it) }
 
+    /**
+     * Dispatches [input] [Action] in a [Completable] to the transformers in the store
+     */
     fun dispatchAsync(
             input: Action
     ) = Completable.create {
@@ -152,18 +178,34 @@ class StateStore<T>(
         it.onComplete()
     }
 
+    /**
+     * Disposes internal resources in the store, making it unusable
+     */
     fun dispose() {
         subject.onComplete()
         internalSubscriptionsDisposable.dispose()
     }
 
     companion object {
-        val ACTION_INIT get() = Init()
-        val ACTION_VOID get() = Void()
+        /**
+         * [Action] that is dispatched to [org.reactorx.state.StateStore] internally
+         * right after it's creation (instantiation)
+         */
+        val ACTION_INIT get() = Init
+
+        /**
+         * [Action] to cause no mutation on the [org.reactorx.state.StateStore] state
+         * (not guaranteed)
+         */
+        val ACTION_VOID get() = Void
     }
 
+    /**
+     * Builder for new [StateStore] instance
+     */
     class Builder<T>(
-            private val initialState: T
+            private val initialState: T,
+            func: (Builder<T>.() -> Unit)? = null
     ) {
 
         private lateinit var reducer: (T, Action) -> T
@@ -173,23 +215,33 @@ class StateStore<T>(
         private var errorCallback: ((Throwable) -> Unit)? = null
         private var transformersScheduler: Scheduler? = null
 
+        @Deprecated("Remains for legacy support reasons")
         private var extraTransformerObservablesObtainer: ((Observable<Action>) -> Array<Observable<out org.reactorx.presenter.model.Action>>)? = null
 
+        init {
+            func?.invoke(this)
+        }
+
+        /**
+         * TODO
+         */
         fun enableInputPasstrough(
                 filter: ((Action) -> Boolean)? = null
         ): Builder<T> {
-            /* TODO:
-            withTransformer(object : StateStoreTransformer() { inputActions ->
+            withTransformer(StateStoreTransformer { inputActions, _ ->
                 if (filter == null) {
                     inputActions
                 } else {
                     inputActions.filter(filter)
                 }
-            })*/
+            })
 
             return this
         }
 
+        /**
+         * TODO
+         */
         fun withReducer(
                 reducer: (T, Action) -> T
         ): Builder<T> {
@@ -197,6 +249,9 @@ class StateStore<T>(
             return this
         }
 
+        /**
+         * TODO
+         */
         fun withTransformer(
                 vararg transformers: StateStoreTransformer<Action, Action>
         ): Builder<T> {
@@ -204,10 +259,16 @@ class StateStore<T>(
             return this
         }
 
+        /**
+         * TODO
+         */
         fun withTransformer(
                 vararg transformers: ObservableTransformer<Action, Action>
         ) = withTransformers(transformers.map { StateStoreTransformer.from(it) })
 
+        /**
+         * TODO
+         */
         fun withTransformers(
                 transformers: Collection<StateStoreTransformer<Action, Action>>
         ): Builder<T> {
@@ -215,6 +276,9 @@ class StateStore<T>(
             return this
         }
 
+        /**
+         * TODO
+         */
         fun withMiddleware(
                 vararg transformers: StateStoreTransformer<Action, Action>,
                 phase: Int = Middleware.PHASE_AFTER_STATE_CHANGED
@@ -225,6 +289,9 @@ class StateStore<T>(
             return this
         }
 
+        /**
+         * TODO
+         */
         fun withMiddleware(
                 vararg transformers: ObservableTransformer<Action, Action>,
                 phase: Int = Middleware.PHASE_AFTER_STATE_CHANGED
@@ -233,6 +300,9 @@ class StateStore<T>(
                 phase = phase
         )
 
+        /**
+         * TODO
+         */
         fun withMiddlewares(
                 transformers: Collection<StateStoreTransformer<Action, Action>>,
                 phase: Int = Middleware.PHASE_AFTER_STATE_CHANGED
@@ -243,16 +313,25 @@ class StateStore<T>(
             return this
         }
 
+        /**
+         * TODO
+         */
         fun withScheduler(scheduler: Scheduler): Builder<T> {
             this.transformersScheduler = scheduler
             return this
         }
 
+        /**
+         * TODO
+         */
         fun subscribeImmediately(): Builder<T> {
             this.subscribeImmediately = true
             return this
         }
 
+        /**
+         * TODO
+         */
         fun errorCallback(
                 callback: (Throwable) -> Unit
         ): Builder<T> {
@@ -260,6 +339,9 @@ class StateStore<T>(
             return this
         }
 
+        /**
+         * TODO
+         */
         fun extraTransformerObservablesObtainer(
                 action: ((Observable<Action>) -> Array<Observable<out org.reactorx.presenter.model.Action>>)?
         ): Builder<T> {
@@ -267,6 +349,9 @@ class StateStore<T>(
             return this
         }
 
+        /**
+         * TODO
+         */
         fun build(): StateStore<T> {
             return StateStore(
                     reducer,

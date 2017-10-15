@@ -3,6 +3,7 @@ package org.reactorx.state.model.impl
 import org.reactorx.state.model.Action
 
 /**
- * @author Filip Prochazka (@filipproch)
+ * [Action] to cause no mutation on the [org.reactorx.state.StateStore] state
+ * (not guaranteed)
  */
-class Void : Action
+object Void : Action

@@ -9,7 +9,7 @@ import org.reactorx.view.model.UiEvent
 import org.reactorx.view.util.ObservableViewUtils
 
 /**
- * @author Filip Prochazka (@filipproch)
+ * TODO
  */
 interface PresenterView<M : Any, P : Presenter<M>> : ObservableViewUtils {
 

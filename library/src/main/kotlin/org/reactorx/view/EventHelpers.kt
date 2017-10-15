@@ -11,8 +11,6 @@ import org.reactorx.view.events.ViewStarted
 
 /**
  * TODO
- *
- * @author Filip Prochazka (@filipproch)
  */
 inline fun <reified S> viewStartedEpic(
         terminateViewStopped: Boolean = true,
@@ -38,8 +36,6 @@ inline fun <reified S> viewStartedEpic(
 
 /**
  * TODO
- *
- * @author Filip Prochazka (@filipproch)
  */
 inline fun viewStartedTransformer(
         terminateViewStopped: Boolean = true,

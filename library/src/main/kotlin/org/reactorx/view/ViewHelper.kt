@@ -16,7 +16,7 @@ import org.reactorx.view.util.NullableValue
 import org.reactorx.view.util.UiEventBuffer
 
 /**
- * @author Filip Prochazka (@filipproch)
+ * TODO
  */
 class ViewHelper<M : Any, P : Presenter<M>> : UiEventBuffer {
 

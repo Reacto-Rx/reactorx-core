@@ -3,6 +3,7 @@ package org.reactorx.view.events
 import org.reactorx.view.model.LifecycleEvent
 
 /**
- * @author Filip Prochazka (@filipproch)
+ * [LifecycleEvent] to be dispatched by view implementation
+ * when it stops
  */
 object ViewStopped : LifecycleEvent
