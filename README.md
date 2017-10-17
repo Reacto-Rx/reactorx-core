@@ -1,5 +1,5 @@
-<img src="/assets/logo.png" width="100">
+<img src="/assets/logo.png" width="50">
 
-# ReactoRx - Reactive MVP library (for Android)
+# ReactoRx - Android Architecture library
 
-TBD
+This is a library to make it easier to write Android applications, by implementing the MVP architecture pattern and taking the concept of Redux state store. It enforces unidirectional data flow and helps eliminate unexpected states of your app.
