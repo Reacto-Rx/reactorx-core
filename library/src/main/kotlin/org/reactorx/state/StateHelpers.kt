@@ -5,7 +5,8 @@ import org.reactorx.state.model.Action
 import org.reactorx.state.util.castTo
 
 /**
- * Transform function which transforms [Observable] stream of [Action]s to another stream of [Action]s.
+ * Transforming function. Transforms stream of [Action]s to another stream of [Action]s. The input
+ * stream is filtered based on provided type [T]. Is [StateStore] aware, and provides it's instance as a param.
  */
 inline fun <reified T, reified S> epic(
         crossinline transformFun: (inputStream: Observable<T>, stream: Observable<Action>, store: StateStore<S>) -> Observable<Action>
@@ -16,8 +17,8 @@ inline fun <reified T, reified S> epic(
 }
 
 /**
- * Transformer function to transform stream of [Action] to another stream of [Action]. Specific for
- * use with [StateStore], contains it's instance as param.
+ * Transforming function. Transforms stream of [Action]s to another stream of [Action]s.
+ * Is [StateStore] aware, and provides it's instance as a param.
  */
 inline fun <reified S> plainEpic(
         crossinline transformFun: (Observable<Action>, store: StateStore<S>) -> Observable<Action>
@@ -26,7 +27,9 @@ inline fun <reified S> plainEpic(
 }
 
 /**
- * TODO
+ * Transforming function. Essentially same as [epic] but the function is called inside the body
+ * of [Observable.flatMap] operator, providing emitted value. Is [StateStore] aware, and provides
+ * it's instance as a param.
  */
 inline fun <reified T, reified S> flatMapEpic(
         crossinline transformFun: (value: T, stream: Observable<Action>, store: StateStore<S>) -> Observable<out Action>
@@ -37,7 +40,8 @@ inline fun <reified T, reified S> flatMapEpic(
 }
 
 /**
- * TODO
+ * Transforming function. Transforms stream of [Action]s to another stream of [Action]s. The input
+ * stream is filtered based on provided type [T].
  */
 inline fun <reified T> transformer(
         crossinline transformFun: (inputStream: Observable<T>, stream: Observable<Action>) -> Observable<Action>
@@ -46,7 +50,7 @@ inline fun <reified T> transformer(
 }
 
 /**
- * Transformer function to transform stream of [Action] to another stream of [Action]
+ * Transforming function. Transforms stream of [Action]s to another stream of [Action]s.
  */
 inline fun plainTransformer(
         crossinline transformFun: (Observable<Action>) -> Observable<Action>
@@ -55,7 +59,8 @@ inline fun plainTransformer(
 }
 
 /**
- * TODO
+ * Transforming function. Essentially same as [transformer] but the function is called inside the body
+ * of [Observable.flatMap] operator, providing emitted value.
  */
 inline fun <reified T> flatMapTransformer(
         crossinline transformFun: (value: T, stream: Observable<Action>) -> Observable<out Action>
@@ -64,7 +69,8 @@ inline fun <reified T> flatMapTransformer(
 }
 
 /**
- * TODO
+ * Transforming function. Essentially same as [transformer] but the function is called inside the body
+ * of [Observable.switchMap] operator, providing emitted value.
  */
 inline fun <reified T> switchMapTransformer(
         crossinline transformFun: (value: T, stream: Observable<Action>) -> Observable<out Action>

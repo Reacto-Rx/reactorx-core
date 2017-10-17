@@ -5,7 +5,8 @@ import io.reactivex.ObservableSource
 import io.reactivex.ObservableTransformer
 
 /**
- * @author Filip Prochazka (@filipproch)
+ * [ObservableTransformer] implementation that keeps reference to [StateStore]
+ * and provides it as a param in the transformation call.
  */
 open class StateStoreTransformer<U, D>(
         private var stateStore: StateStore<*>? = null,
