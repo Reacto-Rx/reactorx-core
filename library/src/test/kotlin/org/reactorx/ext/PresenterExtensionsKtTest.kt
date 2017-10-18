@@ -8,9 +8,6 @@ import org.reactorx.state.model.Action
 import org.reactorx.view.events.ViewStarted
 import org.reactorx.view.events.ViewStopped
 
-/**
- * Test cases for [org.reactorx.ext.PresenterExtensionsKt]
- */
 class PresenterExtensionsKtTest {
 
     private val subject: PublishSubject<Action> = PublishSubject.create()
@@ -84,6 +81,16 @@ class PresenterExtensionsKtTest {
         subject.onNext(TestAction())
 
         assert(receivedActions.isEmpty(), { "Action passed trough after ViewStopped dispatched" })
+
+        disposable.dispose()
+    }
+
+    private inline fun Observable<*>.whileSubscribed(
+            body: () -> Unit
+    ) {
+        val disposable = subscribe(actionsConsumer)
+
+        body.invoke()
 
         disposable.dispose()
     }

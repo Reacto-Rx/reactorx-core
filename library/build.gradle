@@ -63,8 +63,6 @@ dependencies {
 
     // Useful Assertions
     testCompile 'org.assertj:assertj-core:3.8.0'
-    androidTestCompile 'org.assertj:assertj-core:3.8.0'
-    androidTestCompile 'com.squareup.assertj:assertj-android:1.1.1'
 }
 
 apply from: '../util/dokkaConfig.gradle'

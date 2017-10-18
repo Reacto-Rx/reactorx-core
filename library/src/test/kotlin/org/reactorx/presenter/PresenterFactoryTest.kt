@@ -4,7 +4,7 @@ import org.junit.Before
 import org.junit.Test
 
 /**
- * @author Filip Prochazka (@filipproch)
+ * Tests for [org.reactorx.presenter.PresenterFactory]
  */
 class PresenterFactoryTest {
 
