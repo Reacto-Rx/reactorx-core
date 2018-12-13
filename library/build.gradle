@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'jacoco-android'
+apply plugin: 'kotlin-kapt'
 
 project.archivesBaseName = 'reactorx'
 
@@ -39,19 +39,19 @@ android {
 
 dependencies {
     // Android Support
-    compile "com.android.support:appcompat-v7:$supportLibraryVersion"
+    implementation "com.android.support:appcompat-v7:$supportLibraryVersion"
 
     // Kotlin
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 
     // RxJava
-    compile "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
-    compile "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
-    compile "io.reactivex.rxjava2:rxkotlin:$rxKotlinVersion"
+    implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
+    implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
+    implementation "io.reactivex.rxjava2:rxkotlin:$rxKotlinVersion"
 
     // Android Architecture
-    compile "android.arch.lifecycle:runtime:$archComponentsVersion"
-    compile "android.arch.lifecycle:extensions:$archComponentsVersion"
+    implementation "android.arch.lifecycle:runtime:$archComponentsVersion"
+    implementation "android.arch.lifecycle:extensions:$archComponentsVersion"
     kapt "android.arch.lifecycle:compiler:$archComponentsVersion"
 
     /*
