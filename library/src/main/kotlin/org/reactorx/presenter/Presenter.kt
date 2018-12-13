@@ -19,7 +19,21 @@ import org.reactorx.view.model.UiEvent
  */
 abstract class Presenter<M> : ViewModel() {
 
-    private lateinit var stateStore: StateStore<M>
+    private val stateStore: StateStore<M> by lazy {
+        StateStore.Builder(initialState)
+            .enableInputPasstrough { it !is UiEvent }
+            .withReducer(this::reduceState)
+            .withTransformer(*transformers)
+            .withMiddleware(*middleware)
+            .errorCallback(this::onError)
+            // hack not to break build, TODO: remove in beta
+            .extraTransformerObservablesObtainer {
+                onCreateStreams(it.filter {
+                    it is UiEvent
+                }.cast())
+            }
+            .build()
+    }
 
     /**
      * Returns latest state value
@@ -52,19 +66,6 @@ abstract class Presenter<M> : ViewModel() {
      * the [StateStore]
      */
     open fun onPostCreated() {
-        stateStore = StateStore.Builder(initialState)
-                .enableInputPasstrough { it !is UiEvent }
-                .withReducer(this::reduceState)
-                .withTransformer(*transformers)
-                .withMiddleware(*middleware)
-                .errorCallback(this::onError)
-                // hack not to break build, TODO: remove in beta
-                .extraTransformerObservablesObtainer {
-                    onCreateStreams(it.filter {
-                        it is UiEvent
-                    }.cast())
-                }
-                .build()
     }
 
     /**
